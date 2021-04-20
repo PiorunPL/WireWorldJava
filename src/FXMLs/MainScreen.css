@@ -1,0 +1,5 @@
+.root { -fx-focus-color: transparent; }
+
+.jfx-hamburger StackPane {
+    -fx-background-color: #F9AA33;
+}
