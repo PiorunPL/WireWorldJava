@@ -86,6 +86,7 @@ public class DBops {
             scaner = new Scanner(in);
             line = (scaner.nextLine()).toUpperCase();
             tab = line.split("\\s+");
+            scaner.close();
         } catch (FileNotFoundException e) {
             throw new FileNotFoundException();
         }
