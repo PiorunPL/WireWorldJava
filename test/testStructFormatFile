@@ -1,0 +1,16 @@
+struct
+dimensions<
+100
+200
+>
+structures<
+:structName1:
+0 1 0 1 1
+0 1 0 1 0
+:structName2:
+1 0 1 0 1
+1 1 1 0 1
+>
+board<
+diode 11 20 u
+>

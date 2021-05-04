@@ -1,7 +1,7 @@
 package logic.cells;
 
-public class WireCell {
-    public WireCell(int x, int y) {
+public class WireCell implements CellState {
+    public WireCell() {
 
     }
 }
