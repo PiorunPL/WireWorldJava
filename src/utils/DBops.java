@@ -30,44 +30,45 @@ public class DBops {
     }
 
     public static StructMap getMapFromFile(File in) throws NullPointerException {
-        StructMap map = null;
-        int x, y;
+        StructMap map = null;       // map which is being created
+        String option = null;       // input file type (map/structure)
+        String firstLine[] = null;  // first line of array
+        int x = 0;                  // x dimension of an array
+        int y = 0;                  // y dimension of an array
 
         try {
-            Scanner scanner = new Scanner(in);
-            String tmp;
+            firstLine = firstLineToArray(in);
+            option = firstLine[0];
 
-            // checking file format (struct/map)
-            if ((tmp = scanner.nextLine()).equals(structK)) {
+            if(firstLine.length == 3){
+                x = Integer.parseInt(firstLine[1]);
+                y = Integer.parseInt(firstLine[2]);
 
-                // getting dimensions of file, if provided
-                int[] dimensions = getDimensions(in);
-                x = dimensions[0];
-                y = dimensions[1];
+                // map format of file
+                if (option.equals(mapK)) {
+                    System.out.println("map");
+                    map = new StructMap(x, y);
+                    //...
+                // structural format of file
+                } else if (option.equals(structK)) {
 
-                // getting user defined structures
-                UsersStructuresContainer structs = getUsersStructures(in);
+                    // getting user defined structures
+                    UsersStructuresContainer container = getUsersStructures(in);
 
-                // getting map
-                map = getMap(in, x, y, structs);
-            } else if (tmp.equals(mapK)) {
-
-            } else {
-                System.out.printf(
-                        "Wrong file format.\n" +
-                                "In line 1 should be %s or %s instead of %s\n",
-                        structK, mapK, tmp);
-                return null;
-            }
-
-
-        } catch (FileNotFoundException e) {
-            System.out.printf(
-                    "File %s doesn't exist.\n",
-                    in.getAbsolutePath());
-            return null;
+                    // getting map
+                    map = getMap(in, x, y, container);
+                } else {
+                    throw new IllegalArgumentException();
+                }
+            }else
+                throw new IllegalArgumentException();
+        }  catch (IOException e) {
+            e.printStackTrace();
+        } catch (IllegalArgumentException e){
+            e.printStackTrace();
+        } catch (NegativeArraySizeException e){
+            e.printStackTrace();
         }
-
         return map;
     }
 
@@ -75,29 +76,6 @@ public class DBops {
     //TODO: change to private
     public static String getType(File in) throws FileNotFoundException {
         return new Scanner(in).nextLine();
-    }
-
-    //TODO: zmienić na private
-    public static int[] getDimensions(File in) throws FileNotFoundException {
-        Scanner scanner = new Scanner(in);
-        int[] dimensions = new int[2];
-        int lines = 0;
-
-        while (!scanner.nextLine().equals(dimensionsK + "<")) lines++;
-        if (lines != 1) return null;
-
-        String tmp;
-        if ((tmp = scanner.nextLine()).equals(">")) {
-            dimensions[0] = -1;
-            dimensions[1] = -1;
-        }
-
-        dimensions[0] = Integer.parseInt(tmp);
-        dimensions[1] = Integer.parseInt(scanner.nextLine());
-
-        if (!scanner.nextLine().equals(">")) return null;
-
-        return dimensions;
     }
 
     //TODO: zmienić na private
@@ -165,33 +143,36 @@ public class DBops {
         return usersStructures;
     }
 
-
     //TODO: zmienić na private
-    public static StructMap getMap(File in, int x, int y, UsersStructuresContainer structs)
+    public static StructMap getMap(File in, int x, int y, UsersStructuresContainer container)
             throws FileNotFoundException {
         StructMap map = new StructMap(x, y);
         Scanner scanner = new Scanner(in);
         String line;
         String[] lineArr;
 
+        map.addUserStructures(container);
+
         while (!scanner.nextLine().equals(boardK + "<"));
 
         while (!(line = scanner.nextLine()).equals(">")) {
             lineArr = line.split(" ");
-            map.addStruct(
-                    lineArr[0],
-                    Integer.parseInt(lineArr[1]),
-                    Integer.parseInt(lineArr[2]),
-                    Direction.setDirection(lineArr[3]),
-                    lineArr.length > 4 ? Integer.parseInt(lineArr[4]) : -1
-            );
+            if (lineArr.length == 4 || lineArr.length == 5) {
+                map.addStruct(
+                        lineArr[0],
+                        Integer.parseInt(lineArr[1]),
+                        Integer.parseInt(lineArr[2]),
+                        Direction.setDirection(lineArr[3]),
+                        lineArr.length == 5 ? Integer.parseInt(lineArr[4]) : -1
+                );
+            }
         }
         return map;
     }
 
     /**
      * @author Michał Ziober
-     * @param in - plik wejściowy, z którego ma być odczytana pierwsza linia
+     * @param in plik wejściowy, z którego ma być odczytana pierwsza linia
      * @return Pierwsza linia przekształcona do tablicy (rozdzielnikami są białe znaki)
      * @throws FileNotFoundException
      */
@@ -202,7 +183,7 @@ public class DBops {
 
         try{
             scaner = new Scanner(in);
-            line = (scaner.nextLine()).toUpperCase();
+            line = (scaner.nextLine());
             tab = line.split("\\s+");
         } catch (FileNotFoundException e) {
             throw new FileNotFoundException();

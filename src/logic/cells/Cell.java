@@ -5,6 +5,8 @@ public class Cell {
 
     private  CellState state;
 
+    public CellState getState() { return state; }
+
     public void changeState(int i) {
         if (i == CellState.EMPN) state = new EmptyCell(false);
         else if (i == CellState.EMPA) state = new EmptyCell(true);

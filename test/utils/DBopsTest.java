@@ -27,13 +27,6 @@ class DBopsTest {
     }
 
     @Test
-    public void getDimensionsTest() throws FileNotFoundException {
-        int[] dimensions = DBops.getDimensions(testStructFormatFile);
-        assertEquals(100, dimensions[0]);
-        assertEquals(200, dimensions[1]);
-    }
-
-    @Test
     public void getUsersStructuresTest() throws FileNotFoundException {
         UsersStructuresContainer cont = new UsersStructuresContainer();
         Cell[][] cell1 = {
@@ -59,12 +52,35 @@ class DBopsTest {
         assertTrue(cont.equals(DBops.getUsersStructures(testStructFormatFile)));
     }
 
+    // temporary test, does not test this method, only prints StructMap
     @Test
     public void getMapFromFileTest() throws FileNotFoundException {
-        StructMap map = new StructMap(100, 200);
-        map.userStructures = DBops.getUsersStructures(testStructFormatFile);
-        map.addStruct("diode", 11, 20, Direction.setDirection("u"), -1);
-        //map.addStruct("structName1", 20, 30, Direction.setDirection("r"), -1);
-        assertEquals(DBops.getMapFromFile(testStructFormatFile), map);
+        StructMap map = DBops.getMapFromFile(testStructFormatFile);
+        printStructMap(map);
+    }
+
+    public void printStructMap(StructMap map) {
+        System.out.printf("StructMap\n\tlength: %d\n", map.size());
+        System.out.printf("\tsize: [%d, %d], %s\n",
+                map.getXsize(),
+                map.getYsize(),
+                map.getKnownDimensions() ? "known" : "not known"
+        );
+        for (int i = 0; i < map.size(); i++) {
+            System.out.printf("\tname: %s, x: %d, y: %d, direction: %s, class: %s\n\tstructure:\n",
+                    map.getStructure(i).getName(),
+                    map.getStructure(i).getX(),
+                    map.getStructure(i).getY(),
+                    map.getStructure(i).getDirection().toString(),
+                    map.getStructure(i).getClass().getName());
+            for (int j = 0; j < map.getStructure(i).getXsize(); j++) {
+                System.out.printf("\t\t");
+                for (int k = 0; k < map.getStructure(i).getYsize(); k++) {
+                    System.out.printf("%s\t", map.getStructure(i).getCell(j, k).getState().getClass().getName());
+                }
+                System.out.printf("\n");
+            }
+            System.out.printf("\n");
+        }
     }
 }

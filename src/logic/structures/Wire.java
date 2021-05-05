@@ -10,12 +10,8 @@ public class Wire extends Structure {
         this.length = length;
     }
 
-    private int x, y;
-    private Direction direction;
     private int length;
 
-    public int getLength() {
-        int length = 0;
-        return length;
-    }
+    public int getLength() { return this.length; }
+    public void setLength(int length) { this.length = length; }
 }

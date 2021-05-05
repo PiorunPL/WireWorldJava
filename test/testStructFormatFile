@@ -1,8 +1,4 @@
-struct
-dimensions<
-100
-200
->
+struct 100 200
 structures<
 :structName1:
 0 1 0 1 1
@@ -12,5 +8,7 @@ structures<
 1 1 1 0 1
 >
 board<
-diode 11 20 u
+or 11 20 u
+structName1 20 30 r
+strr
 >

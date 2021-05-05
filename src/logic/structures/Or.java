@@ -10,16 +10,16 @@ public class Or extends Structure {
     public Or(int x, int y, Direction direction) {
         this.x = x;
         this.y = y;
+        this.xsize = 5;
+        this.ysize = 5;
         this.direction = direction;
+        this.name = "or";
+        this.structure = new Cell[][]{
+                {new Cell(CellState.EMPN), new Cell(CellState.EMPA), new Cell(CellState.EMPN), new Cell(CellState.EMPA), new Cell(CellState.EMPN)},
+                {new Cell(CellState.EMPN), new Cell(CellState.EMPN), new Cell(CellState.WIRE), new Cell(CellState.EMPN), new Cell(CellState.EMPN)},
+                {new Cell(CellState.EMPN), new Cell(CellState.WIRE), new Cell(CellState.WIRE), new Cell(CellState.WIRE), new Cell(CellState.EMPA)},
+                {new Cell(CellState.EMPN), new Cell(CellState.EMPN), new Cell(CellState.WIRE), new Cell(CellState.EMPN), new Cell(CellState.EMPN)},
+                {new Cell(CellState.EMPN), new Cell(CellState.EMPA), new Cell(CellState.EMPN), new Cell(CellState.EMPA), new Cell(CellState.EMPN)}
+        };
     }
-
-    private int x, y;
-    private Direction direction;
-    public final Cell[][] map = {
-            {new Cell(CellState.EMPN), new Cell(CellState.EMPA), new Cell(CellState.EMPN), new Cell(CellState.EMPA), new Cell(CellState.EMPN)},
-            {new Cell(CellState.EMPN), new Cell(CellState.EMPN), new Cell(CellState.WIRE), new Cell(CellState.EMPN), new Cell(CellState.EMPN)},
-            {new Cell(CellState.EMPN), new Cell(CellState.WIRE), new Cell(CellState.WIRE), new Cell(CellState.WIRE), new Cell(CellState.EMPA)},
-            {new Cell(CellState.EMPN), new Cell(CellState.EMPN), new Cell(CellState.WIRE), new Cell(CellState.EMPN), new Cell(CellState.EMPN)},
-            {new Cell(CellState.EMPN), new Cell(CellState.EMPA), new Cell(CellState.EMPN), new Cell(CellState.EMPA), new Cell(CellState.EMPN)}
-    };
 }

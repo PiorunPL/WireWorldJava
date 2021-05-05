@@ -8,7 +8,4 @@ public class Clock extends Structure {
         this.y = y;
         this.direction = direction;
     }
-
-    private int x, y;
-    private Direction direction;
 }

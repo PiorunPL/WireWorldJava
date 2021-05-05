@@ -6,26 +6,20 @@ import logic.cells.*;
 public class UsersStructure extends Structure {
     public UsersStructure(String name, int xsize, int ysize, Cell[][] structure) {
         this.name = name;
-        this.xsize = x;
-        this.ysize = y;
+        this.xsize = xsize;
+        this.ysize = ysize;
         this.structure = structure;
     }
 
     public UsersStructure(String name, int xsize, int ysize, Cell[][] structure, int x, int y, Direction direction) {
         this.name = name;
-        this.xsize = x;
-        this.ysize = y;
+        this.xsize = xsize;
+        this.ysize = ysize;
         this.structure = structure;
         this.x = x;
         this.y = y;
         this.direction = direction;
     }
-
-    private String name;
-    int xsize, ysize;
-    int x, y;
-    Cell[][] structure;
-    Direction direction;
 
     public String getName() { return this.name; }
 
