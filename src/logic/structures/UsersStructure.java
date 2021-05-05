@@ -65,10 +65,11 @@ public class UsersStructure extends Structure {
         int liczba;
         for (int i = 0; i < x; i++) {
             for (int j = 0; j < y; j++) {
-                if (structure[i][j].getClass().getName().equals(new EmptyCell(true).getClass().getName())) liczba = 1;
-                else if (structure[i][j].getClass().getName().equals(new WireCell().getClass().getName())) liczba = 2;
-                else if (structure[i][j].getClass().getName().equals(new ElectronHead().getClass().getName())) liczba = 3;
-                else if (structure[i][j].getClass().getName().equals(new ElectronTail().getClass().getName())) liczba = 4;
+                if (structure[i][j].equals(CellState.EMPN)) liczba = 0;
+                else if (structure[i][j].equals(CellState.EMPA)) liczba = 1;
+                else if (structure[i][j].equals(CellState.WIRE)) liczba = 2;
+                else if (structure[i][j].equals(CellState.ELEH)) liczba = 3;
+                else if (structure[i][j].equals(CellState.ELET)) liczba = 4;
                 else liczba = -1;
                 System.out.printf("%d ", liczba);
             }

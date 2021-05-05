@@ -72,20 +72,12 @@ public class DBops {
         return map;
     }
 
-    //returns string containing name of type of file (struct/map)
-    //TODO: change to private
-    public static String getType(File in) throws FileNotFoundException {
-        return new Scanner(in).nextLine();
-    }
-
     //TODO: zmienić na private
     public static UsersStructuresContainer getUsersStructures(File in) throws FileNotFoundException {
         Scanner scanner = new Scanner(in);
-        int lines = 0;
 
         UsersStructuresContainer usersStructures = new UsersStructuresContainer();
-        while (!scanner.nextLine().equals(structuresK + "<")) lines++;
-        if (lines != 5) return null;
+        while (!scanner.nextLine().equals(structuresK + "<"));
 
         String name;
         int x, y;
