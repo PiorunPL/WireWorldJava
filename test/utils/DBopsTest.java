@@ -22,24 +22,19 @@ class DBopsTest {
     }
 
     @Test
-    public void getTypeTest() throws FileNotFoundException {
-        assertEquals("struct", DBops.getType(testStructFormatFile));
-    }
-
-    @Test
     public void getUsersStructuresTest() throws FileNotFoundException {
         UsersStructuresContainer cont = new UsersStructuresContainer();
         Cell[][] cell1 = {
-                {new Cell(CellState.EMPN), new Cell(CellState.EMPA), new Cell(CellState.EMPN), new Cell(CellState.EMPA), new Cell(CellState.EMPA)},
-                {new Cell(CellState.EMPN), new Cell(CellState.EMPA), new Cell(CellState.EMPN), new Cell(CellState.EMPA), new Cell(CellState.EMPN)}
+                {new Cell(0), new Cell(1), new Cell(0), new Cell(1), new Cell(1)},
+                {new Cell(0), new Cell(1), new Cell(0), new Cell(1), new Cell(0)}
         };
         UsersStructure struct = new UsersStructure(
                 "structName1", 2, 5, cell1);
         cont.add(struct);
 
         Cell[][] cell2 = {
-                {new Cell(CellState.EMPA), new Cell(CellState.EMPN), new Cell(CellState.EMPA), new Cell(CellState.EMPN), new Cell(CellState.EMPA)},
-                {new Cell(CellState.EMPA), new Cell(CellState.EMPA), new Cell(CellState.EMPA), new Cell(CellState.EMPN), new Cell(CellState.EMPA)}
+                {new Cell(1), new Cell(0), new Cell(1), new Cell(0), new Cell(1)},
+                {new Cell(1), new Cell(1), new Cell(1), new Cell(0), new Cell(1)}
         };
         struct = new UsersStructure(
                 "structName2", 2, 5, cell2);
@@ -76,7 +71,7 @@ class DBopsTest {
             for (int j = 0; j < map.getStructure(i).getXsize(); j++) {
                 System.out.printf("\t\t");
                 for (int k = 0; k < map.getStructure(i).getYsize(); k++) {
-                    System.out.printf("%s\t", map.getStructure(i).getCell(j, k).getState().getClass().getName());
+                    System.out.printf("%s\t", map.getStructure(i).getCell(j, k).getState());
                 }
                 System.out.printf("\n");
             }
