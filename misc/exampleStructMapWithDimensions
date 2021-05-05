@@ -1,0 +1,24 @@
+struct
+dimensions<
+100
+200
+>
+structures<
+structName1
+0 1 0 1 1
+0 1 0 1 0
+structName2
+1 0 1 0 1
+1 1 1 0 1
+>
+map<
+Diode 11 20 u
+structName 20 30 r
+...
+>
+
+0 1 0 1 0
+0 0 2 0 0
+0 2 2 2 1
+0 0 2 0 0
+0 1 0 1 0
