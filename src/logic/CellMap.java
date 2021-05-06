@@ -1,13 +1,20 @@
 package logic;
 
 import logic.cells.Cell;
+import logic.cells.CellState;
+
+import static logic.cells.CellState.*;
 
 public class CellMap {
     private Cell map[][] = null;
+    int xsize, ysize;
 
     public CellMap(int xsize, int ysize) throws NegativeArraySizeException {
         try {
+            this.xsize = xsize;
+            this.ysize = ysize;
             map = new Cell[xsize][ysize];
+            emptyCellMap();
         }catch (ArrayIndexOutOfBoundsException e){
             e.printStackTrace();
         }catch(NegativeArraySizeException e){
@@ -20,17 +27,25 @@ public class CellMap {
         try{
             cell = map[x][y];
         }catch(ArrayIndexOutOfBoundsException e){
-            //cell pozostaje nullem
+            return null;
         }
         return cell;
     }
 
-    public void setCell(int type, int x, int y) {
+    public void setCellState(int type, int x, int y) {
         try {
-            map[x][y] = new Cell(type);
+            map[x][y].changeState(type);
         }catch(ArrayIndexOutOfBoundsException e){
             e.printStackTrace();
         }
+    }
+
+    public int getXSize(){
+        return xsize;
+    }
+
+    public int getYSize(){
+        return ysize;
     }
 
     /**
@@ -40,5 +55,14 @@ public class CellMap {
      */
     public void changeSize(int x, int y){
 
+    }
+
+    //TUTAJ ZMIENIĆ TYP CELLA JAK ZMIENI SIĘ W CELL STATE!!!
+    private void emptyCellMap() {
+        for (int i = 0; i < xsize; i++) {
+            for (int j = 0; j < ysize; j++) {
+                map[i][j] = new Cell(1);
+            }
+        }
     }
 }

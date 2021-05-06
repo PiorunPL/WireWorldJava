@@ -1,5 +1,6 @@
 package utils;
 
+import logic.CellMap;
 import logic.Direction;
 import logic.StructMap;
 import logic.cells.*;
@@ -15,6 +16,9 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 import java.io.IOException;
 
+import static logic.cells.CellState.*;
+import static logic.cells.CellState.ELET;
+
 public class DBops {
 
     //map files keywords
@@ -25,37 +29,46 @@ public class DBops {
     private final static String boardK = "board";
 
 
+    public static void main(String[] args){
+        CellMap map = getMapFromFile(new File("C:\\Users\\lolol\\OneDrive - Politechnika Warszawska\\Pulpit\\Sem2\\JiMP2\\Wire\\src\\utils\\Test"));
+        for(int i=0; i<map.getXSize(); i++){
+            for(int j=0; j<map.getYSize(); j++){
+                System.out.println(map.getCell(i, j).getState());
+            }
+            System.out.println();
+        }
+    }
     public static void saveMapToFile(StructMap map, File out) {
 
     }
 
-    public static StructMap getMapFromFile(File in) throws NullPointerException {
-        StructMap map = null;       // map which is being created
-        String option = null;       // input file type (map/structure)
-        String firstLine[] = null;  // first line of array
-        int x = 0;                  // x dimension of an array
-        int y = 0;                  // y dimension of an array
+    public static CellMap getMapFromFile(File in) throws NullPointerException{
+        CellMap cellMap = null;
+        StructMap structMap = null;
+        String option = null;
+        String firstLine[] = null;
+        int x = 0;
+        int y = 0;
 
-        try {
+        try{
             firstLine = firstLineToArray(in);
             option = firstLine[0];
-
             if(firstLine.length == 3){
                 x = Integer.parseInt(firstLine[1]);
                 y = Integer.parseInt(firstLine[2]);
 
                 // map format of file
                 if (option.equals(mapK)) {
-                    map = new StructMap(x, y);
-                    //...
-                // structural format of file
+                    cellMap = getMapMapFormat(in, x, y);
+
+                    // structural format of file
                 } else if (option.equals(structK)) {
 
                     // getting user defined structures
                     UsersStructuresContainer container = getUsersStructures(in);
 
                     // getting map
-                    map = getMap(in, x, y, container);
+                    structMap = getMap(in, x, y, container);
                 } else {
                     throw new IllegalArgumentException();
                 }
@@ -68,8 +81,129 @@ public class DBops {
         } catch (NegativeArraySizeException e){
             e.printStackTrace();
         }
+        return cellMap;
+    }
+
+
+    private static CellMap getMapMapFormat(File in, int x, int y) throws IOException {
+        CellMap map = new CellMap(x, y);
+        String line;
+        String lineInTab[];
+        Scanner scan = new Scanner(in);
+        line = scan.nextLine();
+        for(int i=0; i<x; i++){
+            lineInTab = (scan.nextLine()).split("\\s+");
+            if(lineInTab.length != y)
+                //Stworzyć własne typy wyjątków
+                throw new IllegalArgumentException();
+            for(int j=0; j<y; j++){
+                map.getCell(i, j).changeState(Integer.parseInt(lineInTab[j]));
+            }
+
+        }
         return map;
     }
+
+    private CellMap getMapStructFormat(StructMap map) {
+        int xsize = map.getXsize();
+        int ysize = map.getYsize();
+        CellMap cellMap = new CellMap(xsize, ysize);
+        for (int i = 0; i < map.size(); i++) {
+            Structure struct = map.getStructure(i);
+            int temp1 = struct.getX();
+            int temp2 = struct.getY();
+
+            for (int j = 0; j < struct.getXsize(); j++) {
+                if (struct.getDirection() == Direction.UP || struct.getDirection() == Direction.DOWN)
+                    temp1 = temp1Actualization1(struct, j);
+                if (struct.getDirection() == Direction.RIGHT || struct.getDirection() == Direction.LEFT)
+                    temp2 = temp2Actualization1(struct, j);
+                for (int k = 0; k < struct.getYsize(); k++) {
+                    if (struct.getDirection() == Direction.RIGHT || struct.getDirection() == Direction.LEFT)
+                        temp1 = temp1Actualization2(struct, j);
+                    if (struct.getDirection() == Direction.UP || struct.getDirection() == Direction.DOWN)
+                        temp2 = temp2Actualization2(struct, j);
+
+                    if (cellMap.getCell(temp1, temp2).getState() == EMPA)
+                        cellMap.getCell(temp1, temp2).changeState(struct.getCell(j, k).getState());
+                    else if (struct.getCell(j, k).getState() == ELEH) {
+                        cellMap.getCell(temp1, temp2).changeState(ELEH);
+                    } else if (struct.getCell(j, k).getState() == ELET) {
+                        cellMap.getCell(temp1, temp2).changeState(ELET);
+                    } else {
+
+                    }
+                }
+            }
+        }
+        return cellMap;
+    }
+
+
+    private int temp1Actualization1(Structure struct, int iteration) {
+        int temp1;
+
+        if (struct.getDirection() == Direction.UP) {
+            temp1 = struct.getX() + iteration;
+        } else if (struct.getDirection() == Direction.RIGHT) {
+            temp1 = struct.getX();
+        } else if (struct.getDirection() == Direction.DOWN) {
+            temp1 = struct.getX() - iteration;
+        } else {
+            temp1 = struct.getX();
+        }
+
+        return temp1;
+    }
+
+    private int temp2Actualization1(Structure struct, int iteration) {
+        int temp2;
+
+        if (struct.getDirection() == Direction.UP) {
+            temp2 = struct.getY();
+        } else if (struct.getDirection() == Direction.RIGHT) {
+            temp2 = struct.getY() - iteration;
+        } else if (struct.getDirection() == Direction.DOWN) {
+            temp2 = struct.getY();
+        } else {
+            temp2 = struct.getY() + iteration;
+        }
+
+        return temp2;
+    }
+
+    private int temp1Actualization2(Structure struct, int iteration) {
+        int temp1;
+
+        if (struct.getDirection() == Direction.UP) {
+            temp1 = struct.getX();
+        } else if (struct.getDirection() == Direction.RIGHT) {
+            temp1 = struct.getX() - iteration;
+        } else if (struct.getDirection() == Direction.DOWN) {
+            temp1 = struct.getX();
+        } else {
+            temp1 = struct.getX() + iteration;
+        }
+
+        return temp1;
+    }
+
+    private int temp2Actualization2(Structure struct, int iteration) {
+        int temp2;
+
+        if (struct.getDirection() == Direction.UP) {
+            temp2 = struct.getY() + iteration;
+        } else if (struct.getDirection() == Direction.RIGHT) {
+            temp2 = struct.getY();
+        } else if (struct.getDirection() == Direction.DOWN) {
+            temp2 = struct.getY() - iteration;
+        } else {
+            temp2 = struct.getY();
+        }
+
+        return temp2;
+    }
+
 
     //TODO: zmienić na private
     public static UsersStructuresContainer getUsersStructures(File in) throws FileNotFoundException {
@@ -161,24 +295,6 @@ public class DBops {
         return map;
     }
 
-    private StructMap getMapMapFormat(File in, int x, int y) throws IOException {
-        StructMap map = new StructMap(x, y);
-        String line;
-        String lineInTab[];
-        Scanner scan = new Scanner(in);
-        line = scan.nextLine();
-        for(int i=0; i<x; i++){
-            lineInTab = (scan.nextLine()).split("\\s+");
-            if(lineInTab.length != y)
-                //Zastanowić się czy nie stworzyć własnego wyjątku
-                throw new IllegalArgumentException();
-            for(int j=0; j<y; j++){
-
-            }
-
-        }
-        return map;
-    }
 
     /**
      * @author Michał Ziober

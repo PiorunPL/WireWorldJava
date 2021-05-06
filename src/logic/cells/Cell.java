@@ -1,3 +1,4 @@
+
 package logic.cells;
 
 public class Cell {
@@ -10,7 +11,15 @@ public class Cell {
     public CellState getPreviousState() { return previousState; }
 
     public void changeState(int i) {
-        this.previousState = this.state;
         this.state = CellState.setCellState(i);
+    }
+
+    public void changeState(CellState state1) {
+        this.state = state1;
+    }
+
+    public void updatePrevious()
+    {
+        this.previousState = this.state;
     }
 }
