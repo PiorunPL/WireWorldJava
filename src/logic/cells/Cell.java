@@ -10,7 +10,11 @@ public class Cell {
     public CellState getPreviousState() { return previousState; }
 
     public void changeState(int i) {
-        this.previousState = this.state;
         this.state = CellState.setCellState(i);
+    }
+
+    public void updatePrevious()
+    {
+        this.previousState = this.state;
     }
 }
