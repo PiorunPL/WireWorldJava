@@ -13,6 +13,10 @@ public class Cell {
         this.state = CellState.setCellState(i);
     }
 
+    public void changeState(CellState state1) {
+        this.state = state1;
+    }
+
     public void updatePrevious()
     {
         this.previousState = this.state;
