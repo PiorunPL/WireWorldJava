@@ -6,11 +6,11 @@ public class CellState {
     }
 
     public static CellState setCellState(int i) {
-        if (i == 0) return EMPN;
-        else if (i == 1) return EMPA;
-        else if (i == 2) return WIRE;
+        if (i == 1) return WIRE;
+        else if (i == 2) return ELET;
         else if (i == 3) return ELEH;
-        else if (i == 4) return ELET;
+        else if (i == 4) return EMPA;
+        else if (i == 5) return EMPN;
         else return null;
     }
     @Override

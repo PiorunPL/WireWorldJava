@@ -46,7 +46,6 @@ public class DBops {
 
                 // map format of file
                 if (option.equals(mapK)) {
-                    System.out.println("map");
                     map = new StructMap(x, y);
                     //...
                 // structural format of file
@@ -158,6 +157,25 @@ public class DBops {
                         lineArr.length == 5 ? Integer.parseInt(lineArr[4]) : -1
                 );
             }
+        }
+        return map;
+    }
+
+    private StructMap getMapMapFormat(File in, int x, int y) throws IOException {
+        StructMap map = new StructMap(x, y);
+        String line;
+        String lineInTab[];
+        Scanner scan = new Scanner(in);
+        line = scan.nextLine();
+        for(int i=0; i<x; i++){
+            lineInTab = (scan.nextLine()).split("\\s+");
+            if(lineInTab.length != y)
+                //Zastanowić się czy nie stworzyć własnego wyjątku
+                throw new IllegalArgumentException();
+            for(int j=0; j<y; j++){
+
+            }
+
         }
         return map;
     }
