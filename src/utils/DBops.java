@@ -7,6 +7,10 @@ import logic.cells.*;
 import logic.structures.*;
 import logic.structures.UsersStructure;
 import logic.structures.UsersStructuresContainer;
+import utils.exceptions.IllegalFormatOptionException;
+import utils.exceptions.IncorretNumberOfArgumentsException;
+import utils.exceptions.TooLessCellsException;
+import utils.exceptions.TooManyCellsException;
 
 import java.io.File;
 import java.io.FileNotFoundException;
@@ -70,22 +74,28 @@ public class DBops {
                     // getting map
                     structMap = getMap(in, x, y, container);
                 } else {
-                    throw new IllegalArgumentException();
+                    throw new IllegalFormatOptionException();
                 }
             }else
-                throw new IllegalArgumentException();
-        }  catch (IOException e) {
+                throw new IncorretNumberOfArgumentsException();
+        } catch (IOException e) {
             e.printStackTrace();
-        } catch (IllegalArgumentException e){
-            e.printStackTrace();
-        } catch (NegativeArraySizeException e){
-            e.printStackTrace();
+        } catch(IllegalFormatOptionException e){
+            e.getMessage();
+        } catch(TooManyCellsException e){
+            e.getMessage();
+        } catch(TooLessCellsException e){
+            e.getMessage();
+        } catch(IncorretNumberOfArgumentsException e){
+            e.getMessage();
+        } catch(NoSuchElementException e){
+            System.out.println("Typed to less lines than declared");
         }
         return cellMap;
     }
 
 
-    private static CellMap getMapMapFormat(File in, int x, int y) throws IOException {
+    private static CellMap getMapMapFormat(File in, int x, int y) throws IOException, TooManyCellsException, TooLessCellsException, NoSuchElementException  {
         CellMap map = new CellMap(x, y);
         String line;
         String lineInTab[];
@@ -93,9 +103,10 @@ public class DBops {
         line = scan.nextLine();
         for(int i=0; i<x; i++){
             lineInTab = (scan.nextLine()).split("\\s+");
-            if(lineInTab.length != y)
-                //Stworzyć własne typy wyjątków
-                throw new IllegalArgumentException();
+            if(lineInTab.length > y)
+                throw new TooManyCellsException();
+            else if(lineInTab.length < y)
+                throw new TooLessCellsException();
             for(int j=0; j<y; j++){
                 map.getCell(i, j).changeState(Integer.parseInt(lineInTab[j]));
             }

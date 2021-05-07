@@ -1,5 +1,9 @@
 package utils.exceptions;
 
+/**
+ * @author Michał Ziober
+ * Wyjątek wyrzucany gdy podano niepoprawny rozmiar mapy
+ */
 public class IllegalSizeException extends Exception {
     @Override
     public String getMessage() {
