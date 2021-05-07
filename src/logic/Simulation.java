@@ -171,7 +171,7 @@ public class Simulation {
     private void EmptyCellMap() {
         for (int i = 0; i < xsize; i++) {
             for (int j = 0; j < ysize; j++) {
-                cellMap[i][j].changeState(EMPA);
+                cellMap[i][j] = new Cell(1);
             }
         }
     }
