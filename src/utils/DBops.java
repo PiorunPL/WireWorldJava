@@ -34,10 +34,12 @@ public class DBops {
 
 
     public static void main(String[] args){
-        CellMap map = getMapFromFile(new File("C:\\Users\\lolol\\OneDrive - Politechnika Warszawska\\Pulpit\\Sem2\\JiMP2\\Wire\\src\\utils\\Test"));
-        for(int i=0; i<map.getXSize(); i++){
-            for(int j=0; j<map.getYSize(); j++){
-                System.out.println(map.getCell(i, j).getState());
+        //CellMap map = getMapFromFile(new File("C:\\Users\\lolol\\OneDrive - Politechnika Warszawska\\Pulpit\\Sem2\\JiMP2\\Wire\\src\\utils\\Test"));
+        CellMap map = getMapFromFile(new File("C:\\Users\\lolol\\OneDrive - Politechnika Warszawska\\Pulpit\\Sem2\\JiMP2\\Wire\\test\\testStructFormatFile"));
+        //Wyswietlanie mapy
+        for(int i=0; i<map.getYSize(); i++){
+            for(int j=0; j<map.getXSize(); j++){
+                System.out.print(map.getCell(j, i).getState()+" ");
             }
             System.out.println();
         }
@@ -67,12 +69,12 @@ public class DBops {
 
                     // structural format of file
                 } else if (option.equals(structK)) {
-
                     // getting user defined structures
                     UsersStructuresContainer container = getUsersStructures(in);
 
                     // getting map
                     structMap = getMap(in, x, y, container);
+                    cellMap = getMapStructFormat(structMap);
                 } else {
                     throw new IllegalFormatOptionException();
                 }
@@ -91,6 +93,17 @@ public class DBops {
         } catch(NoSuchElementException e){
             System.out.println("Typed to less lines than declared");
         }
+        //testowanie czy struktury są dobrze wczytane
+        /*for(int i=0; i<structMap.size(); i++){
+            Structure struct = structMap.getStructure(i);
+            for(int j=0; j<struct.getXsize(); j++){
+                for(int k=0; k<struct.getYsize(); k++){
+                    System.out.print(struct.getCell(j, k).getState()+" ");
+                }
+                System.out.println();
+            }
+            System.out.println();
+        }*/
         return cellMap;
     }
 
@@ -115,7 +128,7 @@ public class DBops {
         return map;
     }
 
-    private CellMap getMapStructFormat(StructMap map) {
+    private static CellMap getMapStructFormat(StructMap map) {
         int xsize = map.getXsize();
         int ysize = map.getYsize();
         CellMap cellMap = new CellMap(xsize, ysize);
@@ -134,7 +147,6 @@ public class DBops {
                         temp1 = temp1Actualization2(struct, j);
                     if (struct.getDirection() == Direction.UP || struct.getDirection() == Direction.DOWN)
                         temp2 = temp2Actualization2(struct, j);
-
                     if (cellMap.getCell(temp1, temp2).getState() == EMPA)
                         cellMap.getCell(temp1, temp2).changeState(struct.getCell(j, k).getState());
                     else if (struct.getCell(j, k).getState() == ELEH) {
@@ -151,7 +163,7 @@ public class DBops {
     }
 
 
-    private int temp1Actualization1(Structure struct, int iteration) {
+    private static int temp1Actualization1(Structure struct, int iteration) {
         int temp1;
 
         if (struct.getDirection() == Direction.UP) {
@@ -167,8 +179,8 @@ public class DBops {
         return temp1;
     }
 
-    private int temp2Actualization1(Structure struct, int iteration) {
-        int temp2;
+    private static int temp2Actualization1(Structure struct, int iteration) {
+        int temp2=struct.getY();
 
         if (struct.getDirection() == Direction.UP) {
             temp2 = struct.getY();
@@ -183,8 +195,8 @@ public class DBops {
         return temp2;
     }
 
-    private int temp1Actualization2(Structure struct, int iteration) {
-        int temp1;
+    private static int temp1Actualization2(Structure struct, int iteration) {
+        int temp1=struct.getX();
 
         if (struct.getDirection() == Direction.UP) {
             temp1 = struct.getX();
@@ -199,8 +211,8 @@ public class DBops {
         return temp1;
     }
 
-    private int temp2Actualization2(Structure struct, int iteration) {
-        int temp2;
+    private static int temp2Actualization2(Structure struct, int iteration) {
+        int temp2=struct.getY();
 
         if (struct.getDirection() == Direction.UP) {
             temp2 = struct.getY() + iteration;
