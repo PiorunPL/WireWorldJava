@@ -1,12 +1,8 @@
 package logic;
 
-import logic.cells.Cell;
-import logic.structures.Map;
 import logic.structures.Structure;
 import logic.structures.UsersStructuresContainer;
-import utils.DBops;
 
-import java.lang.reflect.Array;
 import java.util.ArrayList;
 import java.util.List;
 
