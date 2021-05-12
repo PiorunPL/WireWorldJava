@@ -7,10 +7,7 @@ import logic.cells.*;
 import logic.structures.*;
 import logic.structures.UsersStructure;
 import logic.structures.UsersStructuresContainer;
-import utils.exceptions.IllegalFormatOptionException;
-import utils.exceptions.IncorretNumberOfArgumentsException;
-import utils.exceptions.TooLessCellsException;
-import utils.exceptions.TooManyCellsException;
+import utils.exceptions.*;
 
 import java.io.File;
 import java.io.FileNotFoundException;
@@ -21,7 +18,6 @@ import java.util.regex.Pattern;
 import java.io.IOException;
 
 import static logic.cells.CellState.*;
-import static logic.cells.CellState.ELET;
 
 public class DBops {
 
@@ -32,25 +28,25 @@ public class DBops {
     private final static String structuresK = "structures";
     private final static String boardK = "board";
 
-/*
-    public static void main(String[] args){
+
+    public static void main(String[] args) {
         //CellMap map = getMapFromFile(new File("C:\\Users\\lolol\\OneDrive - Politechnika Warszawska\\Pulpit\\Sem2\\JiMP2\\Wire\\src\\utils\\Test"));
-        CellMap map = getMapFromFile(new File("C:\\Users\\lolol\\OneDrive - Politechnika Warszawska\\Pulpit\\Sem2\\JiMP2\\Wire\\test\\testStructFormatFile"));
+        CellMap map = getMapFromFile(new File("test/testStructFormatFile"));
         //Wyswietlanie mapy
-        for(int i=0; i<map.getYSize(); i++){
-            for(int j=0; j<map.getXSize(); j++){
-                System.out.print(map.getCell(j, i).getState()+" ");
+        for (int i = 0; i < map.getXSize(); i++) {
+            for (int j = 0; j < map.getYSize(); j++) {
+                System.out.print(map.getCell(i, j).getState() + " ");
             }
             System.out.println();
         }
     }
 
- */
+
     public static void saveMapToFile(StructMap map, File out) {
 
     }
 
-    public static CellMap getMapFromFile(File in) throws NullPointerException{
+    public static CellMap getMapFromFile(File in) throws NullPointerException {
         CellMap cellMap = null;
         StructMap structMap = null;
         String option = null;
@@ -58,10 +54,10 @@ public class DBops {
         int x = 0;
         int y = 0;
 
-        try{
+        try {
             firstLine = firstLineToArray(in);
             option = firstLine[0];
-            if(firstLine.length == 3){
+            if (firstLine.length == 3) {
                 x = Integer.parseInt(firstLine[1]);
                 y = Integer.parseInt(firstLine[2]);
 
@@ -80,20 +76,22 @@ public class DBops {
                 } else {
                     throw new IllegalFormatOptionException();
                 }
-            }else
+            } else
                 throw new IncorretNumberOfArgumentsException();
         } catch (IOException e) {
             e.printStackTrace();
-        } catch(IllegalFormatOptionException e){
+        } catch (IllegalFormatOptionException e) {
             e.getMessage();
-        } catch(TooManyCellsException e){
+        } catch (TooManyCellsException e) {
             e.getMessage();
-        } catch(TooLessCellsException e){
+        } catch (TooLessCellsException e) {
             e.getMessage();
-        } catch(IncorretNumberOfArgumentsException e){
+        } catch (IncorretNumberOfArgumentsException e) {
             e.getMessage();
-        } catch(NoSuchElementException e){
+        } catch (NoSuchElementException e) {
             System.out.println("Typed to less lines than declared");
+        } catch (IllegalWirePlacementException e) {
+            e.getMessage();
         }
         //testowanie czy struktury są dobrze wczytane
         /*for(int i=0; i<structMap.size(); i++){
@@ -110,19 +108,19 @@ public class DBops {
     }
 
 
-    private static CellMap getMapMapFormat(File in, int x, int y) throws IOException, TooManyCellsException, TooLessCellsException, NoSuchElementException  {
+    private static CellMap getMapMapFormat(File in, int x, int y) throws IOException, TooManyCellsException, TooLessCellsException, NoSuchElementException {
         CellMap map = new CellMap(x, y);
         String line;
         String lineInTab[];
         Scanner scan = new Scanner(in);
         line = scan.nextLine();
-        for(int i=0; i<x; i++){
+        for (int i = 0; i < x; i++) {
             lineInTab = (scan.nextLine()).split("\\s+");
-            if(lineInTab.length > y)
+            if (lineInTab.length > y)
                 throw new TooManyCellsException();
-            else if(lineInTab.length < y)
+            else if (lineInTab.length < y)
                 throw new TooLessCellsException();
-            for(int j=0; j<y; j++){
+            for (int j = 0; j < y; j++) {
                 map.getCell(i, j).changeState(Integer.parseInt(lineInTab[j]));
             }
 
@@ -130,15 +128,57 @@ public class DBops {
         return map;
     }
 
-    private static CellMap getMapStructFormat(StructMap map) {
+    //TODO Trzeba dodać sprawdzanie, czy dane pole można nadpisać (tzn. czy znajdują się tam jedynie pola EMPA, inaczej w przypadku elektronu, on musi nadpisywać kabel)
+    private static CellMap getMapStructFormat(StructMap map) throws IllegalWirePlacementException {
         int xsize = map.getXsize();
         int ysize = map.getYsize();
         CellMap cellMap = new CellMap(xsize, ysize);
+
         for (int i = 0; i < map.size(); i++) {
             Structure struct = map.getStructure(i);
             int temp1 = struct.getX();
             int temp2 = struct.getY();
 
+            if (struct.getDirection() == Direction.UP) {
+                for (int j = 0; j < struct.getXSize(); j++) {
+                    temp1 = struct.getX() + j;
+                    for (int k = 0; k < struct.getYSize(); k++) {
+                        temp2 = struct.getY() + k;
+
+                        setMapCell(cellMap, struct, temp1, temp2, j, k);
+
+                    }
+                }
+            } else if (struct.getDirection() == Direction.RIGHT) {
+                for (int j = 0; j < struct.getXSize(); j++) {
+                    temp2 = struct.getY() - j;
+                    for (int k = 0; k < struct.getYSize(); k++) {
+                        temp1 = struct.getX() + k;
+
+                        setMapCell(cellMap, struct, temp1, temp2, j, k);
+                    }
+                }
+            } else if (struct.getDirection() == Direction.DOWN) {
+                for (int j = 0; j < struct.getXSize(); j++) {
+                    temp1 = struct.getX() - j;
+                    for (int k = 0; k < struct.getYSize(); k++) {
+                        temp2 = struct.getY() - k;
+
+                        setMapCell(cellMap, struct, temp1, temp2, j, k);
+                    }
+                }
+            } else {
+                for (int j = 0; j < struct.getXSize(); j++) {
+                    temp2 = struct.getY() + j;
+                    for (int k = 0; k < struct.getYSize(); k++) {
+                        temp1 = struct.getX() - k;
+
+                        setMapCell(cellMap, struct, temp1, temp2, j, k);
+                    }
+                }
+            }
+
+            /*
             for (int j = 0; j < struct.getXsize(); j++) {
                 if (struct.getDirection() == Direction.UP || struct.getDirection() == Direction.DOWN)
                     temp1 = temp1Actualization1(struct, j);
@@ -160,8 +200,28 @@ public class DBops {
                     }
                 }
             }
+            */
         }
         return cellMap;
+    }
+
+    private static void setMapCell(CellMap cellMap, Structure struct, int temp1, int temp2, int j, int k) throws IllegalWirePlacementException {
+        if (cellMap.getCell(temp1, temp2).getState() == EMPA) {
+            if (struct.getCell(j, k).getState() != ELEH && struct.getCell(j, k).getState() != ELET) {
+                cellMap.setCell(temp1, temp2, struct.getCell(j, k));
+            } else {
+                throw new utils.exceptions.IllegalWirePlacementException();
+            }
+
+        } else if (cellMap.getCell(temp1, temp2).getState() == WIRE) {
+            if (struct.getCell(j, k).getState() == ELEH || struct.getCell(j, k).getState() == ELET) {
+                cellMap.getCell(temp1, temp2).changeState(struct.getCell(j, k).getState());
+            } else {
+
+            }
+        } else {
+
+        }
     }
 
 
@@ -182,7 +242,7 @@ public class DBops {
     }
 
     private static int temp2Actualization1(Structure struct, int iteration) {
-        int temp2=struct.getY();
+        int temp2 = struct.getY();
 
         if (struct.getDirection() == Direction.UP) {
             temp2 = struct.getY();
@@ -198,7 +258,7 @@ public class DBops {
     }
 
     private static int temp1Actualization2(Structure struct, int iteration) {
-        int temp1=struct.getX();
+        int temp1 = struct.getX();
 
         if (struct.getDirection() == Direction.UP) {
             temp1 = struct.getX();
@@ -214,7 +274,7 @@ public class DBops {
     }
 
     private static int temp2Actualization2(Structure struct, int iteration) {
-        int temp2=struct.getY();
+        int temp2 = struct.getY();
 
         if (struct.getDirection() == Direction.UP) {
             temp2 = struct.getY() + iteration;
@@ -235,7 +295,7 @@ public class DBops {
         Scanner scanner = new Scanner(in);
 
         UsersStructuresContainer usersStructures = new UsersStructuresContainer();
-        while (!scanner.nextLine().equals(structuresK + "<"));
+        while (!scanner.nextLine().equals(structuresK + "<")) ;
 
         String name;
         int x, y;
@@ -303,7 +363,7 @@ public class DBops {
 
         map.addUserStructures(container);
 
-        while (!scanner.nextLine().equals(boardK + "<"));
+        while (!scanner.nextLine().equals(boardK + "<")) ;
 
         while (!(line = scanner.nextLine()).equals(">")) {
             lineArr = line.split(" ");
@@ -322,17 +382,17 @@ public class DBops {
 
 
     /**
-     * @author Michał Ziober
      * @param in plik wejściowy, z którego ma być odczytana pierwsza linia
      * @return Pierwsza linia przekształcona do tablicy (rozdzielnikami są białe znaki)
      * @throws FileNotFoundException
+     * @author Michał Ziober
      */
     private static String[] firstLineToArray(File in) throws FileNotFoundException {
         String tab[] = null;
         Scanner scaner = null;
         String line = null;
 
-        try{
+        try {
             scaner = new Scanner(in);
             line = (scaner.nextLine());
             tab = line.split("\\s+");
