@@ -1,8 +1,4 @@
-struct
-dimensions<
-100
-200
->
+struct 100 200
 structures<
 structName1
 0 1 0 1 1

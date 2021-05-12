@@ -19,7 +19,7 @@ public class CellState {
     private String name;
     public static final CellState
             EMPN = new CellState("EMPN"), // empty cell, not appendable
-            EMPA = new CellState("EMPA"), // empty cell, appendable
+            EMPA = new CellState("...."), // empty cell, appendable
             WIRE = new CellState("WIRE"), // wire cell
             ELEH = new CellState("ELEH"), // electron head
             ELET = new CellState("ELET"); // electron tail
