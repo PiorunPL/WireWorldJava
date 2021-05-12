@@ -32,7 +32,7 @@ public class DBops {
     private final static String structuresK = "structures";
     private final static String boardK = "board";
 
-
+/*
     public static void main(String[] args){
         //CellMap map = getMapFromFile(new File("C:\\Users\\lolol\\OneDrive - Politechnika Warszawska\\Pulpit\\Sem2\\JiMP2\\Wire\\src\\utils\\Test"));
         CellMap map = getMapFromFile(new File("C:\\Users\\lolol\\OneDrive - Politechnika Warszawska\\Pulpit\\Sem2\\JiMP2\\Wire\\test\\testStructFormatFile"));
@@ -44,6 +44,8 @@ public class DBops {
             System.out.println();
         }
     }
+
+ */
     public static void saveMapToFile(StructMap map, File out) {
 
     }
