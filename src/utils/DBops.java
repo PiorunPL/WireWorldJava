@@ -14,6 +14,7 @@ import utils.exceptions.TooManyCellsException;
 
 import java.io.File;
 import java.io.FileNotFoundException;
+import java.io.FileWriter;
 import java.util.NoSuchElementException;
 import java.util.Scanner;
 import java.util.regex.Matcher;
@@ -32,22 +33,58 @@ public class DBops {
     private final static String structuresK = "structures";
     private final static String boardK = "board";
 
-/*
-    public static void main(String[] args){
-        //CellMap map = getMapFromFile(new File("C:\\Users\\lolol\\OneDrive - Politechnika Warszawska\\Pulpit\\Sem2\\JiMP2\\Wire\\src\\utils\\Test"));
-        CellMap map = getMapFromFile(new File("C:\\Users\\lolol\\OneDrive - Politechnika Warszawska\\Pulpit\\Sem2\\JiMP2\\Wire\\test\\testStructFormatFile"));
+
+    public static void main(String[] args) throws IOException {
+        CellMap map = getMapFromFile(new File("C:\\Users\\lolol\\OneDrive - Politechnika Warszawska\\Pulpit\\Sem2\\JiMP2\\Wire\\src\\utils\\Test"));
+        //CellMap map = getMapFromFile(new File("C:\\Users\\lolol\\OneDrive - Politechnika Warszawska\\Pulpit\\Sem2\\JiMP2\\Wire\\test\\testStructFormatFile"));
         //Wyswietlanie mapy
-        for(int i=0; i<map.getYSize(); i++){
-            for(int j=0; j<map.getXSize(); j++){
-                System.out.print(map.getCell(j, i).getState()+" ");
+        /*for(int i=0; i<map.getXSize(); i++){
+            for(int j=0; j<map.getYSize(); j++){
+                System.out.print(map.getCell(i, j).getState()+" ");
             }
             System.out.println();
-        }
+        }*/
+        saveMapToFile(map, new File("C:\\Users\\lolol\\OneDrive - Politechnika Warszawska\\Pulpit\\Sem2\\JiMP2\\Wire\\outtest.txt"));
     }
 
- */
+
     public static void saveMapToFile(StructMap map, File out) {
 
+    }
+
+    /**
+     * Zapisuje mapę w formacie mapy komórek do pliku
+     * @author Michał Ziober
+     * @param cellMap Mapa do zapisania
+     * @param out Plik w którym mapa będzie zapisywana
+     */
+    public static void saveMapToFile(CellMap cellMap, File out) throws IOException {
+        int x = cellMap.getXSize();
+        int y = cellMap.getYSize();
+        out.createNewFile();
+
+        FileWriter fw = new FileWriter(out);
+        fw.write("map "+ x + " " + y + "\n");
+        for(int i =0; i<x; i++){
+            for(int j=0; j<y; j++){
+                int state = 0;
+                CellState cellState = cellMap.getCell(i, j).getState();
+                if (WIRE.equals(cellState)) {
+                    state = 1;
+                } else if (ELET.equals(cellState)) {
+                    state = 2;
+                } else if (ELEH.equals(cellState)) {
+                    state = 3;
+                } else if (EMPA.equals(cellState)) {
+                    state = 4;
+                } else if (EMPN.equals(cellState)) {
+                    state = 5;
+                }
+                fw.write(state + " ");
+            }
+            fw.write("\n");
+        }
+        fw.close();
     }
 
     public static CellMap getMapFromFile(File in) throws NullPointerException{
