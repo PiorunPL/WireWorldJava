@@ -87,6 +87,12 @@ public class DBops {
         fw.close();
     }
 
+    /**
+     * Funkcja konwertuje plik w formacie mapy/strukturalnym na mapę komórek (CellMap)
+     * @param in Plik wejściowy z mapą w formacie strukturalnym/mapy
+     * @return Mapa komórek
+     * @throws NullPointerException
+     */
     public static CellMap getMapFromFile(File in) throws NullPointerException{
         CellMap cellMap = null;
         StructMap structMap = null;
@@ -147,6 +153,18 @@ public class DBops {
     }
 
 
+    /**
+     * Funkcja konwertuje plik wejściowy w mapowym formacie na CellMap
+     * @author Michał Ziober
+     * @param in Plik wejściowy w formacie mapy
+     * @param x Ilość wierszy mapy
+     * @param y Ilośc kolumn mapy
+     * @return Przekonwertowany plik na CellMap
+     * @throws IOException
+     * @throws TooManyCellsException
+     * @throws TooLessCellsException
+     * @throws NoSuchElementException
+     */
     private static CellMap getMapMapFormat(File in, int x, int y) throws IOException, TooManyCellsException, TooLessCellsException, NoSuchElementException  {
         CellMap map = new CellMap(x, y);
         String line;
@@ -167,6 +185,11 @@ public class DBops {
         return map;
     }
 
+    /**
+     * Konwertuje wczytane struktury na CellMap
+     * @param map
+     * @return StructMap przekonwertowany na CellMap
+     */
     private static CellMap getMapStructFormat(StructMap map) {
         int xsize = map.getXsize();
         int ysize = map.getYsize();
