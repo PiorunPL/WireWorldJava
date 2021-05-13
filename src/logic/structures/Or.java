@@ -13,11 +13,11 @@ public class Or extends Structure {
         this.direction = direction;
         this.name = "or";
         this.structure = new Cell[][]{
-                {new Cell(0), new Cell(1), new Cell(0), new Cell(1), new Cell(0)},
-                {new Cell(0), new Cell(0), new Cell(2), new Cell(0), new Cell(0)},
-                {new Cell(0), new Cell(2), new Cell(2), new Cell(2), new Cell(1)},
-                {new Cell(0), new Cell(0), new Cell(2), new Cell(0), new Cell(0)},
-                {new Cell(0), new Cell(1), new Cell(0), new Cell(1), new Cell(0)}
+                {new Cell(5), new Cell(4), new Cell(5), new Cell(4), new Cell(5)},
+                {new Cell(5), new Cell(5), new Cell(1), new Cell(5), new Cell(5)},
+                {new Cell(5), new Cell(1), new Cell(1), new Cell(1), new Cell(4)},
+                {new Cell(5), new Cell(5), new Cell(1), new Cell(5), new Cell(5)},
+                {new Cell(5), new Cell(4), new Cell(5), new Cell(4), new Cell(5)}
         };
     }
 }
