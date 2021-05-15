@@ -11,7 +11,7 @@ public class CellState {
         else if (i == 3) return ELEH;
         else if (i == 4) return EMPA;
         else if (i == 5) return EMPN;
-        else return null;
+        else throw new IllegalArgumentException();
     }
     @Override
     public String toString() { return name; }
