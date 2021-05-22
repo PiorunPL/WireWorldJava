@@ -5,131 +5,108 @@
 <?import javafx.scene.control.Label?>
 <?import javafx.scene.control.TextField?>
 <?import javafx.scene.layout.AnchorPane?>
-<?import javafx.scene.layout.ColumnConstraints?>
-<?import javafx.scene.layout.GridPane?>
+<?import javafx.scene.layout.BorderPane?>
 <?import javafx.scene.layout.HBox?>
-<?import javafx.scene.layout.RowConstraints?>
+<?import javafx.scene.layout.Pane?>
 <?import javafx.scene.layout.VBox?>
 
-<AnchorPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="600.0" prefWidth="800.0" xmlns="http://javafx.com/javafx/15.0.1" xmlns:fx="http://javafx.com/fxml/1">
-   <children>
-      <HBox prefHeight="40.0" prefWidth="200.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
+<BorderPane fx:id="fxmlRoot" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="600.0" minWidth="970.0" prefHeight="600.0" prefWidth="970.0" xmlns="http://javafx.com/javafx/15.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="controllers.MainPaneController">
+   <left>
+      <VBox prefHeight="200.0" prefWidth="144.0" BorderPane.alignment="CENTER">
          <children>
-            <AnchorPane prefHeight="123.0" prefWidth="142.0" style="-fx-background-color: #232F34;" />
-            <AnchorPane prefHeight="40.0" prefWidth="308.0" style="-fx-background-color: #F9AA33;">
+            <Pane prefHeight="252.0" prefWidth="144.0" style="-fx-background-color: #F9AA33;">
                <children>
-                  <HBox prefHeight="40.0" prefWidth="307.0" spacing="2.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
+                  <VBox prefHeight="252.0" prefWidth="142.0" spacing="2.0">
                      <children>
-                        <Button mnemonicParsing="false" prefHeight="40.0" prefWidth="100.0" style="-fx-text-fill: #F9AA33; -fx-background-color: #232F34; -fx-font-family: monospace; -fx-font-size: 16; -fx-background-radius: 0; -fx-font-weight: bold;" text="Previous" />
-                        <Button mnemonicParsing="false" prefHeight="40.0" prefWidth="100.0" style="-fx-text-fill: #F9AA33; -fx-background-color: #232F34; -fx-font-family: monospace; -fx-font-size: 16; -fx-background-radius: 0; -fx-font-weight: bold;" text="Play" />
-                        <Button mnemonicParsing="false" prefHeight="40.0" prefWidth="100.0" style="-fx-text-fill: #F9AA33; -fx-background-color: #232F34; -fx-font-family: monospace; -fx-font-size: 16; -fx-background-radius: 0; -fx-font-weight: bold;" text="Next" />
+                        <Button fx:id="newButton" mnemonicParsing="false" onAction="#newBoard" prefHeight="40.0" prefWidth="142.0" style="-fx-text-fill: #F9AA33; -fx-background-color: #344955; -fx-font-family: monospace; -fx-font-size: 16; -fx-background-radius: 0; -fx-font-weight: bold;" text="New" />
+                        <Button fx:id="editButton" mnemonicParsing="false" onAction="#edit" prefHeight="40.0" prefWidth="142.0" style="-fx-text-fill: #F9AA33; -fx-background-color: #344955; -fx-font-family: monospace; -fx-font-size: 16; -fx-background-radius: 0; -fx-font-weight: bold;" text="Edit" />
+                        <Button fx:id="saveButton" mnemonicParsing="false" onAction="#save" prefHeight="40.0" prefWidth="142.0" style="-fx-text-fill: #F9AA33; -fx-background-color: #344955; -fx-font-family: monospace; -fx-font-size: 16; -fx-background-radius: 0; -fx-font-weight: bold;" text="Save" />
+                        <Button fx:id="saveAsButton" mnemonicParsing="false" onAction="#saveAs" prefHeight="40.0" prefWidth="142.0" style="-fx-text-fill: #F9AA33; -fx-background-color: #344955; -fx-font-family: monospace; -fx-font-size: 16; -fx-background-radius: 0; -fx-font-weight: bold;" text="Save as" />
+                        <Button fx:id="openButton" mnemonicParsing="false" onAction="#open" prefHeight="40.0" prefWidth="142.0" style="-fx-text-fill: #F9AA33; -fx-background-color: #344955; -fx-font-family: monospace; -fx-font-size: 16; -fx-background-radius: 0; -fx-font-weight: bold;" text="Open" />
+                        <Button fx:id="heplButton" mnemonicParsing="false" onAction="#help" prefHeight="40.0" prefWidth="142.0" style="-fx-text-fill: #F9AA33; -fx-background-color: #344955; -fx-font-family: monospace; -fx-font-size: 16; -fx-background-radius: 0; -fx-font-weight: bold;" text="Help" />
                      </children>
-                     <padding>
-                        <Insets left="2.0" />
-                     </padding>
-                  </HBox>
+                     <opaqueInsets>
+                        <Insets />
+                     </opaqueInsets>
+                  </VBox>
                </children>
-            </AnchorPane>
-            <AnchorPane prefHeight="0.0" prefWidth="0.0" style="-fx-background-color: #232F34;" HBox.hgrow="ALWAYS" />
-            <AnchorPane prefHeight="40.0" prefWidth="300.0" style="-fx-background-color: #232F34;">
+            </Pane>
+            <HBox prefHeight="200.0" prefWidth="144.0" VBox.vgrow="ALWAYS">
                <children>
-                  <Label alignment="CENTER" contentDisplay="CENTER" layoutX="15.0" layoutY="12.0" prefHeight="40.0" prefWidth="163.0" style="-fx-text-fill: #F9AA33; -fx-font-family: monospace; -fx-font-size: 16; -fx-font-weight: bold;" text="Liczba iteracji:" textAlignment="CENTER" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.topAnchor="0.0" />
-                  <TextField layoutX="163.0" layoutY="5.0" prefHeight="31.0" prefWidth="127.0" promptText="1000" style="-fx-font-family: monospace; -fx-font-weight: bold; -fx-font-size: 16;" />
+                  <Pane prefHeight="200.0" prefWidth="142.0" style="-fx-background-color: #344955;" />
+                  <Pane prefHeight="200.0" prefWidth="2.0" style="-fx-background-color: #F9AA33;" />
                </children>
-            </AnchorPane>
+            </HBox>
+         </children>
+      </VBox>
+   </left>
+   <top>
+      <VBox prefHeight="42.0" prefWidth="100.0" BorderPane.alignment="CENTER">
+         <children>
+            <HBox prefHeight="40.0" prefWidth="200.0">
+               <children>
+                  <Pane prefHeight="200.0" prefWidth="142.0" style="-fx-background-color: #232F34;" />
+                  <Pane prefHeight="200.0" prefWidth="308.0" style="-fx-background-color: #F9AA33;">
+                     <children>
+                        <HBox prefHeight="40.0" prefWidth="307.0" spacing="2.0">
+                           <children>
+                              <Button fx:id="previousButton" mnemonicParsing="false" onAction="#previous" prefHeight="40.0" prefWidth="100.0" style="-fx-text-fill: #F9AA33; -fx-background-color: #232F34; -fx-font-family: monospace; -fx-font-size: 16; -fx-background-radius: 0; -fx-font-weight: bold;" text="Previous" />
+                              <Button fx:id="playButton" mnemonicParsing="false" onAction="#play" prefHeight="40.0" prefWidth="100.0" style="-fx-text-fill: #F9AA33; -fx-background-color: #232F34; -fx-font-family: monospace; -fx-font-size: 16; -fx-background-radius: 0; -fx-font-weight: bold;" text="Play" />
+                              <Button fx:id="nextButton" mnemonicParsing="false" onAction="#next" prefHeight="40.0" prefWidth="100.0" style="-fx-text-fill: #F9AA33; -fx-background-color: #232F34; -fx-font-family: monospace; -fx-font-size: 16; -fx-background-radius: 0; -fx-font-weight: bold;" text="Next" />
+                           </children>
+                           <padding>
+                              <Insets left="2.0" />
+                           </padding>
+                        </HBox>
+                     </children>
+                  </Pane>
+                  <Pane prefHeight="10.0" prefWidth="10.0" style="-fx-background-color: #232F34;" HBox.hgrow="ALWAYS" />
+                  <AnchorPane prefHeight="40.0" prefWidth="223.0" style="-fx-background-color: #232F34;">
+                     <children>
+                        <Label layoutX="6.0" prefWidth="90.0" style="-fx-text-fill: #F9AA33; -fx-font-family: monospace; -fx-font-size: 16; -fx-font-weight: bold;" text="Time step" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="6.0" AnchorPane.topAnchor="0.0" />
+                        <TextField fx:id="timeStepTextField" layoutX="102.0" layoutY="4.0" prefHeight="32.0" prefWidth="97.0" promptText="1000[ms]" style="-fx-font-family: monospace; -fx-font-weight: bold; -fx-font-size: 16;" />
+                     </children>
+                  </AnchorPane>
+                  <AnchorPane prefHeight="40.0" prefWidth="260.0" style="-fx-background-color: #232F34;">
+                     <children>
+                        <Label layoutX="14.0" style="-fx-text-fill: #F9AA33; -fx-font-family: monospace; -fx-font-size: 16; -fx-font-weight: bold;" text="Iterations" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="14.0" AnchorPane.topAnchor="0.0" />
+                        <TextField fx:id="iterationTextField" layoutX="121.0" layoutY="4.0" prefHeight="31.0" prefWidth="127.0" promptText="1000" style="-fx-font-family: monospace; -fx-font-weight: bold; -fx-font-size: 16;" />
+                     </children>
+                  </AnchorPane>
+               </children>
+            </HBox>
+            <HBox prefHeight="2.0" prefWidth="200.0" style="-fx-background-color: #F9AA33;" />
+         </children>
+      </VBox>
+   </top>
+   <right>
+      <HBox alignment="TOP_RIGHT" prefHeight="100.0" prefWidth="144.0" BorderPane.alignment="CENTER">
+         <children>
+            <Pane prefHeight="200.0" prefWidth="2.0" style="-fx-background-color: #F9AA33;" />
+            <VBox alignment="TOP_RIGHT" prefHeight="200.0" prefWidth="142.0">
+               <children>
+                  <Pane prefHeight="294.0" prefWidth="142.0" style="-fx-background-color: #F9AA33;">
+                     <children>
+                        <VBox prefHeight="294.0" prefWidth="142.0" spacing="2.0">
+                           <children>
+                              <Button fx:id="wireButton" mnemonicParsing="false" onAction="#wire" prefHeight="40.0" prefWidth="142.0" style="-fx-text-fill: #F9AA33; -fx-background-color: #344955; -fx-font-family: monospace; -fx-font-size: 16; -fx-background-radius: 0; -fx-font-weight: bold;" text="Wire" />
+                              <Button fx:id="diodeButton" mnemonicParsing="false" onAction="#diode" prefHeight="40.0" prefWidth="142.0" style="-fx-text-fill: #F9AA33; -fx-background-color: #344955; -fx-font-family: monospace; -fx-font-size: 16; -fx-background-radius: 0; -fx-font-weight: bold;" text="Diode" />
+                              <Button fx:id="clockButton" mnemonicParsing="false" onAction="#clock" prefHeight="40.0" prefWidth="142.0" style="-fx-text-fill: #F9AA33; -fx-background-color: #344955; -fx-font-family: monospace; -fx-font-size: 16; -fx-background-radius: 0; -fx-font-weight: bold;" text="Clock" />
+                              <Button fx:id="andButton" mnemonicParsing="false" onAction="#and" prefHeight="40.0" prefWidth="142.0" style="-fx-text-fill: #F9AA33; -fx-background-color: #344955; -fx-font-family: monospace; -fx-font-size: 16; -fx-background-radius: 0; -fx-font-weight: bold;" text="AND gate" />
+                              <Button fx:id="notButton" mnemonicParsing="false" onAction="#not" prefHeight="40.0" prefWidth="142.0" style="-fx-text-fill: #F9AA33; -fx-background-color: #344955; -fx-font-family: monospace; -fx-font-size: 16; -fx-background-radius: 0; -fx-font-weight: bold;" text="NOT gate" />
+                              <Button fx:id="orButton" mnemonicParsing="false" onAction="#or" prefHeight="40.0" prefWidth="142.0" style="-fx-text-fill: #F9AA33; -fx-background-color: #344955; -fx-font-family: monospace; -fx-font-size: 16; -fx-background-radius: 0; -fx-font-weight: bold;" text="OR gate" />
+                              <Button mnemonicParsing="false" onAction="#xor" prefHeight="40.0" prefWidth="142.0" style="-fx-text-fill: #F9AA33; -fx-background-color: #344955; -fx-font-family: monospace; -fx-font-size: 16; -fx-background-radius: 0; -fx-font-weight: bold;" text="XOR gate" fx:id="xorButton" />
+                           </children>
+                           <opaqueInsets>
+                              <Insets />
+                           </opaqueInsets>
+                        </VBox>
+                     </children>
+                  </Pane>
+                  <Pane prefHeight="200.0" prefWidth="142.0" style="-fx-background-color: #344955;" VBox.vgrow="ALWAYS" />
+               </children>
+            </VBox>
          </children>
       </HBox>
-      <VBox layoutX="23.0" layoutY="86.0" prefHeight="212.0" prefWidth="142.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.topAnchor="40.0">
-         <children>
-            <AnchorPane prefHeight="254.0" prefWidth="142.0" style="-fx-background-color: #4A6572; -fx-background-color: #F9AA33;">
-               <children>
-                  <VBox prefHeight="212.0" prefWidth="100.0" spacing="2.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
-                     <children>
-                        <Button mnemonicParsing="false" prefHeight="40.0" prefWidth="142.0" style="-fx-text-fill: #F9AA33; -fx-background-color: #344955; -fx-font-family: monospace; -fx-font-size: 16; -fx-background-radius: 0;" text="New" />
-                        <Button mnemonicParsing="false" prefHeight="40.0" prefWidth="142.0" style="-fx-text-fill: #F9AA33; -fx-background-color: #344955; -fx-font-family: monospace; -fx-font-size: 16; -fx-background-radius: 0;" text="Edit" />
-                        <Button mnemonicParsing="false" prefHeight="40.0" prefWidth="142.0" style="-fx-text-fill: #F9AA33; -fx-background-color: #344955; -fx-font-family: monospace; -fx-font-size: 16; -fx-background-radius: 0;" text="Save" />
-                        <Button mnemonicParsing="false" prefHeight="40.0" prefWidth="142.0" style="-fx-text-fill: #F9AA33; -fx-background-color: #344955; -fx-font-family: monospace; -fx-font-size: 16; -fx-background-radius: 0;" text="Save as" />
-                        <Button mnemonicParsing="false" prefHeight="40.0" prefWidth="142.0" style="-fx-text-fill: #F9AA33; -fx-background-color: #344955; -fx-font-family: monospace; -fx-font-size: 16; -fx-background-radius: 0;" text="Open" />
-                        <Button mnemonicParsing="false" prefHeight="40.0" prefWidth="142.0" style="-fx-text-fill: #F9AA33; -fx-background-color: #344955; -fx-font-family: monospace; -fx-font-size: 16; -fx-background-radius: 0;" text="Help" />
-                     </children>
-                     <padding>
-                        <Insets bottom="2.0" top="2.0" />
-                     </padding>
-                  </VBox>
-               </children>
-            </AnchorPane>
-            <AnchorPane prefHeight="112.0" prefWidth="142.0" style="-fx-background-color: #344955;" VBox.vgrow="ALWAYS" />
-         </children>
-      </VBox>
-      <VBox layoutX="458.0" layoutY="40.0" prefHeight="360.0" prefWidth="142.0" AnchorPane.bottomAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="40.0">
-         <children>
-            <AnchorPane prefHeight="338.0" prefWidth="142.0" style="-fx-background-color: #4A6572; -fx-background-color: #F9AA33;">
-               <children>
-                  <VBox prefHeight="346.0" prefWidth="142.0" spacing="2.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
-                     <padding>
-                        <Insets bottom="2.0" top="2.0" />
-                     </padding>
-                     <children>
-                        <Button mnemonicParsing="false" prefHeight="40.0" prefWidth="142.0" style="-fx-text-fill: #F9AA33; -fx-background-color: #344955; -fx-font-family: monospace; -fx-font-size: 16; -fx-background-radius: 0;" text="Wire" />
-                        <Button mnemonicParsing="false" prefHeight="40.0" prefWidth="142.0" style="-fx-text-fill: #F9AA33; -fx-background-color: #344955; -fx-font-family: monospace; -fx-font-size: 16; -fx-background-radius: 0;" text="Diode" />
-                        <Button mnemonicParsing="false" prefHeight="40.0" prefWidth="142.0" style="-fx-text-fill: #F9AA33; -fx-background-color: #344955; -fx-font-family: monospace; -fx-font-size: 16; -fx-background-radius: 0;" text="AND gate" />
-                        <Button mnemonicParsing="false" prefHeight="40.0" prefWidth="142.0" style="-fx-text-fill: #F9AA33; -fx-background-color: #344955; -fx-font-family: monospace; -fx-font-size: 16; -fx-background-radius: 0;" text="NAND gate" />
-                        <Button mnemonicParsing="false" prefHeight="40.0" prefWidth="142.0" style="-fx-text-fill: #F9AA33; -fx-background-color: #344955; -fx-font-family: monospace; -fx-font-size: 16; -fx-background-radius: 0;" text="NOT gate" />
-                        <Button mnemonicParsing="false" prefHeight="40.0" prefWidth="142.0" style="-fx-text-fill: #F9AA33; -fx-background-color: #344955; -fx-font-family: monospace; -fx-font-size: 16; -fx-background-radius: 0;" text="OR gate" />
-                        <Button mnemonicParsing="false" prefHeight="40.0" prefWidth="142.0" style="-fx-text-fill: #F9AA33; -fx-background-color: #344955; -fx-font-family: monospace; -fx-font-size: 16; -fx-background-radius: 0;" text="XOR gate" />
-                        <Button mnemonicParsing="false" prefHeight="40.0" prefWidth="142.0" style="-fx-text-fill: #F9AA33; -fx-background-color: #344955; -fx-font-family: monospace; -fx-font-size: 16; -fx-background-radius: 0;" text="XNOR gate" />
-                     </children>
-                  </VBox>
-               </children>
-            </AnchorPane>
-            <AnchorPane prefHeight="0.0" prefWidth="142.0" style="-fx-background-color: #344955;" VBox.vgrow="ALWAYS" />
-         </children>
-      </VBox>
-      <GridPane gridLinesVisible="true" layoutX="200.0" layoutY="175.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="142.0" AnchorPane.rightAnchor="142.0" AnchorPane.topAnchor="40.0">
-        <columnConstraints>
-            <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" prefWidth="100.0" />
-            <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" prefWidth="100.0" />
-            <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" prefWidth="100.0" />
-            <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" prefWidth="100.0" />
-            <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" prefWidth="100.0" />
-            <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" prefWidth="100.0" />
-            <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" prefWidth="100.0" />
-            <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" prefWidth="100.0" />
-            <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" prefWidth="100.0" />
-            <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" prefWidth="100.0" />
-            <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" prefWidth="100.0" />
-            <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" prefWidth="100.0" />
-            <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" prefWidth="100.0" />
-            <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" prefWidth="100.0" />
-            <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" prefWidth="100.0" />
-            <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" prefWidth="100.0" />
-            <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" prefWidth="100.0" />
-            <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" prefWidth="100.0" />
-          <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" prefWidth="100.0" />
-          <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" prefWidth="100.0" />
-        </columnConstraints>
-        <rowConstraints>
-            <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
-            <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
-            <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
-            <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
-            <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
-            <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
-            <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
-            <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
-          <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
-          <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
-          <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
-            <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
-            <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
-            <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
-            <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
-            <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
-            <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
-            <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
-            <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
-            <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
-        </rowConstraints>
-      </GridPane>
-   </children>
-</AnchorPane>
+   </right>
+</BorderPane>
