@@ -7,7 +7,7 @@ import org.junit.jupiter.api.Test;
 import static logic.cells.CellState.EMPA;
 
 
-public class Simulation {
+public class SimulationTest {
 
     @Test
     public void isNumberOfHeadsCorrectForCentralCell()
