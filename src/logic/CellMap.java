@@ -66,7 +66,7 @@ public class CellMap {
     private void emptyCellMap() {
         for (int i = 0; i < xsize; i++) {
             for (int j = 0; j < ysize; j++) {
-                map[i][j] = new Cell(1);
+                map[i][j] = new Cell(4);
             }
         }
     }

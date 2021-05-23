@@ -6,21 +6,21 @@ public class CellState {
     }
 
     public static CellState setCellState(int i) {
-        if (i == 0) return EMPN;
-        else if (i == 1) return EMPA;
-        else if (i == 2) return WIRE;
+        if (i == 1) return WIRE;
+        else if (i == 2) return ELET;
         else if (i == 3) return ELEH;
-        else if (i == 4) return ELET;
-        else return null;
+        else if (i == 4) return EMPA;
+        else if (i == 5) return EMPN;
+        else throw new IllegalArgumentException();
     }
     @Override
     public String toString() { return name; }
 
     private String name;
     public static final CellState
-            EMPN = new CellState("EMPN"), // empty cell, not appendable
-            EMPA = new CellState("...."), // empty cell, appendable
             WIRE = new CellState("WIRE"), // wire cell
+            ELET = new CellState("ELET"), // electron tail
             ELEH = new CellState("ELEH"), // electron head
-            ELET = new CellState("ELET"); // electron tail
+            EMPA = new CellState("...."), // empty cell, appendable
+            EMPN = new CellState("EMPN"); // empty cell, not appendable
 }

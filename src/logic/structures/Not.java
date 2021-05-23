@@ -3,6 +3,7 @@ package logic.structures;
 import logic.Direction;
 
 public class Not extends Structure {
+    public Not() { }
     public Not(int x, int y, Direction direction) {
         this.x = x;
         this.y = y;
