@@ -128,9 +128,10 @@ public class DBops {
         return map;
     }
 
-    //TODO Trzeba dodać sprawdzanie, czy dane pole można nadpisać (tzn. czy znajdują się tam jedynie pola EMPA, inaczej w przypadku elektronu, on musi nadpisywać kabel)
-    //TODO Zmienić - ELektron teraz może być stawiany wszędzie
-    //TODO Sprawdzić, czy struktury mieszczą się na planszy
+    //DONE Trzeba dodać sprawdzanie, czy dane pole można nadpisać (tzn. czy znajdują się tam jedynie pola EMPA, inaczej w przypadku elektronu, on musi nadpisywać kabel)
+    //DONE Zmienić - ELektron teraz może być stawiany wszędzie
+    //DONE Sprawdzić, czy struktury mieszczą się na planszy
+    //TODO stworzyć testy dla metod konwertujących strukturę na cellMapę
 
     /**
      * @param structMap
@@ -138,6 +139,7 @@ public class DBops {
      * @throws IllegalStructurePlacement
      * @author Jakub Maciejewski
      */
+    //TODO przetestować
     private static CellMap getMapStructFormat(StructMap structMap) throws IllegalStructurePlacement {
         int xsize = structMap.getXsize();
         int ysize = structMap.getYsize();
@@ -147,9 +149,7 @@ public class DBops {
             Structure struct = structMap.getStructure(i);
             if (checkIfStructureFit(cellMap, struct) && checkIfSpaceForStructureIsClear(cellMap, struct)) {
                 putStructToCellMap(cellMap, struct);
-            }
-            else
-            {
+            } else {
                 throw new IllegalStructurePlacement();
             }
 
@@ -158,6 +158,7 @@ public class DBops {
         return cellMap;
     }
 
+    //TODO Przetestować
     private static void setMapCell(CellMap cellMap, Structure struct, int temp1, int temp2, int j, int k) {
         if (cellMap.getCell(temp1, temp2).getState() == EMPA) {
             cellMap.setCell(temp1, temp2, struct.getCell(j, k));
@@ -166,6 +167,7 @@ public class DBops {
         }
     }
 
+    //TODO prztestować
     public static void putStructToCellMap(CellMap cellMap, Structure struct) {
         int temp1;
         int temp2;
@@ -210,33 +212,40 @@ public class DBops {
         }
     }
 
+    //DONE Przetestować
     private static boolean checkIfStructureFit(CellMap cellMap, Structure struct) {
+        int tempX = struct.getX() + 1;
+        int tempY = struct.getY() + 1;
+
+        int tempXSize = struct.getXSize() - 1;
+        int tempYSize = struct.getYSize() - 1;
+
         if (struct.getDirection() == Direction.UP) {
-            if (struct.getX() + struct.getXSize() >= cellMap.getXSize())
+            if (tempX + tempXSize > cellMap.getXSize())
                 return false;
-            if (struct.getY() + struct.getYSize() >= cellMap.getYSize())
+            if (tempY + tempYSize > cellMap.getYSize())
                 return false;
         } else if (struct.getDirection() == Direction.RIGHT) {
-            if (struct.getX() + struct.getYSize() >= cellMap.getXSize())
+            if (tempX + tempYSize > cellMap.getXSize())
                 return false;
-            if (struct.getY() - struct.getXSize() <= 0)
+            if (tempY - tempXSize <= 0)
                 return false;
         } else if (struct.getDirection() == Direction.DOWN) {
-            if (struct.getX() - struct.getXSize() <= 0)
+            if (tempX - tempXSize <= 0)
                 return false;
-            if (struct.getY() - struct.getYSize() <= 0)
+            if (tempY - tempYSize <= 0)
                 return false;
         } else {
-            if (struct.getX() - struct.getYSize() <= 0)
+            if (tempX - tempYSize <= 0)
                 return false;
-            if (struct.getY() + struct.getXSize() >= cellMap.getYSize())
+            if (tempY + tempXSize > cellMap.getYSize())
                 return false;
         }
         return true;
     }
 
-    private static boolean checkIfSpaceForStructureIsClear(CellMap cellMap, Structure struct)
-    {
+    //TODO przetestować
+    private static boolean checkIfSpaceForStructureIsClear(CellMap cellMap, Structure struct) {
         int temp1;
         int temp2;
 
@@ -246,7 +255,7 @@ public class DBops {
                 for (int k = 0; k < struct.getYSize(); k++) {
                     temp2 = struct.getY() + k;
 
-                    if (!canBePlaced(cellMap, struct, temp1, temp2, j, k)) {
+                    if (!canBePlaced(cellMap.getCell(temp1, temp2).getState(), struct.getCell(j, k).getState())) {
                         return false;
                     }
 
@@ -258,7 +267,7 @@ public class DBops {
                 for (int k = 0; k < struct.getYSize(); k++) {
                     temp1 = struct.getX() + k;
 
-                    if (!canBePlaced(cellMap, struct, temp1, temp2, j, k)) {
+                    if (!canBePlaced(cellMap.getCell(temp1, temp2).getState(), struct.getCell(j, k).getState())) {
                         return false;
                     }
                 }
@@ -269,7 +278,7 @@ public class DBops {
                 for (int k = 0; k < struct.getYSize(); k++) {
                     temp2 = struct.getY() - k;
 
-                    if (!canBePlaced(cellMap, struct, temp1, temp2, j, k)) {
+                    if (!canBePlaced(cellMap.getCell(temp1, temp2).getState(), struct.getCell(j, k).getState())) {
                         return false;
                     }
                 }
@@ -280,7 +289,7 @@ public class DBops {
                 for (int k = 0; k < struct.getYSize(); k++) {
                     temp1 = struct.getX() - k;
 
-                    if (!canBePlaced(cellMap, struct, temp1, temp2, j, k)) {
+                    if (!canBePlaced(cellMap.getCell(temp1, temp2).getState(), struct.getCell(j, k).getState())) {
                         return false;
                     }
                 }
@@ -290,16 +299,12 @@ public class DBops {
         return true;
     }
 
-    private static boolean canBePlaced(CellMap cellMap, Structure struct, int temp1, int temp2, int j, int k)
-    {
-        if(cellMap.getCell(temp1, temp2).getState() == EMPN || cellMap.getCell(temp1, temp2).getState() == ELET || cellMap.getCell(temp1, temp2).getState() == ELEH)
-        {
+    //DONE przetestować
+    private static boolean canBePlaced(CellState cellMapState, CellState cellStructState) {
+        if (cellMapState == EMPN || cellMapState == ELET || cellMapState == ELEH) {
             return false;
-        }
-        else if(cellMap.getCell(temp1, temp2).getState() == WIRE)
-        {
-            if(!(struct.getCell(j, k).getState() == ELET || struct.getCell(j, k).getState() == ELEH))
-            {
+        } else if (cellMapState == WIRE) {
+            if (!(cellStructState == ELET || cellStructState == ELEH)) {
                 return false;
             }
         }
