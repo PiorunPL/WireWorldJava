@@ -1,13 +1,16 @@
 struct 30 50
 structures<
 :structName1:
-0 1 0 1 1
-0 1 0 1 0
+1 4 4 1 1
+4 1 4 1 4
 :structName2:
-1 0 1 0 1
-1 1 1 0 1
+1 4 1 4 1
+1 1 1 4 1
 >
 board<
+or 5 10 u
 or 5 20 r
+or 9 26 d
+or 9 28 l
 structName1 20 30 r
 >

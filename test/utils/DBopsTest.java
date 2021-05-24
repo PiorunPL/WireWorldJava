@@ -1,5 +1,6 @@
 package utils;
 
+import logic.CellMap;
 import logic.Direction;
 import logic.StructMap;
 import logic.cells.*;
@@ -50,8 +51,8 @@ class DBopsTest {
     // temporary test, does not test this method, only prints StructMap
     @Test
     public void getMapFromFileTest() throws FileNotFoundException {
-        StructMap map = DBops.getMapFromFile(testStructFormatFile);
-        printStructMap(map);
+        CellMap map = DBops.getMapFromFile(testStructFormatFile);
+        //printStructMap(map);
     }
 
     public void printStructMap(StructMap map) {
@@ -68,9 +69,9 @@ class DBopsTest {
                     map.getStructure(i).getY(),
                     map.getStructure(i).getDirection().toString(),
                     map.getStructure(i).getClass().getName());
-            for (int j = 0; j < map.getStructure(i).getXsize(); j++) {
+            for (int j = 0; j < map.getStructure(i).getXSize(); j++) {
                 System.out.printf("\t\t");
-                for (int k = 0; k < map.getStructure(i).getYsize(); k++) {
+                for (int k = 0; k < map.getStructure(i).getYSize(); k++) {
                     System.out.printf("%s\t", map.getStructure(i).getCell(j, k).getState());
                 }
                 System.out.printf("\n");

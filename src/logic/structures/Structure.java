@@ -3,6 +3,7 @@ package logic.structures;
 import logic.Direction;
 import logic.cells.Cell;
 
+import javax.security.sasl.SaslServer;
 import java.util.Scanner;
 
 public abstract class Structure {
@@ -16,11 +17,12 @@ public abstract class Structure {
     public int getX() { return x; }
     public int getY() { return y; }
     public Direction getDirection() { return direction; }
-    public int getXsize() { return xsize; }
-    public int getYsize() { return ysize; }
+    public int getXSize() { return xsize; }
+    public int getYSize() { return ysize; }
     public Cell getCell(int x, int y) {
-        if (x < structure.length && y < structure[0].length) return structure[x][y];
+        if (y < structure[0].length && x < structure.length) return structure[x][y];
         else return null;
+
     }
 
     public static Structure isStructure(String name, UsersStructuresContainer container, int x, int y, Direction direction, int length) {
