@@ -28,23 +28,97 @@ public class DBops {
     private final static String dimensionsK = "dimensions";
     private final static String structuresK = "structures";
     private final static String boardK = "board";
+    private static UsersStructuresContainer container = null;
+    private static StructMap structMap = null;
 
 
     public static void main(String[] args) {
         //CellMap map = getMapFromFile(new File("C:\\Users\\lolol\\OneDrive - Politechnika Warszawska\\Pulpit\\Sem2\\JiMP2\\Wire\\src\\utils\\Test"));
         CellMap map = getMapFromFile(new File("test/testStructFormatFile"));
         //Wyswietlanie mapy
-        for (int i = 0; i < map.getXSize(); i++) {
-            for (int j = 0; j < map.getYSize(); j++) {
-                System.out.print(map.getCell(i, j).getState() + " ");
-            }
-            System.out.println();
+        try {
+            saveMapToFile(structMap, new File("test/testStructFormatFileout"));
+        } catch (IOException e) {
+            e.printStackTrace();
         }
+//        for (int i = 0; i < map.getXSize(); i++) {
+//            for (int j = 0; j < map.getYSize(); j++) {
+//                System.out.print(map.getCell(i, j).getState() + " ");
+//            }
+//            System.out.println();
+//        }
     }
 
+    /**
+     * Zapisuje mapę do pliku w formacie strukturalnym
+     * @param map StructMap do zapisu
+     * @param out Plik w którym będzie zapisywane
+     * @throws IOException
+     * @author Michał Ziober
+     */
+    public static void saveMapToFile(StructMap map, File out) throws IOException {
+        int x = map.getXsize();
+        int y = map.getYsize();
+        out.createNewFile();
 
-    public static void saveMapToFile(StructMap map, File out) {
+        FileWriter fw = new FileWriter(out);
+        fw.write("struct " + x + " " + y + "\n");
 
+        //Zapisywanie struktur użytkownika
+        if(container != null){
+            putUsersStructures(out, fw);
+        }
+
+        fw.write("board<");
+        putStructuresOnBoard(out, fw);
+        fw.write("\n>");
+        fw.close();
+    }
+
+    /**
+     * Metoda wykorzystywana do zapisywania pliku w formacie strukturalnym; zapisuje struktury zdefiniowane przez użytkownika
+     * @param out Plik do zapisu
+     * @param fw FileWriter zapisujący
+     * @throws IOException
+     * @author Michał Ziober
+     */
+    private static void putUsersStructures(File out, FileWriter fw) throws IOException {
+        fw.write("structures<\n");
+        UsersStructure us;
+        for(int i=0; i< container.size(); i++){
+            us = container.get(i);
+            fw.write(":"+us.getName()+":\n");
+            for(int j=0; j<us.getXSize(); j++){
+                for(int k=0; k<us.getYSize(); k++){
+                    int st = -1;
+                    if(us.getCell(j,k).getState().equals(WIRE))
+                        st = 1;
+                    else if(us.getCell(j,k).getState().equals(EMPA))
+                        st=4;
+                    else if(us.getCell(j,k).getState().equals(EMPN))
+                        st=5;
+                    fw.write(st+" ");
+                }
+                fw.write("\n");
+            }
+        }
+        fw.write(">\n");
+    }
+
+    /**
+     * Metoda wykorzystywana do zapisywania pliku w formacie strukturalnym; zapisuje struktury w zakładce board
+     * @param out Plik do zapisu
+     * @param fw FileWriter zapisujący
+     * @throws IOException
+     * @author Michał Ziober
+     */
+    private static void putStructuresOnBoard(File out, FileWriter fw) throws IOException{
+        Structure str = null;
+        for(int i=0; i<structMap.size(); i++){
+            fw.write("\n");
+            str = structMap.getStructure(i);
+            fw.write(str.getName() + " " + str.getX() + " " + str.getY() + " " + str.getDirection());
+        }
     }
 
     /**
@@ -85,7 +159,6 @@ public class DBops {
 
     public static CellMap getMapFromFile(File in) throws NullPointerException {
         CellMap cellMap = null;
-        StructMap structMap = null;
         String option = null;
         String firstLine[] = null;
         int x = 0;
@@ -105,7 +178,7 @@ public class DBops {
                     // structural format of file
                 } else if (option.equals(structK)) {
                     // getting user defined structures
-                    UsersStructuresContainer container = getUsersStructures(in);
+                    container = getUsersStructures(in);
 
                     // getting map
                     structMap = getMap(in, x, y, container);
