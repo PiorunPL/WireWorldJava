@@ -7,6 +7,7 @@ package utils.exceptions;
 public class IllegalFormatOptionException extends Exception {
     @Override
     public String getMessage() {
+        ExceptionsDialogs.warningDialog("Warning", "Typed illegal format option. Legal: map/struct");
         return "Typed illegal format option. Legal: map/struct";
     }
 }
