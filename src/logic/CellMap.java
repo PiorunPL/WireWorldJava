@@ -7,7 +7,7 @@ import static logic.cells.CellState.*;
 
 public class CellMap {
     private Cell map[][] = null;
-    int xsize, ysize;
+    private int xsize, ysize;
 
     public CellMap(int xsize, int ysize) throws NegativeArraySizeException {
         try {
@@ -30,6 +30,11 @@ public class CellMap {
             return null;
         }
         return cell;
+    }
+
+    public void setCell(int x, int y, Cell cell)
+    {
+        map[x][y] = cell;
     }
 
     public void setCellState(int type, int x, int y) {

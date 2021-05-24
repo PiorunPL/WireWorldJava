@@ -410,14 +410,14 @@ public class MainPaneController implements Initializable {
             Rectangle rec = (Rectangle) e.getTarget();
             int x0 = GridPane.getRowIndex(rec);
             int y0 = GridPane.getColumnIndex(rec);
-            int xSize = (grid.getRowCount() - s.getXsize() - x0) > 0 ? s.getXsize() : grid.getRowCount() - x0;
-            int ySize = (grid.getColumnCount() - s.getYsize() - y0) > 0 ? s.getYsize() : grid.getColumnCount() - y0;
+            int xSize = (grid.getRowCount() - s.getXSize() - x0) > 0 ? s.getXSize() : grid.getRowCount() - x0;
+            int ySize = (grid.getColumnCount() - s.getYSize() - y0) > 0 ? s.getYSize() : grid.getColumnCount() - y0;
 
             System.out.printf(
                     "gridRowCount:\t%d,\tsXsixe:\t%d,\tx0:\t%d\t->\txSize:\t%d\n" +
                     "gridColCount:\t%d,\tsYsixe:\t%d,\ty0:\t%d\t->\tySize:\t%d\n\n",
-                    grid.getRowCount(), s.getXsize(), x0, xSize,
-                    grid.getColumnCount(), s.getYsize(), y0, ySize);
+                    grid.getRowCount(), s.getXSize(), x0, xSize,
+                    grid.getColumnCount(), s.getYSize(), y0, ySize);
 
             int offsetX = backup != null ? x0 - backup.x: 0;
             int offsetY = backup != null ? y0 - backup.y : 0;

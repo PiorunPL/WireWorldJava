@@ -69,9 +69,9 @@ class DBopsTest {
                     map.getStructure(i).getY(),
                     map.getStructure(i).getDirection().toString(),
                     map.getStructure(i).getClass().getName());
-            for (int j = 0; j < map.getStructure(i).getXsize(); j++) {
+            for (int j = 0; j < map.getStructure(i).getXSize(); j++) {
                 System.out.printf("\t\t");
-                for (int k = 0; k < map.getStructure(i).getYsize(); k++) {
+                for (int k = 0; k < map.getStructure(i).getYSize(); k++) {
                     System.out.printf("%s\t", map.getStructure(i).getCell(j, k).getState());
                 }
                 System.out.printf("\n");

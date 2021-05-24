@@ -7,10 +7,9 @@ import static logic.cells.CellState.*;
 
 public class Simulation {
     private CellMap cellMap;
-    private int xsize;
-    private int ysize;
+
     public Simulation(CellMap map) {
-        this.cellMap = map;
+        cellMap = map;
     }
 
     public void simulate(int iterations){
@@ -22,8 +21,8 @@ public class Simulation {
 
     public void simulate() {
         setPreviousStateMap();
-        for (int i = 0; i < xsize; i++) {
-            for (int j = 0; j < ysize; j++) {
+        for (int i = 0; i < cellMap.getXSize(); i++) {
+            for (int j = 0; j < cellMap.getYSize(); j++) {
                 if (cellMap.getCell(i, j).getPreviousState() == EMPN) ;
                 else if (cellMap.getCell(i, j).getPreviousState() == EMPA) ;
                 else if (cellMap.getCell(i, j).getPreviousState() == WIRE) {
@@ -43,8 +42,8 @@ public class Simulation {
     }
 
     private void setPreviousStateMap() {
-        for (int i = 0; i < xsize; i++) {
-            for (int j = 0; j < ysize; j++) {
+        for (int i = 0; i < cellMap.getXSize(); i++) {
+            for (int j = 0; j < cellMap.getYSize(); j++) {
                 cellMap.getCell(i, j).updatePrevious();
             }
         }
@@ -55,7 +54,7 @@ public class Simulation {
 
         for (int i = x - 1; i <= x + 1; i++) {
             for (int j = y - 1; j <= y + 1; j++) {
-                if (i >= 0 && j >= 0 && i < xsize && j < ysize && !(i == x && j == y)) {
+                if (i >= 0 && j >= 0 && i < cellMap.getXSize() && j < cellMap.getYSize() && !(i == x && j == y)) {
                     if (cellMap.getCell(i-1, j-1).getPreviousState() == ELEH)
                         numberOfElectronHeads++;
                 }
