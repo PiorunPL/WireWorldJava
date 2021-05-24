@@ -19,7 +19,7 @@ class DBopsTest {
 
     @BeforeAll
     public static void init() {
-        testStructFormatFile = new File("C:\\Users\\sebas\\Documents\\Studia\\Informatka Stosowana\\2_semestr\\Języki i Metody Programowania 2\\Materiały\\Projekt_2\\WireWorldJava\\test\\testStructFormatFile");
+        testStructFormatFile = new File("test/testStructFormatFile");
     }
 
     @Test

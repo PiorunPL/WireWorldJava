@@ -160,4 +160,41 @@ public class SimulationTest {
         assertEquals(3, simulation.getCellVectorChanged().size() );
     }
 
+    @Test
+    public void testSimulationWithIterations()
+    {
+        CellMap cellMap1 = new CellMap(3,3);
+
+        cellMap1.getCell(0,0).changeState(ELEH);
+        cellMap1.getCell(0,2).changeState(ELEH);
+        cellMap1.getCell(2,1).changeState(ELEH);
+
+        for (int i = 0; i < 3; i++)
+        {
+            for(int j = 0; j < 3; j++)
+            {
+                cellMap1.getCell(i,j).updatePrevious();
+            }
+        }
+
+        Simulation simulation = new Simulation(cellMap1);
+
+        simulation.simulate(2);
+        CellMap cellMapAfterSimulation2 = simulation.getCellMap();
+        assertSame(cellMapAfterSimulation2.getCell(0, 0).getState(), WIRE);
+        assertSame(cellMapAfterSimulation2.getCell(0, 2).getState(), WIRE);
+        assertSame(cellMapAfterSimulation2.getCell(2, 1).getState(), WIRE);
+        assertSame(cellMapAfterSimulation2.getCell(0, 1).getState(), EMPA);
+
+        assertEquals(3, simulation.getCellVectorChanged().size() );
+
+        simulation.simulate(2);
+        assertSame(cellMapAfterSimulation2.getCell(0, 0).getState(), WIRE);
+        assertSame(cellMapAfterSimulation2.getCell(0, 2).getState(), WIRE);
+        assertSame(cellMapAfterSimulation2.getCell(2, 1).getState(), WIRE);
+        assertSame(cellMapAfterSimulation2.getCell(0, 1).getState(), EMPA);
+
+        assertEquals(0, simulation.getCellVectorChanged().size() );
+    }
+
 }
