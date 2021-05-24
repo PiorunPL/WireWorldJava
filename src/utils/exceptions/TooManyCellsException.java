@@ -7,6 +7,7 @@ package utils.exceptions;
 public class TooManyCellsException extends Exception {
     @Override
     public String getMessage() {
+        ExceptionsDialogs.warningDialog("Warning", "Typed more cells than declared");
         return "Typed more cells than declared";
     }
 }
