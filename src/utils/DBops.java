@@ -48,9 +48,9 @@ public class DBops {
 
     public static CellMap getMapFromFile(File in) throws NullPointerException {
         CellMap cellMap = null;
-        StructMap structMap = null;
-        String option = null;
-        String firstLine[] = null;
+        StructMap structMap;
+        String option;
+        String[] firstLine;
         int x = 0;
         int y = 0;
 
@@ -90,7 +90,7 @@ public class DBops {
             e.getMessage();
         } catch (NoSuchElementException e) {
             System.out.println("Typed to less lines than declared");
-        } catch (IllegalWirePlacementException e) {
+        } catch (IllegalStructurePlacement e) {
             e.getMessage();
         }
         //testowanie czy struktury są dobrze wczytane
@@ -111,7 +111,7 @@ public class DBops {
     private static CellMap getMapMapFormat(File in, int x, int y) throws IOException, TooManyCellsException, TooLessCellsException, NoSuchElementException {
         CellMap map = new CellMap(x, y);
         String line;
-        String lineInTab[];
+        String[] lineInTab;
         Scanner scan = new Scanner(in);
         line = scan.nextLine();
         for (int i = 0; i < x; i++) {
@@ -130,99 +130,181 @@ public class DBops {
 
     //TODO Trzeba dodać sprawdzanie, czy dane pole można nadpisać (tzn. czy znajdują się tam jedynie pola EMPA, inaczej w przypadku elektronu, on musi nadpisywać kabel)
     //TODO Zmienić - ELektron teraz może być stawiany wszędzie
-    private static CellMap getMapStructFormat(StructMap map) throws IllegalWirePlacementException {
-        int xsize = map.getXsize();
-        int ysize = map.getYsize();
+    //TODO Sprawdzić, czy struktury mieszczą się na planszy
+
+    /**
+     * @param structMap
+     * @return Zwraca Mapę komórek (CellMap), stworzoną z przekształcenia Mapy struktur (StructMap)
+     * @throws IllegalStructurePlacement
+     * @author Jakub Maciejewski
+     */
+    private static CellMap getMapStructFormat(StructMap structMap) throws IllegalStructurePlacement {
+        int xsize = structMap.getXsize();
+        int ysize = structMap.getYsize();
         CellMap cellMap = new CellMap(xsize, ysize);
 
-        for (int i = 0; i < map.size(); i++) {
-            Structure struct = map.getStructure(i);
-            int temp1 = struct.getX();
-            int temp2 = struct.getY();
-
-            if (struct.getDirection() == Direction.UP) {
-                for (int j = 0; j < struct.getXSize(); j++) {
-                    temp1 = struct.getX() + j;
-                    for (int k = 0; k < struct.getYSize(); k++) {
-                        temp2 = struct.getY() + k;
-
-                        setMapCell(cellMap, struct, temp1, temp2, j, k);
-
-                    }
-                }
-            } else if (struct.getDirection() == Direction.RIGHT) {
-                for (int j = 0; j < struct.getXSize(); j++) {
-                    temp2 = struct.getY() - j;
-                    for (int k = 0; k < struct.getYSize(); k++) {
-                        temp1 = struct.getX() + k;
-
-                        setMapCell(cellMap, struct, temp1, temp2, j, k);
-                    }
-                }
-            } else if (struct.getDirection() == Direction.DOWN) {
-                for (int j = 0; j < struct.getXSize(); j++) {
-                    temp1 = struct.getX() - j;
-                    for (int k = 0; k < struct.getYSize(); k++) {
-                        temp2 = struct.getY() - k;
-
-                        setMapCell(cellMap, struct, temp1, temp2, j, k);
-                    }
-                }
-            } else {
-                for (int j = 0; j < struct.getXSize(); j++) {
-                    temp2 = struct.getY() + j;
-                    for (int k = 0; k < struct.getYSize(); k++) {
-                        temp1 = struct.getX() - k;
-
-                        setMapCell(cellMap, struct, temp1, temp2, j, k);
-                    }
-                }
+        for (int i = 0; i < structMap.size(); i++) {
+            Structure struct = structMap.getStructure(i);
+            if (checkIfStructureFit(cellMap, struct) && checkIfSpaceForStructureIsClear(cellMap, struct)) {
+                putStructToCellMap(cellMap, struct);
+            }
+            else
+            {
+                throw new IllegalStructurePlacement();
             }
 
-            /*
-            for (int j = 0; j < struct.getXsize(); j++) {
-                if (struct.getDirection() == Direction.UP || struct.getDirection() == Direction.DOWN)
-                    temp1 = temp1Actualization1(struct, j);
-                if (struct.getDirection() == Direction.RIGHT || struct.getDirection() == Direction.LEFT)
-                    temp2 = temp2Actualization1(struct, j);
-                for (int k = 0; k < struct.getYsize(); k++) {
-                    if (struct.getDirection() == Direction.RIGHT || struct.getDirection() == Direction.LEFT)
-                        temp1 = temp1Actualization2(struct, j);
-                    if (struct.getDirection() == Direction.UP || struct.getDirection() == Direction.DOWN)
-                        temp2 = temp2Actualization2(struct, j);
-                    if (cellMap.getCell(temp1, temp2).getState() == EMPA)
-                        cellMap.getCell(temp1, temp2).changeState(struct.getCell(j, k).getState());
-                    else if (struct.getCell(j, k).getState() == ELEH) {
-                        cellMap.getCell(temp1, temp2).changeState(ELEH);
-                    } else if (struct.getCell(j, k).getState() == ELET) {
-                        cellMap.getCell(temp1, temp2).changeState(ELET);
-                    } else {
 
-                    }
-                }
-            }
-            */
         }
         return cellMap;
     }
 
-    private static void setMapCell(CellMap cellMap, Structure struct, int temp1, int temp2, int j, int k) throws IllegalWirePlacementException {
+    private static void setMapCell(CellMap cellMap, Structure struct, int temp1, int temp2, int j, int k) {
         if (cellMap.getCell(temp1, temp2).getState() == EMPA) {
-            if (struct.getCell(j, k).getState() != ELEH && struct.getCell(j, k).getState() != ELET) {
-                cellMap.setCell(temp1, temp2, struct.getCell(j, k));
-            } else {
-                throw new utils.exceptions.IllegalWirePlacementException();
+            cellMap.setCell(temp1, temp2, struct.getCell(j, k));
+        } else if (cellMap.getCell(temp1, temp2).getState() == WIRE && (struct.getCell(j, k).getState() == ELEH || struct.getCell(j, k).getState() == ELET)) {
+            cellMap.setCell(temp1, temp2, struct.getCell(j, k));
+        }
+    }
+
+    public static void putStructToCellMap(CellMap cellMap, Structure struct) {
+        int temp1;
+        int temp2;
+
+        if (struct.getDirection() == Direction.UP) {
+            for (int j = 0; j < struct.getXSize(); j++) {
+                temp1 = struct.getX() + j;
+                for (int k = 0; k < struct.getYSize(); k++) {
+                    temp2 = struct.getY() + k;
+
+                    setMapCell(cellMap, struct, temp1, temp2, j, k);
+
+                }
             }
+        } else if (struct.getDirection() == Direction.RIGHT) {
+            for (int j = 0; j < struct.getXSize(); j++) {
+                temp2 = struct.getY() - j;
+                for (int k = 0; k < struct.getYSize(); k++) {
+                    temp1 = struct.getX() + k;
 
-        } else if (cellMap.getCell(temp1, temp2).getState() == WIRE) {
-            if (struct.getCell(j, k).getState() == ELEH || struct.getCell(j, k).getState() == ELET) {
-                cellMap.getCell(temp1, temp2).changeState(struct.getCell(j, k).getState());
-            } else {
+                    setMapCell(cellMap, struct, temp1, temp2, j, k);
+                }
+            }
+        } else if (struct.getDirection() == Direction.DOWN) {
+            for (int j = 0; j < struct.getXSize(); j++) {
+                temp1 = struct.getX() - j;
+                for (int k = 0; k < struct.getYSize(); k++) {
+                    temp2 = struct.getY() - k;
 
+                    setMapCell(cellMap, struct, temp1, temp2, j, k);
+                }
             }
         } else {
+            for (int j = 0; j < struct.getXSize(); j++) {
+                temp2 = struct.getY() + j;
+                for (int k = 0; k < struct.getYSize(); k++) {
+                    temp1 = struct.getX() - k;
 
+                    setMapCell(cellMap, struct, temp1, temp2, j, k);
+                }
+            }
         }
+    }
+
+    private static boolean checkIfStructureFit(CellMap cellMap, Structure struct) {
+        if (struct.getDirection() == Direction.UP) {
+            if (struct.getX() + struct.getXSize() >= cellMap.getXSize())
+                return false;
+            if (struct.getY() + struct.getYSize() >= cellMap.getYSize())
+                return false;
+        } else if (struct.getDirection() == Direction.RIGHT) {
+            if (struct.getX() + struct.getYSize() >= cellMap.getXSize())
+                return false;
+            if (struct.getY() - struct.getXSize() <= 0)
+                return false;
+        } else if (struct.getDirection() == Direction.DOWN) {
+            if (struct.getX() - struct.getXSize() <= 0)
+                return false;
+            if (struct.getY() - struct.getYSize() <= 0)
+                return false;
+        } else {
+            if (struct.getX() - struct.getYSize() <= 0)
+                return false;
+            if (struct.getY() + struct.getXSize() >= cellMap.getYSize())
+                return false;
+        }
+        return true;
+    }
+
+    private static boolean checkIfSpaceForStructureIsClear(CellMap cellMap, Structure struct)
+    {
+        int temp1;
+        int temp2;
+
+        if (struct.getDirection() == Direction.UP) {
+            for (int j = 0; j < struct.getXSize(); j++) {
+                temp1 = struct.getX() + j;
+                for (int k = 0; k < struct.getYSize(); k++) {
+                    temp2 = struct.getY() + k;
+
+                    if (!canBePlaced(cellMap, struct, temp1, temp2, j, k)) {
+                        return false;
+                    }
+
+                }
+            }
+        } else if (struct.getDirection() == Direction.RIGHT) {
+            for (int j = 0; j < struct.getXSize(); j++) {
+                temp2 = struct.getY() - j;
+                for (int k = 0; k < struct.getYSize(); k++) {
+                    temp1 = struct.getX() + k;
+
+                    if (!canBePlaced(cellMap, struct, temp1, temp2, j, k)) {
+                        return false;
+                    }
+                }
+            }
+        } else if (struct.getDirection() == Direction.DOWN) {
+            for (int j = 0; j < struct.getXSize(); j++) {
+                temp1 = struct.getX() - j;
+                for (int k = 0; k < struct.getYSize(); k++) {
+                    temp2 = struct.getY() - k;
+
+                    if (!canBePlaced(cellMap, struct, temp1, temp2, j, k)) {
+                        return false;
+                    }
+                }
+            }
+        } else {
+            for (int j = 0; j < struct.getXSize(); j++) {
+                temp2 = struct.getY() + j;
+                for (int k = 0; k < struct.getYSize(); k++) {
+                    temp1 = struct.getX() - k;
+
+                    if (!canBePlaced(cellMap, struct, temp1, temp2, j, k)) {
+                        return false;
+                    }
+                }
+            }
+        }
+
+        return true;
+    }
+
+    private static boolean canBePlaced(CellMap cellMap, Structure struct, int temp1, int temp2, int j, int k)
+    {
+        if(cellMap.getCell(temp1, temp2).getState() == EMPN || cellMap.getCell(temp1, temp2).getState() == ELET || cellMap.getCell(temp1, temp2).getState() == ELEH)
+        {
+            return false;
+        }
+        else if(cellMap.getCell(temp1, temp2).getState() == WIRE)
+        {
+            if(!(struct.getCell(j, k).getState() == ELET || struct.getCell(j, k).getState() == ELEH))
+            {
+                return false;
+            }
+        }
+
+        return true;
     }
 
 
@@ -324,7 +406,7 @@ public class DBops {
      * @author Michał Ziober
      */
     private static String[] firstLineToArray(File in) throws FileNotFoundException {
-        String tab[] = null;
+        String[] tab = null;
         Scanner scaner = null;
         String line = null;
 
