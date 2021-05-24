@@ -129,6 +129,7 @@ public class DBops {
     }
 
     //TODO Trzeba dodać sprawdzanie, czy dane pole można nadpisać (tzn. czy znajdują się tam jedynie pola EMPA, inaczej w przypadku elektronu, on musi nadpisywać kabel)
+    //TODO Zmienić - ELektron teraz może być stawiany wszędzie
     private static CellMap getMapStructFormat(StructMap map) throws IllegalWirePlacementException {
         int xsize = map.getXsize();
         int ysize = map.getYsize();
