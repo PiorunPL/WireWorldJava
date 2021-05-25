@@ -138,6 +138,23 @@ public abstract class Structure {
         }
     }
 
+    public int getXSizeAfterRotation()
+    {
+        if(direction == Direction.UP || direction == Direction.DOWN)
+            return xsize;
+        else
+            return ysize;
+    }
+
+    public int getYSizeAfterRotation()
+    {
+        if(direction == Direction.UP || direction == Direction.DOWN)
+            return ysize;
+        else
+            return xsize;
+    }
+
+
 }
 
 
