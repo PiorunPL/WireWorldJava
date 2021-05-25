@@ -289,45 +289,22 @@ public class DBops {
 
     //DONE prztestować
     private static void putStructToCellMap(CellMap cellMap, Structure struct) {
-        int temp1;
-        int temp2;
 
-        if (struct.getDirection() == Direction.UP) {
-            for (int j = 0; j < struct.getXSize(); j++) {
-                temp1 = struct.getX() + j;
-                for (int k = 0; k < struct.getYSize(); k++) {
-                    temp2 = struct.getY() + k;
+        CellMap cellMap1 = struct.structureAfterDirection();
 
-                    cellMap.setCell(temp1, temp2, struct.getCell(j, k));
+        int x, y;
 
-                }
-            }
-        } else if (struct.getDirection() == Direction.RIGHT) {
-            for (int j = 0; j < struct.getXSize(); j++) {
-                temp2 = struct.getY() - j;
-                for (int k = 0; k < struct.getYSize(); k++) {
-                    temp1 = struct.getX() + k;
-
-                    cellMap.setCell(temp1, temp2, struct.getCell(j, k));
-                }
-            }
-        } else if (struct.getDirection() == Direction.DOWN) {
-            for (int j = 0; j < struct.getXSize(); j++) {
-                temp1 = struct.getX() - j;
-                for (int k = 0; k < struct.getYSize(); k++) {
-                    temp2 = struct.getY() - k;
-
-                    cellMap.setCell(temp1, temp2, struct.getCell(j, k));
-                }
-            }
+        if (struct.getDirection() == Direction.UP || struct.getDirection() == Direction.DOWN) {
+            x = struct.getXSize();
+            y = struct.getYSize();
         } else {
-            for (int j = 0; j < struct.getXSize(); j++) {
-                temp2 = struct.getY() + j;
-                for (int k = 0; k < struct.getYSize(); k++) {
-                    temp1 = struct.getX() - k;
+            x = struct.getYSize();
+            y = struct.getXSize();
+        }
 
-                    cellMap.setCell(temp1, temp2, struct.getCell(j, k));
-                }
+        for (int i = 0; i < x; i++) {
+            for (int j = 0; j < y; j++) {
+                cellMap.setCell(struct.getXAfterRotation() + i, struct.getYAfterRotation() + j, cellMap1.getCell(i, j));
             }
         }
     }
