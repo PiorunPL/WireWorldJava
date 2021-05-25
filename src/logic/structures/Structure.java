@@ -4,9 +4,6 @@ import logic.CellMap;
 import logic.Direction;
 import logic.cells.Cell;
 
-import javax.security.sasl.SaslServer;
-import java.util.Scanner;
-
 public abstract class Structure {
     protected String name;
     protected int x, y;
@@ -14,29 +11,20 @@ public abstract class Structure {
     protected Cell[][] structure;
     protected int xsize, ysize;
 
-    public String getName() {
-        return name;
+    public void nextDirection() {
+        if (direction == Direction.UP) direction = Direction.RIGHT;
+        else if (direction == Direction.RIGHT) direction = Direction.DOWN;
+        else if (direction == Direction.DOWN) direction = Direction.LEFT;
+        else if (direction == Direction.LEFT) direction = Direction.UP;
+        else throw new IllegalStateException();
     }
 
-    public int getX() {
-        return x;
-    }
-
-    public int getY() {
-        return y;
-    }
-
-    public Direction getDirection() {
-        return direction;
-    }
-
-    public int getXSize() {
-        return xsize;
-    }
-
-    public int getYSize() {
-        return ysize;
-    }
+    public String getName() { return name; }
+    public int getX() { return x; }
+    public int getY() { return y; }
+    public Direction getDirection() { return direction; }
+    public int getXSize() { return xsize; }
+    public int getYSize() { return ysize; }
 
     public Cell getCell(int x, int y) {
         if (y < structure[0].length && x < structure.length) return structure[x][y];
@@ -85,7 +73,7 @@ public abstract class Structure {
             }
         } else if (direction == Direction.RIGHT) {
             for (int j = 0; j < xsize; j++) {
-                temp2 = ysize - 1 - j;
+                temp2 = xsize - 1 - j;
                 for (int k = 0; k < ysize; k++) {
                     temp1 = 0 + k;
 
@@ -105,7 +93,7 @@ public abstract class Structure {
             for (int j = 0; j < xsize; j++) {
                 temp2 = 0 + j;
                 for (int k = 0; k < ysize; k++) {
-                    temp1 = xsize - 1 - k;
+                    temp1 = ysize - 1 - k;
 
                     cellMap.setCell(temp1, temp2, structure[j][k]);
                 }
