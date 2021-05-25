@@ -19,12 +19,37 @@ public abstract class Structure {
         else throw new IllegalStateException();
     }
 
-    public String getName() { return name; }
-    public int getX() { return x; }
-    public int getY() { return y; }
-    public Direction getDirection() { return direction; }
-    public int getXSize() { return xsize; }
-    public int getYSize() { return ysize; }
+    public String getName() {
+        return name;
+    }
+
+    public int getX() {
+        return x;
+    }
+
+    public int getY() {
+        return y;
+    }
+
+    public void setX(int x) {
+        this.x = x;
+    }
+
+    public void setY(int y) {
+        this.y = y;
+    }
+
+    public Direction getDirection() {
+        return direction;
+    }
+
+    public int getXSize() {
+        return xsize;
+    }
+
+    public int getYSize() {
+        return ysize;
+    }
 
     public Cell getCell(int x, int y) {
         if (y < structure[0].length && x < structure.length) return structure[x][y];
@@ -126,17 +151,15 @@ public abstract class Structure {
         }
     }
 
-    public int getXSizeAfterRotation()
-    {
-        if(direction == Direction.UP || direction == Direction.DOWN)
+    public int getXSizeAfterRotation() {
+        if (direction == Direction.UP || direction == Direction.DOWN)
             return xsize;
         else
             return ysize;
     }
 
-    public int getYSizeAfterRotation()
-    {
-        if(direction == Direction.UP || direction == Direction.DOWN)
+    public int getYSizeAfterRotation() {
+        if (direction == Direction.UP || direction == Direction.DOWN)
             return ysize;
         else
             return xsize;

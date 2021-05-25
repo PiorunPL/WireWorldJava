@@ -272,19 +272,22 @@ public class DBops {
     //DONE stworzyć testy dla metod konwertujących strukturę na cellMapę
 
     /**
-     * @param structMap
+     * @param structMap1
      * @return Zwraca Mapę komórek (CellMap), stworzoną z przekształcenia Mapy struktur (StructMap)
      * @throws IllegalStructurePlacement
      * @author Jakub Maciejewski
      */
     //DONE przetestować
-    private static CellMap getMapStructFormat(StructMap structMap) throws IllegalStructurePlacement {
-        int xsize = structMap.getXsize();
-        int ysize = structMap.getYsize();
+    public static CellMap getMapStructFormat(StructMap structMap1) throws IllegalStructurePlacement {
+        int xsize = structMap1.getXsize();
+        int ysize = structMap1.getYsize();
         CellMap cellMap = new CellMap(xsize, ysize);
 
-        for (int i = 0; i < structMap.size(); i++) {
-            Structure struct = structMap.getStructure(i);
+        if(structMap == null)
+            structMap = structMap1;
+
+        for (int i = 0; i < structMap1.size(); i++) {
+            Structure struct = structMap1.getStructure(i);
             if (checkIfStructureFit(cellMap, struct) && checkIfSpaceForStructureIsClear(cellMap, struct)) {
                 putStructToCellMap(cellMap, struct);
             } else {
@@ -292,6 +295,15 @@ public class DBops {
             }
         }
         return cellMap;
+    }
+
+    public static void getMapStructFormat(Structure struct, CellMap cellMap) throws IllegalStructurePlacement {
+
+            if (checkIfStructureFit(cellMap, struct) && checkIfSpaceForStructureIsClear(cellMap, struct)) {
+                putStructToCellMap(cellMap, struct);
+            } else {
+                throw new IllegalStructurePlacement();
+            }
     }
 
     //DONE prztestować
