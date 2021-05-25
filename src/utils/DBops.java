@@ -51,6 +51,7 @@ public class DBops {
 
     /**
      * Zapisuje mapę do pliku w formacie strukturalnym
+     *
      * @param map StructMap do zapisu
      * @param out Plik w którym będzie zapisywane
      * @throws IOException
@@ -65,7 +66,7 @@ public class DBops {
         fw.write("struct " + x + " " + y + "\n");
 
         //Zapisywanie struktur użytkownika
-        if(container != null){
+        if (container != null) {
             putUsersStructures(out, fw);
         }
 
@@ -77,27 +78,28 @@ public class DBops {
 
     /**
      * Metoda wykorzystywana do zapisywania pliku w formacie strukturalnym; zapisuje struktury zdefiniowane przez użytkownika
+     *
      * @param out Plik do zapisu
-     * @param fw FileWriter zapisujący
+     * @param fw  FileWriter zapisujący
      * @throws IOException
      * @author Michał Ziober
      */
     private static void putUsersStructures(File out, FileWriter fw) throws IOException {
         fw.write("structures<\n");
         UsersStructure us;
-        for(int i=0; i< container.size(); i++){
+        for (int i = 0; i < container.size(); i++) {
             us = container.get(i);
-            fw.write(":"+us.getName()+":\n");
-            for(int j=0; j<us.getXSize(); j++){
-                for(int k=0; k<us.getYSize(); k++){
+            fw.write(":" + us.getName() + ":\n");
+            for (int j = 0; j < us.getXSize(); j++) {
+                for (int k = 0; k < us.getYSize(); k++) {
                     int st = -1;
-                    if(us.getCell(j,k).getState().equals(WIRE))
+                    if (us.getCell(j, k).getState().equals(WIRE))
                         st = 1;
-                    else if(us.getCell(j,k).getState().equals(EMPA))
-                        st=4;
-                    else if(us.getCell(j,k).getState().equals(EMPN))
-                        st=5;
-                    fw.write(st+" ");
+                    else if (us.getCell(j, k).getState().equals(EMPA))
+                        st = 4;
+                    else if (us.getCell(j, k).getState().equals(EMPN))
+                        st = 5;
+                    fw.write(st + " ");
                 }
                 fw.write("\n");
             }
@@ -107,14 +109,15 @@ public class DBops {
 
     /**
      * Metoda wykorzystywana do zapisywania pliku w formacie strukturalnym; zapisuje struktury w zakładce board
+     *
      * @param out Plik do zapisu
-     * @param fw FileWriter zapisujący
+     * @param fw  FileWriter zapisujący
      * @throws IOException
      * @author Michał Ziober
      */
-    private static void putStructuresOnBoard(File out, FileWriter fw) throws IOException{
+    private static void putStructuresOnBoard(File out, FileWriter fw) throws IOException {
         Structure str = null;
-        for(int i=0; i<structMap.size(); i++){
+        for (int i = 0; i < structMap.size(); i++) {
             fw.write("\n");
             str = structMap.getStructure(i);
             fw.write(str.getName() + " " + str.getX() + " " + str.getY() + " " + str.getDirection());
@@ -123,9 +126,10 @@ public class DBops {
 
     /**
      * Zapisuje mapę w formacie mapy komórek do pliku
-     * @author Michał Ziober
+     *
      * @param cellMap Mapa do zapisania
-     * @param out Plik w którym mapa będzie zapisywana
+     * @param out     Plik w którym mapa będzie zapisywana
+     * @author Michał Ziober
      */
     public static void saveMapToFile(CellMap cellMap, File out) throws IOException {
         int x = cellMap.getXSize();
@@ -133,9 +137,9 @@ public class DBops {
         out.createNewFile();
 
         FileWriter fw = new FileWriter(out);
-        fw.write("map "+ x + " " + y + "\n");
-        for(int i =0; i<x; i++){
-            for(int j=0; j<y; j++){
+        fw.write("map " + x + " " + y + "\n");
+        for (int i = 0; i < x; i++) {
+            for (int j = 0; j < y; j++) {
                 int state = 0;
                 CellState cellState = cellMap.getCell(i, j).getState();
                 if (WIRE.equals(cellState)) {
@@ -221,17 +225,18 @@ public class DBops {
 
     /**
      * Funkcja konwertuje plik wejściowy w mapowym formacie na CellMap
-     * @author Michał Ziober
+     *
      * @param in Plik wejściowy w formacie mapy
-     * @param x Ilość wierszy mapy
-     * @param y Ilośc kolumn mapy
+     * @param x  Ilość wierszy mapy
+     * @param y  Ilośc kolumn mapy
      * @return Przekonwertowany plik na CellMap
      * @throws IOException
      * @throws TooManyCellsException
      * @throws TooLessCellsException
      * @throws NoSuchElementException
+     * @author Michał Ziober
      */
-    private static CellMap getMapMapFormat(File in, int x, int y) throws IOException, TooManyCellsException, TooLessCellsException, NoSuchElementException  {
+    private static CellMap getMapMapFormat(File in, int x, int y) throws IOException, TooManyCellsException, TooLessCellsException, NoSuchElementException {
         CellMap map = new CellMap(x, y);
         String line;
         String[] lineInTab;

@@ -447,7 +447,7 @@ class DBopsTest {
 
         Method method = DBops.class.getDeclaredMethod("putStructToCellMap", CellMap.class, Structure.class);
         method.setAccessible(true);
-        method.invoke(new DBops(), cellMap,structure);
+        method.invoke(new DBops(), cellMap, structure);
 
         assertEquals(EMPN, cellMap.getCell(0, 0).getState());
         assertEquals(EMPN, cellMap.getCell(1, 1).getState());
@@ -465,7 +465,7 @@ class DBopsTest {
 
         Method method = DBops.class.getDeclaredMethod("putStructToCellMap", CellMap.class, Structure.class);
         method.setAccessible(true);
-        method.invoke(new DBops(), cellMap,structure);
+        method.invoke(new DBops(), cellMap, structure);
 
         assertEquals(EMPN, cellMap.getCell(0, 4).getState());
         assertEquals(EMPN, cellMap.getCell(1, 3).getState());
@@ -484,7 +484,7 @@ class DBopsTest {
 
         Method method = DBops.class.getDeclaredMethod("putStructToCellMap", CellMap.class, Structure.class);
         method.setAccessible(true);
-        method.invoke(new DBops(), cellMap,structure);
+        method.invoke(new DBops(), cellMap, structure);
 
         assertEquals(EMPN, cellMap.getCell(4, 4).getState());
         assertEquals(EMPN, cellMap.getCell(3, 3).getState());
@@ -502,7 +502,7 @@ class DBopsTest {
 
         Method method = DBops.class.getDeclaredMethod("putStructToCellMap", CellMap.class, Structure.class);
         method.setAccessible(true);
-        method.invoke(new DBops(), cellMap,structure);
+        method.invoke(new DBops(), cellMap, structure);
 
         assertEquals(EMPN, cellMap.getCell(4, 0).getState());
         assertEquals(EMPN, cellMap.getCell(3, 1).getState());
@@ -524,7 +524,7 @@ class DBopsTest {
 
         Method method1 = DBops.class.getDeclaredMethod("putStructToCellMap", CellMap.class, Structure.class);
         method1.setAccessible(true);
-        method1.invoke(new DBops(), cellMap,struct1);
+        method1.invoke(new DBops(), cellMap, struct1);
 
         assertFalse((Boolean) method.invoke(new DBops(), cellMap, struct2));
     }
@@ -541,7 +541,7 @@ class DBopsTest {
 
         Method method1 = DBops.class.getDeclaredMethod("putStructToCellMap", CellMap.class, Structure.class);
         method1.setAccessible(true);
-        method1.invoke(new DBops(), cellMap,struct1);
+        method1.invoke(new DBops(), cellMap, struct1);
 
         assertFalse((Boolean) method.invoke(new DBops(), cellMap, struct2));
     }
@@ -558,7 +558,7 @@ class DBopsTest {
 
         Method method1 = DBops.class.getDeclaredMethod("putStructToCellMap", CellMap.class, Structure.class);
         method1.setAccessible(true);
-        method1.invoke(new DBops(), cellMap,struct1);
+        method1.invoke(new DBops(), cellMap, struct1);
 
         assertFalse((Boolean) method.invoke(new DBops(), cellMap, struct2));
     }
@@ -575,7 +575,7 @@ class DBopsTest {
 
         Method method1 = DBops.class.getDeclaredMethod("putStructToCellMap", CellMap.class, Structure.class);
         method1.setAccessible(true);
-        method1.invoke(new DBops(), cellMap,struct1);
+        method1.invoke(new DBops(), cellMap, struct1);
 
         assertFalse((Boolean) method.invoke(new DBops(), cellMap, struct2));
     }
@@ -592,7 +592,7 @@ class DBopsTest {
 
         Method method1 = DBops.class.getDeclaredMethod("putStructToCellMap", CellMap.class, Structure.class);
         method1.setAccessible(true);
-        method1.invoke(new DBops(), cellMap,struct1);
+        method1.invoke(new DBops(), cellMap, struct1);
 
         assertTrue((Boolean) method.invoke(new DBops(), cellMap, struct2));
     }
@@ -609,7 +609,7 @@ class DBopsTest {
 
         Method method1 = DBops.class.getDeclaredMethod("putStructToCellMap", CellMap.class, Structure.class);
         method1.setAccessible(true);
-        method1.invoke(new DBops(), cellMap,struct1);
+        method1.invoke(new DBops(), cellMap, struct1);
 
         assertTrue((Boolean) method.invoke(new DBops(), cellMap, struct2));
     }
@@ -626,7 +626,7 @@ class DBopsTest {
 
         Method method1 = DBops.class.getDeclaredMethod("putStructToCellMap", CellMap.class, Structure.class);
         method1.setAccessible(true);
-        method1.invoke(new DBops(), cellMap,struct1);
+        method1.invoke(new DBops(), cellMap, struct1);
 
         assertTrue((Boolean) method.invoke(new DBops(), cellMap, struct2));
     }
@@ -643,7 +643,7 @@ class DBopsTest {
 
         Method method1 = DBops.class.getDeclaredMethod("putStructToCellMap", CellMap.class, Structure.class);
         method1.setAccessible(true);
-        method1.invoke(new DBops(), cellMap,struct1);
+        method1.invoke(new DBops(), cellMap, struct1);
 
         assertTrue((Boolean) method.invoke(new DBops(), cellMap, struct2));
     }

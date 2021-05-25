@@ -15,17 +15,15 @@ public class SimulationTest {
     @Test
     public void isNumberOfHeadsCorrectForCentralCellWithMoreElectronHead() throws NoSuchMethodException, InvocationTargetException, IllegalAccessException {
 
-        CellMap cellMap1 = new CellMap(3,3);
+        CellMap cellMap1 = new CellMap(3, 3);
 
-        cellMap1.getCell(0,0).changeState(ELEH);
-        cellMap1.getCell(0,2).changeState(ELEH);
-        cellMap1.getCell(2,1).changeState(ELEH);
+        cellMap1.getCell(0, 0).changeState(ELEH);
+        cellMap1.getCell(0, 2).changeState(ELEH);
+        cellMap1.getCell(2, 1).changeState(ELEH);
 
-        for (int i = 0; i < 3; i++)
-        {
-            for(int j = 0; j < 3; j++)
-            {
-                cellMap1.getCell(i,j).updatePrevious();
+        for (int i = 0; i < 3; i++) {
+            for (int j = 0; j < 3; j++) {
+                cellMap1.getCell(i, j).updatePrevious();
             }
         }
 
@@ -33,20 +31,18 @@ public class SimulationTest {
 
         Method method = Simulation.class.getDeclaredMethod("isNumberOfHeadsCorrect", int.class, int.class);
         method.setAccessible(true);
-        assertFalse((Boolean) method.invoke(simulation,1, 1));
+        assertFalse((Boolean) method.invoke(simulation, 1, 1));
 
     }
 
     @Test
     public void isNumberOfHeadsCorrectForCentralCellWithLessElectronHead() throws NoSuchMethodException, InvocationTargetException, IllegalAccessException {
 
-        CellMap cellMap1 = new CellMap(3,3);
+        CellMap cellMap1 = new CellMap(3, 3);
 
-        for (int i = 0; i < 3; i++)
-        {
-            for(int j = 0; j < 3; j++)
-            {
-                cellMap1.getCell(i,j).updatePrevious();
+        for (int i = 0; i < 3; i++) {
+            for (int j = 0; j < 3; j++) {
+                cellMap1.getCell(i, j).updatePrevious();
             }
         }
 
@@ -54,22 +50,20 @@ public class SimulationTest {
 
         Method method = Simulation.class.getDeclaredMethod("isNumberOfHeadsCorrect", int.class, int.class);
         method.setAccessible(true);
-        assertFalse((Boolean) method.invoke(simulation,1, 1));
+        assertFalse((Boolean) method.invoke(simulation, 1, 1));
 
     }
 
     @Test
     public void isNumberOfHeadsCorrectForCentralCellWithCorrectNumberOfElectronHeads1() throws NoSuchMethodException, InvocationTargetException, IllegalAccessException {
 
-        CellMap cellMap1 = new CellMap(3,3);
+        CellMap cellMap1 = new CellMap(3, 3);
 
-        cellMap1.getCell(0,0).changeState(ELEH);
+        cellMap1.getCell(0, 0).changeState(ELEH);
 
-        for (int i = 0; i < 3; i++)
-        {
-            for(int j = 0; j < 3; j++)
-            {
-                cellMap1.getCell(i,j).updatePrevious();
+        for (int i = 0; i < 3; i++) {
+            for (int j = 0; j < 3; j++) {
+                cellMap1.getCell(i, j).updatePrevious();
             }
         }
 
@@ -77,23 +71,21 @@ public class SimulationTest {
 
         Method method = Simulation.class.getDeclaredMethod("isNumberOfHeadsCorrect", int.class, int.class);
         method.setAccessible(true);
-        assertTrue((Boolean) method.invoke(simulation,1, 1));
+        assertTrue((Boolean) method.invoke(simulation, 1, 1));
 
     }
 
     @Test
     public void isNumberOfHeadsCorrectForCentralCellWithCorrectNumberOfElectronHeads2() throws NoSuchMethodException, InvocationTargetException, IllegalAccessException {
 
-        CellMap cellMap1 = new CellMap(3,3);
+        CellMap cellMap1 = new CellMap(3, 3);
 
-        cellMap1.getCell(0,0).changeState(ELEH);
-        cellMap1.getCell(0,2).changeState(ELEH);
+        cellMap1.getCell(0, 0).changeState(ELEH);
+        cellMap1.getCell(0, 2).changeState(ELEH);
 
-        for (int i = 0; i < 3; i++)
-        {
-            for(int j = 0; j < 3; j++)
-            {
-                cellMap1.getCell(i,j).updatePrevious();
+        for (int i = 0; i < 3; i++) {
+            for (int j = 0; j < 3; j++) {
+                cellMap1.getCell(i, j).updatePrevious();
             }
         }
 
@@ -101,21 +93,20 @@ public class SimulationTest {
 
         Method method = Simulation.class.getDeclaredMethod("isNumberOfHeadsCorrect", int.class, int.class);
         method.setAccessible(true);
-        assertTrue((Boolean) method.invoke(simulation,1, 1));
+        assertTrue((Boolean) method.invoke(simulation, 1, 1));
 
     }
 
 
     @Test
-    public void isCellVectorChangedClear()
-    {
+    public void isCellVectorChangedClear() {
 
         CellMap cellMap1 = new CellMap(3, 3);
 
 
         Simulation simulation = new Simulation(cellMap1);
-        simulation.getCellVectorChanged().add(cellMap1.getCell(0,0));
-        simulation.getCellVectorChanged().add(cellMap1.getCell(0,2));
+        simulation.getCellVectorChanged().add(cellMap1.getCell(0, 0));
+        simulation.getCellVectorChanged().add(cellMap1.getCell(0, 2));
 
         assertEquals(2, simulation.getCellVectorChanged().size());
 
@@ -125,19 +116,16 @@ public class SimulationTest {
     }
 
     @Test
-    public void testSimulation1()
-    {
-        CellMap cellMap1 = new CellMap(3,3);
+    public void testSimulation1() {
+        CellMap cellMap1 = new CellMap(3, 3);
 
-        cellMap1.getCell(0,0).changeState(ELEH);
-        cellMap1.getCell(0,2).changeState(ELEH);
-        cellMap1.getCell(2,1).changeState(ELEH);
+        cellMap1.getCell(0, 0).changeState(ELEH);
+        cellMap1.getCell(0, 2).changeState(ELEH);
+        cellMap1.getCell(2, 1).changeState(ELEH);
 
-        for (int i = 0; i < 3; i++)
-        {
-            for(int j = 0; j < 3; j++)
-            {
-                cellMap1.getCell(i,j).updatePrevious();
+        for (int i = 0; i < 3; i++) {
+            for (int j = 0; j < 3; j++) {
+                cellMap1.getCell(i, j).updatePrevious();
             }
         }
 
@@ -157,23 +145,20 @@ public class SimulationTest {
         assertSame(cellMapAfterSimulation2.getCell(2, 1).getState(), WIRE);
         assertSame(cellMapAfterSimulation2.getCell(0, 1).getState(), EMPA);
 
-        assertEquals(3, simulation.getCellVectorChanged().size() );
+        assertEquals(3, simulation.getCellVectorChanged().size());
     }
 
     @Test
-    public void testSimulationWithIterations()
-    {
-        CellMap cellMap1 = new CellMap(3,3);
+    public void testSimulationWithIterations() {
+        CellMap cellMap1 = new CellMap(3, 3);
 
-        cellMap1.getCell(0,0).changeState(ELEH);
-        cellMap1.getCell(0,2).changeState(ELEH);
-        cellMap1.getCell(2,1).changeState(ELEH);
+        cellMap1.getCell(0, 0).changeState(ELEH);
+        cellMap1.getCell(0, 2).changeState(ELEH);
+        cellMap1.getCell(2, 1).changeState(ELEH);
 
-        for (int i = 0; i < 3; i++)
-        {
-            for(int j = 0; j < 3; j++)
-            {
-                cellMap1.getCell(i,j).updatePrevious();
+        for (int i = 0; i < 3; i++) {
+            for (int j = 0; j < 3; j++) {
+                cellMap1.getCell(i, j).updatePrevious();
             }
         }
 
@@ -186,7 +171,7 @@ public class SimulationTest {
         assertSame(cellMapAfterSimulation2.getCell(2, 1).getState(), WIRE);
         assertSame(cellMapAfterSimulation2.getCell(0, 1).getState(), EMPA);
 
-        assertEquals(3, simulation.getCellVectorChanged().size() );
+        assertEquals(3, simulation.getCellVectorChanged().size());
 
         simulation.simulate(2);
         assertSame(cellMapAfterSimulation2.getCell(0, 0).getState(), WIRE);
@@ -194,7 +179,7 @@ public class SimulationTest {
         assertSame(cellMapAfterSimulation2.getCell(2, 1).getState(), WIRE);
         assertSame(cellMapAfterSimulation2.getCell(0, 1).getState(), EMPA);
 
-        assertEquals(0, simulation.getCellVectorChanged().size() );
+        assertEquals(0, simulation.getCellVectorChanged().size());
     }
 
 }
