@@ -28,19 +28,27 @@ public class DBops {
     private final static String dimensionsK = "dimensions";
     private final static String structuresK = "structures";
     private final static String boardK = "board";
+
     private static UsersStructuresContainer container = null;
     private static StructMap structMap = null;
 
 
     public static void main(String[] args) {
-        //CellMap map = getMapFromFile(new File("C:\\Users\\lolol\\OneDrive - Politechnika Warszawska\\Pulpit\\Sem2\\JiMP2\\Wire\\src\\utils\\Test"));
-        CellMap map = getMapFromFile(new File("test/testStructFormatFile"));
-        //Wyswietlanie mapy
+        StructMap m = new StructMap(50,50);
+        m.addStruct("or", 10, 15, Direction.setDirection("l"), -1);
         try {
-            saveMapToFile(structMap, new File("test/testStructFormatFileout"));
+            saveMapToFile(m, new File("test/testz"));
         } catch (IOException e) {
             e.printStackTrace();
         }
+        //CellMap map = getMapFromFile(new File("C:\\Users\\lolol\\OneDrive - Politechnika Warszawska\\Pulpit\\Sem2\\JiMP2\\Wire\\src\\utils\\Test"));
+//        CellMap map = getMapFromFile(new File("test/testStruct2"));
+//        //Wyswietlanie mapy
+//        try {
+//            saveMapToFile(structMap, new File("test/testStruct2out"));
+//        } catch (IOException e) {
+//            e.printStackTrace();
+//        }
 //        for (int i = 0; i < map.getXSize(); i++) {
 //            for (int j = 0; j < map.getYSize(); j++) {
 //                System.out.print(map.getCell(i, j).getState() + " ");
@@ -66,12 +74,12 @@ public class DBops {
         fw.write("struct " + x + " " + y + "\n");
 
         //Zapisywanie struktur użytkownika
-        if (container != null) {
-            putUsersStructures(out, fw);
+        if(map.getUserStructures() != null){
+            putUsersStructures(out, fw, map.getUserStructures());
         }
 
         fw.write("board<");
-        putStructuresOnBoard(out, fw);
+        putStructuresOnBoard(out, map, fw);
         fw.write("\n>");
         fw.close();
     }
@@ -84,7 +92,7 @@ public class DBops {
      * @throws IOException
      * @author Michał Ziober
      */
-    private static void putUsersStructures(File out, FileWriter fw) throws IOException {
+    private static void putUsersStructures(File out, FileWriter fw, UsersStructuresContainer container) throws IOException {
         fw.write("structures<\n");
         UsersStructure us;
         for (int i = 0; i < container.size(); i++) {
@@ -115,12 +123,16 @@ public class DBops {
      * @throws IOException
      * @author Michał Ziober
      */
-    private static void putStructuresOnBoard(File out, FileWriter fw) throws IOException {
+    private static void putStructuresOnBoard(File out, StructMap structMap, FileWriter fw) throws IOException {
         Structure str = null;
-        for (int i = 0; i < structMap.size(); i++) {
-            fw.write("\n");
-            str = structMap.getStructure(i);
-            fw.write(str.getName() + " " + str.getX() + " " + str.getY() + " " + str.getDirection());
+        try {
+            for (int i = 0; i < structMap.size(); i++) {
+                fw.write("\n");
+                str = structMap.getStructure(i);
+                fw.write(str.getName() + " " + str.getX() + " " + str.getY() + " " + str.getDirection());
+            }
+        }catch(Exception e){
+            System.out.println("Pusta structMapa");
         }
     }
 
@@ -183,7 +195,6 @@ public class DBops {
                 } else if (option.equals(structK)) {
                     // getting user defined structures
                     container = getUsersStructures(in);
-
                     // getting map
                     structMap = getMap(in, x, y, container);
                     cellMap = getMapStructFormat(structMap);
@@ -418,7 +429,10 @@ public class DBops {
         Scanner scanner = new Scanner(in);
 
         UsersStructuresContainer usersStructures = new UsersStructuresContainer();
-        while (!scanner.nextLine().equals(structuresK + "<")) ;
+
+        String currentLine;
+        while (!(currentLine = scanner.nextLine()).equals(structuresK + "<") && scanner.hasNextLine()) ;
+        if(!currentLine.equals(structuresK + "<")) return null;
 
         String name;
         int x, y;

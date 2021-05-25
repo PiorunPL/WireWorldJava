@@ -8,6 +8,7 @@ public class Or extends Structure {
     public Or() {
         this.xsize = 5;
         this.ysize = 5;
+        this.direction = Direction.UP;
         this.name = "or";
         this.structure = new Cell[][]{
                 {new Cell(5), new Cell(4), new Cell(5), new Cell(4), new Cell(5)},

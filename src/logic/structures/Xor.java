@@ -7,7 +7,7 @@ public class Xor extends Structure {
     public Xor() {
         this.xsize = 7;
         this.ysize = 6;
-        this.direction = direction;
+        this.direction = Direction.UP;
         this.name = "xor";
         this.structure = new Cell[][]{
                 {new Cell(4), new Cell(4), new Cell(4), new Cell(4), new Cell(4), new Cell(4)},
