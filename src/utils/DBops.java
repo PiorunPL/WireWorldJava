@@ -28,6 +28,7 @@ public class DBops {
     private final static String dimensionsK = "dimensions";
     private final static String structuresK = "structures";
     private final static String boardK = "board";
+
     private static UsersStructuresContainer container = null;
     private static StructMap structMap = null;
 
@@ -117,10 +118,14 @@ public class DBops {
      */
     private static void putStructuresOnBoard(File out, FileWriter fw) throws IOException {
         Structure str = null;
-        for (int i = 0; i < structMap.size(); i++) {
-            fw.write("\n");
-            str = structMap.getStructure(i);
-            fw.write(str.getName() + " " + str.getX() + " " + str.getY() + " " + str.getDirection());
+        try {
+            for (int i = 0; i < structMap.size(); i++) {
+                fw.write("\n");
+                str = structMap.getStructure(i);
+                fw.write(str.getName() + " " + str.getX() + " " + str.getY() + " " + str.getDirection());
+            }
+        }catch(Exception e){
+            System.out.println("Pusta structMapa");
         }
     }
 
