@@ -34,10 +34,10 @@ public class DBops {
 
     public static void main(String[] args) {
         //CellMap map = getMapFromFile(new File("C:\\Users\\lolol\\OneDrive - Politechnika Warszawska\\Pulpit\\Sem2\\JiMP2\\Wire\\src\\utils\\Test"));
-        CellMap map = getMapFromFile(new File("test/testStructFormatFile"));
+        CellMap map = getMapFromFile(new File("test/testStruct2"));
         //Wyswietlanie mapy
         try {
-            saveMapToFile(structMap, new File("test/testStructFormatFileout"));
+            saveMapToFile(structMap, container, new File("test/testStruct2out"));
         } catch (IOException e) {
             e.printStackTrace();
         }
