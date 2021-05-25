@@ -56,7 +56,6 @@ class DBopsTest {
     }
 
     // temporary test, does not test this method, only prints StructMap
-    @Test
     public void getMapFromFileTest() throws FileNotFoundException {
         CellMap map = DBops.getMapFromFile(testStructFormatFile);
         //printStructMap(map);
