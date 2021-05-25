@@ -34,10 +34,10 @@ public class DBops {
 
     public static void main(String[] args) {
         //CellMap map = getMapFromFile(new File("C:\\Users\\lolol\\OneDrive - Politechnika Warszawska\\Pulpit\\Sem2\\JiMP2\\Wire\\src\\utils\\Test"));
-        CellMap map = getMapFromFile(new File("test/testStructFormatFile"));
+        CellMap map = getMapFromFile(new File("C:\\Users\\lolol\\OneDrive - Politechnika Warszawska\\Pulpit\\Sem2\\JiMP2\\Wire\\test\\testStruct2"));
         //Wyswietlanie mapy
         try {
-            saveMapToFile(structMap, new File("test/testStructFormatFileout"));
+            saveMapToFile(structMap, new File("test/testStruct2out"));
         } catch (IOException e) {
             e.printStackTrace();
         }
@@ -179,7 +179,6 @@ public class DBops {
                 } else if (option.equals(structK)) {
                     // getting user defined structures
                     container = getUsersStructures(in);
-
                     // getting map
                     structMap = getMap(in, x, y, container);
                     cellMap = getMapStructFormat(structMap);
@@ -423,7 +422,10 @@ public class DBops {
         Scanner scanner = new Scanner(in);
 
         UsersStructuresContainer usersStructures = new UsersStructuresContainer();
-        while (!scanner.nextLine().equals(structuresK + "<")) ;
+
+        String currentLine;
+        while (!(currentLine = scanner.nextLine()).equals(structuresK + "<") && scanner.hasNextLine()) ;
+        if(!currentLine.equals(structuresK + "<")) return null;
 
         String name;
         int x, y;
