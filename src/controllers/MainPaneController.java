@@ -278,7 +278,7 @@ public class MainPaneController implements Initializable {
             saveFile = fc.showSaveDialog(null);
         }
         try {
-            DBops.saveMapToFile(new StructMap(xsize, ysize), null, saveFile);
+            DBops.saveMapToFile(new StructMap(xsize, ysize), saveFile);
         } catch (IOException e) {
             e.printStackTrace();
         }
@@ -291,7 +291,7 @@ public class MainPaneController implements Initializable {
 
         if (saveFile != null) {
             try {
-                DBops.saveMapToFile(gridToMap(), null, saveFile);
+                DBops.saveMapToFile(gridToMap(), saveFile);
             } catch (IOException e) {
                 e.printStackTrace();
             }

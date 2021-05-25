@@ -38,7 +38,7 @@ public class DBops {
         CellMap map = getMapFromFile(new File("test/testStruct2"));
         //Wyswietlanie mapy
         try {
-            saveMapToFile(structMap, container, new File("test/testStruct2out"));
+            saveMapToFile(structMap, new File("test/testStruct2out"));
         } catch (IOException e) {
             e.printStackTrace();
         }
@@ -58,7 +58,7 @@ public class DBops {
      * @throws IOException
      * @author Michał Ziober
      */
-    public static void saveMapToFile(StructMap map, UsersStructuresContainer container, File out) throws IOException {
+    public static void saveMapToFile(StructMap map, File out) throws IOException {
         int x = map.getXsize();
         int y = map.getYsize();
         out.createNewFile();
@@ -67,8 +67,8 @@ public class DBops {
         fw.write("struct " + x + " " + y + "\n");
 
         //Zapisywanie struktur użytkownika
-        if(container != null){
-            putUsersStructures(out, fw, container);
+        if(map.getUserStructures() != null){
+            putUsersStructures(out, fw, map.getUserStructures());
         }
 
         fw.write("board<");
