@@ -34,14 +34,21 @@ public class DBops {
 
 
     public static void main(String[] args) {
-        //CellMap map = getMapFromFile(new File("C:\\Users\\lolol\\OneDrive - Politechnika Warszawska\\Pulpit\\Sem2\\JiMP2\\Wire\\src\\utils\\Test"));
-        CellMap map = getMapFromFile(new File("test/testStruct2"));
-        //Wyswietlanie mapy
+        StructMap m = new StructMap(50,50);
+        m.addStruct("or", 10, 15, Direction.setDirection("l"), -1);
         try {
-            saveMapToFile(structMap, new File("test/testStruct2out"));
+            saveMapToFile(m, new File("test/testz"));
         } catch (IOException e) {
             e.printStackTrace();
         }
+        //CellMap map = getMapFromFile(new File("C:\\Users\\lolol\\OneDrive - Politechnika Warszawska\\Pulpit\\Sem2\\JiMP2\\Wire\\src\\utils\\Test"));
+//        CellMap map = getMapFromFile(new File("test/testStruct2"));
+//        //Wyswietlanie mapy
+//        try {
+//            saveMapToFile(structMap, new File("test/testStruct2out"));
+//        } catch (IOException e) {
+//            e.printStackTrace();
+//        }
 //        for (int i = 0; i < map.getXSize(); i++) {
 //            for (int j = 0; j < map.getYSize(); j++) {
 //                System.out.print(map.getCell(i, j).getState() + " ");
@@ -72,7 +79,7 @@ public class DBops {
         }
 
         fw.write("board<");
-        putStructuresOnBoard(out, fw);
+        putStructuresOnBoard(out, map, fw);
         fw.write("\n>");
         fw.close();
     }
@@ -116,7 +123,7 @@ public class DBops {
      * @throws IOException
      * @author Michał Ziober
      */
-    private static void putStructuresOnBoard(File out, FileWriter fw) throws IOException {
+    private static void putStructuresOnBoard(File out, StructMap structMap, FileWriter fw) throws IOException {
         Structure str = null;
         try {
             for (int i = 0; i < structMap.size(); i++) {
