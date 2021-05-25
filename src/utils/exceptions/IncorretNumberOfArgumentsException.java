@@ -7,6 +7,7 @@ package utils.exceptions;
 public class IncorretNumberOfArgumentsException extends Exception{
     @Override
     public String getMessage() {
+        ExceptionsDialogs.warningDialog("Warning", "Typed incorret number of arguments");
         return "Typed incorret number of arguments";
     }
 }
