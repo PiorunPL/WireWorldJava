@@ -416,7 +416,7 @@ public class MainPaneController implements Initializable {
 
     public static boolean firstAdded = false;
 
-    private void setStuctureOnMap(MouseEvent e) {
+    private void setStructureOnMap(MouseEvent e) {
         if (e.getTarget() instanceof Rectangle) {
             CellMap cellMap1 = clickedStructure.structureAfterDirection();
             Rectangle rec = (Rectangle) e.getTarget();
@@ -446,11 +446,11 @@ public class MainPaneController implements Initializable {
             boolean error = false;
             try {
                 StructMap structMap = new StructMap(xsize, ysize);
-                s.setX(x0);
-                s.setY(y0);
-                structMap.addStruct(s.getName(), x0, y0, s.getDirection(), s.getXSize());
+                clickedStructure.setX(x0);
+                clickedStructure.setY(y0);
+                structMap.addStruct(clickedStructure.getName(), x0, y0, clickedStructure.getDirection(), clickedStructure.getXSize());
                 if (firstAdded)
-                    DBops.getMapStructFormat(s, cellMap);
+                    DBops.getMapStructFormat(clickedStructure, cellMap);
                 else {
                     cellMap = DBops.getMapStructFormat(structMap);
                     firstAdded = true;
@@ -472,7 +472,7 @@ public class MainPaneController implements Initializable {
             }
 
             if (map != null && !error) {
-                map.addStruct(s.getName(), x0, y0, s.getDirection(), s.getXSize());
+                map.addStruct(clickedStructure.getName(), x0, y0, clickedStructure.getDirection(), clickedStructure.getXSize());
                 backup = null;
             }
         }
