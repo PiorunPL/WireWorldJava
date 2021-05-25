@@ -7,7 +7,7 @@ public class Diode extends Structure {
     public Diode() {
         this.xsize = 5;
         this.ysize = 6;
-        this.direction = direction;
+        this.direction = Direction.UP;
         this.name = "diode";
         this.structure = new Cell[][]{
                 {new Cell(4), new Cell(5), new Cell(5), new Cell(5), new Cell(5), new Cell(4)},
