@@ -25,6 +25,7 @@ import logic.structures.*;
 import org.w3c.dom.css.Rect;
 import utils.DBops;
 import utils.Dialogs;
+import utils.exceptions.IllegalStructurePlacement;
 
 import java.io.File;
 import java.io.IOException;
@@ -33,11 +34,13 @@ import java.util.ResourceBundle;
 
 public class MainPaneController implements Initializable {
 
+    CellMap cellMap = null;
+
     private void dragged(MouseEvent e) {
         if (e.getButton().equals(MouseButton.MIDDLE) && e.getTarget() instanceof Rectangle) {
             Rectangle rec = (Rectangle) e.getTarget();
             double posY = (SIZE + BREAK) * GridPane.getRowIndex(rec) - BREAK + 0.5 * SIZE;
-            double posX = (SIZE + BREAK) * GridPane.getColumnIndex(rec) -  BREAK + 0.5 * SIZE;
+            double posX = (SIZE + BREAK) * GridPane.getColumnIndex(rec) - BREAK + 0.5 * SIZE;
             GridPane.getColumnIndex(rec);
             grid.translateXProperty().set(grid.getTranslateX() + e.getX() - posX);
             grid.translateYProperty().set(grid.getTranslateY() + e.getY() - posY);
@@ -63,7 +66,9 @@ public class MainPaneController implements Initializable {
                         if (s != null) {
                             if (s instanceof Wire && wireStartPoint == null) {
                                 wireStartPoint = new Wire(GridPane.getRowIndex(rec), GridPane.getColumnIndex(rec));
-                            } else { setStuctureOnMap(s, e); }
+                            } else {
+                                setStuctureOnMap(s, e);
+                            }
                         } else {
                             if (rec.getFill().equals(COLOR_OF_EMPTY)) rec.setFill(COLOR_OF_WIRE);
                             else if (rec.getFill().equals(COLOR_OF_WIRE)) rec.setFill(COLOR_OF_EMPTY);
@@ -85,7 +90,7 @@ public class MainPaneController implements Initializable {
         EventHandler<ScrollEvent> mouseScroll = new EventHandler<ScrollEvent>() {
             @Override
             public void handle(ScrollEvent e) {
-                grid.translateZProperty().set(grid.getTranslateZ() - e.getDeltaY());
+                grid.translateZProperty().set(grid.getTranslateZ() - 1.2 * e.getDeltaY());
             }
         };
         fxmlRoot.addEventFilter(ScrollEvent.SCROLL, mouseScroll);
@@ -181,12 +186,12 @@ public class MainPaneController implements Initializable {
     private final double OFFSET_Y = 40;
 
     // size and gap in grid pane
-    private final double SIZE = 50;
-    private final double BREAK = 3;
+    private final double SIZE = 20;
+    private final double BREAK = 5;
 
     // number of rows and columns in grid pane
-    private int xsize = 100;
-    private int ysize = 100;
+    private int xsize = 20;
+    private int ysize = 20;
 
     private boolean wireClicked = false;
     private boolean diodeClicked = false;
@@ -207,6 +212,7 @@ public class MainPaneController implements Initializable {
     public static final Color COLOR_OF_EMPTY = Color.BLACK;
     public static final Color COLOR_OF_HEAD = Color.ORANGE;
     public static final Color COLOR_OF_TAIL = Color.RED;
+    public static final Color COLOR_OF_EMPTYNOTAPPENDABLE = Color.rgb(100,100,100);
 
     @FXML
     private GridPane grid;
@@ -240,6 +246,7 @@ public class MainPaneController implements Initializable {
         ysize = result[1];
         setAllClicksToFalse();
         editable = false;
+        firstAdded = false;
 
         drawGrid();
     }
@@ -358,7 +365,7 @@ public class MainPaneController implements Initializable {
                 rec = (Rectangle) grid.getChildren().get(i * ysize + j);
                 cell = map.getCell(i, j);
                 if (cell.getState().equals(CellState.EMPA) ||
-                    cell.getState().equals(CellState.EMPN)) rec.setFill(COLOR_OF_EMPTY);
+                        cell.getState().equals(CellState.EMPN)) rec.setFill(COLOR_OF_EMPTY);
                 else if (cell.getState().equals(CellState.WIRE)) rec.setFill(COLOR_OF_WIRE);
                 else if (cell.getState().equals(CellState.ELEH)) rec.setFill(COLOR_OF_HEAD);
                 else if (cell.getState().equals(CellState.ELET)) rec.setFill(COLOR_OF_TAIL);
@@ -417,7 +424,7 @@ public class MainPaneController implements Initializable {
 
             for (int i = 0; i < (backup != null && backup.tab != null ? backup.tab.length : 0); i++) {
                 for (int j = 0; j < (backup.tab[0] != null ? backup.tab[0].length : 0); j++) {
-                    rec = (Rectangle) grid.getChildren(). get((backup.x + i) * ysize + backup.y + j);
+                    rec = (Rectangle) grid.getChildren().get((backup.x + i) * ysize + backup.y + j);
                     rec.setFill(backup.tab[i][j]);
                 }
             }
@@ -427,7 +434,7 @@ public class MainPaneController implements Initializable {
             if (s instanceof Wire) {
                 tab[0][0] = (Color) rec.getFill();
                 rec = (Rectangle) grid.getChildren().get(x0 * ysize + y0);
-                if (wireStartPoint != null && wireStartPoint.getLength() > 0){
+                if (wireStartPoint != null && wireStartPoint.getLength() > 0) {
                     int range = 0, i = 0;
                     if (x0 == wireStartPoint.getX()) {
                         range = y0 - wireStartPoint.getY() > 0 ? 0 : wireStartPoint.getY() - y0;
@@ -437,7 +444,7 @@ public class MainPaneController implements Initializable {
                         i = x0 - wireStartPoint.getX() > 0 ? wireStartPoint.getX() - x0 : 0;
                     }
 
-                    System.out.printf("anchor: (%d, %d), range: %d, i: %d\n",wireStartPoint.getX(), wireStartPoint.getY(), range, i);
+                    System.out.printf("anchor: (%d, %d), range: %d, i: %d\n", wireStartPoint.getX(), wireStartPoint.getY(), range, i);
 
                     for (; i <= range; i++) {
                         if (x0 == wireStartPoint.getX()) {
@@ -465,6 +472,8 @@ public class MainPaneController implements Initializable {
         }
     }
 
+    public static boolean firstAdded = false;
+
     private void setStuctureOnMap(Structure s, MouseEvent e) {
         if (e.getTarget() instanceof Rectangle) {
             Rectangle rec = (Rectangle) e.getTarget();
@@ -473,19 +482,56 @@ public class MainPaneController implements Initializable {
             int xSize = (grid.getRowCount() - s.getXSize() - x0) > 0 ? s.getXSize() : grid.getRowCount() - x0;
             int ySize = (grid.getColumnCount() - s.getXSize() - y0) > 0 ? s.getYSize() : grid.getColumnCount() - y0;
 
+
+
             Color[][] tab = new Color[xSize][ySize];
 
             for (int i = 0; i < xSize; i++) {
                 for (int j = 0; j < ySize; j++) {
                     Cell cell = s.getCell(i, j);
-                    rec = (Rectangle) grid.getChildren().get((x0 + i) * ysize + y0 + j);
+                    Rectangle rec1;
+                    rec1 = (Rectangle) grid.getChildren().get((x0 + i) * ysize + y0 + j);
+                    tab[i][j] = (Color) rec1.getFill();
 
-                    rec.setFill(cell.getColor());
-                    tab[i][j] = (Color) rec.getFill();
+                    rec1.setFill(cell.getColor());
                 }
             }
-            backup = new Backup(x0, y0, tab);
-            if (map != null) map.addStruct(s.getName(), x0, y0, s.getDirection(), s.getXSize());
+            //backup = new Backup(x0, y0, tab);
+
+
+
+            boolean error = false;
+            try {
+                StructMap structMap = new StructMap(xsize, ysize);
+                s.setX(x0);
+                s.setY(y0);
+                structMap.addStruct(s.getName(), x0, y0, s.getDirection(), s.getXSize());
+                if (firstAdded)
+                    DBops.getMapStructFormat(s, cellMap);
+                else {
+                    cellMap = DBops.getMapStructFormat(structMap);
+                    firstAdded = true;
+                }
+
+            } catch (IllegalStructurePlacement illegalStructurePlacement) {
+                illegalStructurePlacement.printStackTrace();
+                error = true;
+            }
+            if (error)
+            {
+                for (int i = 0; i < (backup != null && backup.tab != null ? backup.tab.length : 0); i++) {
+                    for (int j = 0; j < (backup.tab[0] != null ? backup.tab[0].length : 0); j++) {
+                        Rectangle rec1;
+                        rec1 = (Rectangle) grid.getChildren().get((backup.x + i) * ysize + backup.y + j);
+                        rec1.setFill(backup.tab[i][j]);
+                    }
+                }
+            }
+
+            if (map != null && !error) {
+                map.addStruct(s.getName(), x0, y0, s.getDirection(), s.getXSize());
+                backup = null;
+            }
         }
     }
 }
@@ -496,6 +542,7 @@ class Backup {
         this.y = y;
         this.tab = tab;
     }
+
     int x;
     int y;
     Color[][] tab;

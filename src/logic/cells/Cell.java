@@ -28,7 +28,8 @@ public class Cell {
         if (i == 1) color = MainPaneController.COLOR_OF_WIRE;
         else if (i == 2) color = MainPaneController.COLOR_OF_TAIL;
         else if (i == 3) color = MainPaneController.COLOR_OF_HEAD;
-        else if (i == 4 || i == 5) color = MainPaneController.COLOR_OF_EMPTY;
+        else if (i == 4) color = MainPaneController.COLOR_OF_EMPTY;
+        else if (i == 5) color = MainPaneController.COLOR_OF_EMPTYNOTAPPENDABLE;
         else throw new IllegalArgumentException();
         this.state = CellState.setCellState(i);
     }

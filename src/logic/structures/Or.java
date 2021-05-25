@@ -16,6 +16,7 @@ public class Or extends Structure {
                 {new Cell(5), new Cell(5), new Cell(1), new Cell(5), new Cell(5)},
                 {new Cell(5), new Cell(4), new Cell(5), new Cell(4), new Cell(5)}
         };
+        this.direction = Direction.UP;
     }
     public Or(int x, int y, Direction direction) {
         this.x = x;
