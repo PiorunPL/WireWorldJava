@@ -301,13 +301,8 @@ public class DBops {
 
         int x, y;
 
-        if (struct.getDirection() == Direction.UP || struct.getDirection() == Direction.DOWN) {
-            x = struct.getXSize();
-            y = struct.getYSize();
-        } else {
-            x = struct.getYSize();
-            y = struct.getXSize();
-        }
+        x = struct.getXSizeAfterRotation();
+        y = struct.getYSizeAfterRotation();
 
         for (int i = 0; i < x; i++) {
             for (int j = 0; j < y; j++) {
