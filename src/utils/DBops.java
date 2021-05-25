@@ -56,7 +56,7 @@ public class DBops {
      * @throws IOException
      * @author Michał Ziober
      */
-    public static void saveMapToFile(StructMap map, File out) throws IOException {
+    public static void saveMapToFile(StructMap map, UsersStructuresContainer container, File out) throws IOException {
         int x = map.getXsize();
         int y = map.getYsize();
         out.createNewFile();
@@ -66,7 +66,7 @@ public class DBops {
 
         //Zapisywanie struktur użytkownika
         if(container != null){
-            putUsersStructures(out, fw);
+            putUsersStructures(out, fw, container);
         }
 
         fw.write("board<");
@@ -82,7 +82,7 @@ public class DBops {
      * @throws IOException
      * @author Michał Ziober
      */
-    private static void putUsersStructures(File out, FileWriter fw) throws IOException {
+    private static void putUsersStructures(File out, FileWriter fw, UsersStructuresContainer container) throws IOException {
         fw.write("structures<\n");
         UsersStructure us;
         for(int i=0; i< container.size(); i++){
