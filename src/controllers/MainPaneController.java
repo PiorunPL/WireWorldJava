@@ -25,6 +25,7 @@ import utils.DBops;
 import utils.Dialogs;
 
 import java.io.File;
+import java.io.IOException;
 import java.net.URL;
 import java.util.ResourceBundle;
 
@@ -314,7 +315,7 @@ public class MainPaneController implements Initializable {
     }
 
     @FXML
-    void save(ActionEvent event) {
+    void save(ActionEvent event) throws IOException {
         if (saveFile == null) {
             FileChooser fc = new FileChooser();
             saveFile = fc.showOpenDialog(null);
@@ -323,7 +324,7 @@ public class MainPaneController implements Initializable {
     }
 
     @FXML
-    void saveAs(ActionEvent event) {
+    void saveAs(ActionEvent event) throws IOException {
         FileChooser fc = new FileChooser();
         saveFile = fc.showOpenDialog(null);
 
