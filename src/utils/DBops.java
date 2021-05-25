@@ -34,14 +34,14 @@ public class DBops {
 
 
     public static void main(String[] args) {
-        StructMap m = new StructMap(50,50);
+        /*StructMap m = new StructMap(50,50);
         m.addStruct("or", 10, 15, Direction.setDirection("l"), -1);
         try {
             saveMapToFile(m, new File("test/testz"));
         } catch (IOException e) {
             e.printStackTrace();
-        }
-        //CellMap map = getMapFromFile(new File("C:\\Users\\lolol\\OneDrive - Politechnika Warszawska\\Pulpit\\Sem2\\JiMP2\\Wire\\src\\utils\\Test"));
+        }*/
+        CellMap map = getMapFromFile(new File("C:\\Users\\lolol\\OneDrive - Politechnika Warszawska\\Pulpit\\Sem2\\JiMP2\\Wire\\test\\onlyFirst"));
 //        CellMap map = getMapFromFile(new File("test/testStruct2"));
 //        //Wyswietlanie mapy
 //        try {
@@ -190,7 +190,7 @@ public class DBops {
                 // map format of file
                 if (option.equals(mapK)) {
                     cellMap = getMapMapFormat(in, x, y);
-
+                    System.out.println(cellMap.getXSize()+" "+ cellMap.getYSize());
                     // structural format of file
                 } else if (option.equals(structK)) {
                     // getting user defined structures
@@ -205,18 +205,31 @@ public class DBops {
                 throw new IncorretNumberOfArgumentsException();
         } catch (IOException e) {
             e.printStackTrace();
+            System.out.println("cellMap = " + cellMap);
         } catch (IllegalFormatOptionException e) {
             e.getMessage();
+            System.out.println("cellMap = " + cellMap);
         } catch (TooManyCellsException e) {
             e.getMessage();
+            System.out.println("cellMap = " + cellMap);
         } catch (TooLessCellsException e) {
             e.getMessage();
+            System.out.println("cellMap = " + cellMap);
         } catch (IncorretNumberOfArgumentsException e) {
             e.getMessage();
+            System.out.println("cellMap = " + cellMap);
         } catch (NoSuchElementException e) {
-            System.out.println("Typed to less lines than declared");
+            ExceptionsDialogs.warningDialog("Warning", "Typed to less lines than declared");
+            System.out.println("cellMap = " + cellMap);
         } catch (IllegalStructurePlacement e) {
             e.getMessage();
+            System.out.println("cellMap = " + cellMap);
+        } catch(IllegalArgumentException e){
+            ExceptionsDialogs.warningDialog("Warning", "Incorrect value in input file");
+            System.out.println("cellMap = " + cellMap);
+        } catch(NegativeArraySizeException e){
+            ExceptionsDialogs.warningDialog("Warning", "Typed illegal size. Only positive or [-1 -1] values are allowed");
+            System.out.println("cellMap = " + cellMap);
         }
         //testowanie czy struktury są dobrze wczytane
         /*for(int i=0; i<structMap.size(); i++){
@@ -246,7 +259,30 @@ public class DBops {
      * @throws NoSuchElementException
      * @author Michał Ziober
      */
-    private static CellMap getMapMapFormat(File in, int x, int y) throws IOException, TooManyCellsException, TooLessCellsException, NoSuchElementException {
+    private static CellMap getMapMapFormat(File in, int x, int y) throws IOException, TooManyCellsException, TooLessCellsException, NoSuchElementException, NegativeArraySizeException{
+        if( x == -1 && y == -1){
+            //Wydupca wireworlda, poprawić
+            //instrukcje dla samoobliczającej się cellmapy- wystarczy zmienić x i y
+            System.out.println("samoobliczajacy się rozmiar");
+            int numberOfRows = 0;
+            Scanner counter = new Scanner(in);
+            String tmp = counter.nextLine();
+            String[] countElem;
+            if(counter.hasNextLine()){
+                countElem = (counter.nextLine()).split("\\s+");
+                y = countElem.length;
+                numberOfRows++;
+            }
+            while(counter.hasNextLine()) {
+                tmp = counter.nextLine();
+                numberOfRows++;
+            }
+            x = numberOfRows;
+        }
+        else if( x <= 0 || y <= 0 ) {
+            throw new NegativeArraySizeException();
+        }
+
         CellMap map = new CellMap(x, y);
         String line;
         String[] lineInTab;
@@ -278,7 +314,7 @@ public class DBops {
      * @author Jakub Maciejewski
      */
     //DONE przetestować
-    private static CellMap getMapStructFormat(StructMap structMap) throws IllegalStructurePlacement {
+    private static CellMap getMapStructFormat(StructMap structMap) throws IllegalStructurePlacement, NegativeArraySizeException {
         int xsize = structMap.getXsize();
         int ysize = structMap.getYsize();
         CellMap cellMap = new CellMap(xsize, ysize);
