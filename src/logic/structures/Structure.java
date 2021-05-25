@@ -1,5 +1,6 @@
 package logic.structures;
 
+import logic.CellMap;
 import logic.Direction;
 import logic.cells.Cell;
 
@@ -13,12 +14,30 @@ public abstract class Structure {
     protected Cell[][] structure;
     protected int xsize, ysize;
 
-    public String getName() { return name; }
-    public int getX() { return x; }
-    public int getY() { return y; }
-    public Direction getDirection() { return direction; }
-    public int getXSize() { return xsize; }
-    public int getYSize() { return ysize; }
+    public String getName() {
+        return name;
+    }
+
+    public int getX() {
+        return x;
+    }
+
+    public int getY() {
+        return y;
+    }
+
+    public Direction getDirection() {
+        return direction;
+    }
+
+    public int getXSize() {
+        return xsize;
+    }
+
+    public int getYSize() {
+        return ysize;
+    }
+
     public Cell getCell(int x, int y) {
         if (y < structure[0].length && x < structure.length) return structure[x][y];
         else return null;
@@ -41,4 +60,84 @@ public abstract class Structure {
             return null;
         }
     }
+
+    public CellMap structureAfterDirection() {
+        CellMap cellMap = null;
+
+        if (direction == Direction.UP || direction == Direction.DOWN) {
+            cellMap = new CellMap(xsize, ysize);
+        } else {
+            cellMap = new CellMap(ysize, xsize);
+        }
+
+        int temp1;
+        int temp2;
+
+        if (direction == Direction.UP) {
+            for (int j = 0; j < xsize; j++) {
+                temp1 = 0 + j;
+                for (int k = 0; k < ysize; k++) {
+                    temp2 = 0 + k;
+
+                    cellMap.setCell(temp1, temp2, structure[j][k]);
+
+                }
+            }
+        } else if (direction == Direction.RIGHT) {
+            for (int j = 0; j < xsize; j++) {
+                temp2 = ysize - 1 - j;
+                for (int k = 0; k < ysize; k++) {
+                    temp1 = 0 + k;
+
+                    cellMap.setCell(temp1, temp2, structure[j][k]);
+                }
+            }
+        } else if (direction == Direction.DOWN) {
+            for (int j = 0; j < xsize; j++) {
+                temp1 = xsize - 1 - j;
+                for (int k = 0; k < ysize; k++) {
+                    temp2 = ysize - 1 - k;
+
+                    cellMap.setCell(temp1, temp2, structure[j][k]);
+                }
+            }
+        } else {
+            for (int j = 0; j < xsize; j++) {
+                temp2 = 0 + j;
+                for (int k = 0; k < ysize; k++) {
+                    temp1 = xsize - 1 - k;
+
+                    cellMap.setCell(temp1, temp2, structure[j][k]);
+                }
+            }
+        }
+        return cellMap;
+    }
+
+    public int getXAfterRotation() {
+        if (direction == Direction.UP) {
+            return x;
+        } else if (direction == Direction.RIGHT) {
+            return x;
+        } else if (direction == Direction.DOWN) {
+            return x - (xsize - 1);
+        } else {
+            return x - (ysize - 1);
+        }
+    }
+
+    public int getYAfterRotation() {
+        if (direction == Direction.UP) {
+            return y;
+        } else if (direction == Direction.RIGHT) {
+            return y - (xsize - 1);
+        } else if (direction == Direction.DOWN) {
+            return y - (ysize - 1);
+        } else {
+            return y;
+        }
+    }
+
 }
+
+
