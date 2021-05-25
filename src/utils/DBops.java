@@ -131,7 +131,7 @@ public class DBops {
     //DONE Trzeba dodać sprawdzanie, czy dane pole można nadpisać (tzn. czy znajdują się tam jedynie pola EMPA, inaczej w przypadku elektronu, on musi nadpisywać kabel)
     //DONE Zmienić - ELektron teraz może być stawiany wszędzie
     //DONE Sprawdzić, czy struktury mieszczą się na planszy
-    //TODO stworzyć testy dla metod konwertujących strukturę na cellMapę
+    //DONE stworzyć testy dla metod konwertujących strukturę na cellMapę
 
     /**
      * @param structMap
@@ -139,7 +139,7 @@ public class DBops {
      * @throws IllegalStructurePlacement
      * @author Jakub Maciejewski
      */
-    //TODO przetestować
+    //DONE przetestować
     private static CellMap getMapStructFormat(StructMap structMap) throws IllegalStructurePlacement {
         int xsize = structMap.getXsize();
         int ysize = structMap.getYsize();
@@ -152,23 +152,12 @@ public class DBops {
             } else {
                 throw new IllegalStructurePlacement();
             }
-
-
         }
         return cellMap;
     }
 
-    //TODO Przetestować
-    private static void setMapCell(CellMap cellMap, Structure struct, int temp1, int temp2, int j, int k) {
-        if (cellMap.getCell(temp1, temp2).getState() == EMPA) {
-            cellMap.setCell(temp1, temp2, struct.getCell(j, k));
-        } else if (cellMap.getCell(temp1, temp2).getState() == WIRE && (struct.getCell(j, k).getState() == ELEH || struct.getCell(j, k).getState() == ELET)) {
-            cellMap.setCell(temp1, temp2, struct.getCell(j, k));
-        }
-    }
-
-    //TODO prztestować
-    public static void putStructToCellMap(CellMap cellMap, Structure struct) {
+    //DONE prztestować
+    private static void putStructToCellMap(CellMap cellMap, Structure struct) {
         int temp1;
         int temp2;
 
@@ -178,7 +167,7 @@ public class DBops {
                 for (int k = 0; k < struct.getYSize(); k++) {
                     temp2 = struct.getY() + k;
 
-                    setMapCell(cellMap, struct, temp1, temp2, j, k);
+                    cellMap.setCell(temp1, temp2, struct.getCell(j, k));
 
                 }
             }
@@ -188,7 +177,7 @@ public class DBops {
                 for (int k = 0; k < struct.getYSize(); k++) {
                     temp1 = struct.getX() + k;
 
-                    setMapCell(cellMap, struct, temp1, temp2, j, k);
+                    cellMap.setCell(temp1, temp2, struct.getCell(j, k));
                 }
             }
         } else if (struct.getDirection() == Direction.DOWN) {
@@ -197,7 +186,7 @@ public class DBops {
                 for (int k = 0; k < struct.getYSize(); k++) {
                     temp2 = struct.getY() - k;
 
-                    setMapCell(cellMap, struct, temp1, temp2, j, k);
+                    cellMap.setCell(temp1, temp2, struct.getCell(j, k));
                 }
             }
         } else {
@@ -206,7 +195,7 @@ public class DBops {
                 for (int k = 0; k < struct.getYSize(); k++) {
                     temp1 = struct.getX() - k;
 
-                    setMapCell(cellMap, struct, temp1, temp2, j, k);
+                    cellMap.setCell(temp1, temp2, struct.getCell(j, k));
                 }
             }
         }
@@ -244,7 +233,7 @@ public class DBops {
         return true;
     }
 
-    //TODO przetestować
+    //DONE przetestować
     private static boolean checkIfSpaceForStructureIsClear(CellMap cellMap, Structure struct) {
         int temp1;
         int temp2;

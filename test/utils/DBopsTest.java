@@ -3,13 +3,15 @@ package utils;
 import logic.CellMap;
 import logic.Direction;
 import logic.StructMap;
-import logic.cells.*;
+import logic.cells.Cell;
+import logic.cells.CellState;
 import logic.structures.Or;
 import logic.structures.Structure;
 import logic.structures.UsersStructure;
 import logic.structures.UsersStructuresContainer;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
+import utils.exceptions.IllegalStructurePlacement;
 
 import java.io.File;
 import java.io.FileNotFoundException;
@@ -390,6 +392,260 @@ class DBopsTest {
         method.setAccessible(true);
 
         assertFalse((Boolean) method.invoke(new DBops(), ELET, ELET));
+    }
+
+    @Test
+    public void getMapStructFormatThrowIllegalStructurePlacement1() throws NoSuchMethodException, IllegalAccessException {
+        Method method = DBops.class.getDeclaredMethod("getMapStructFormat", StructMap.class);
+        method.setAccessible(true);
+
+        StructMap structMap = new StructMap(10, 10);
+        structMap.addStruct("or", 0, 0, Direction.UP, -1);
+        structMap.addStruct("or", 8, 7, Direction.UP, -1);
+
+        try {
+            method.invoke(new DBops(), structMap);
+            fail("should have thrown an exception");
+        } catch (InvocationTargetException e) {
+            assertTrue(e.getCause() instanceof IllegalStructurePlacement);
+        }
+    }
+
+    @Test
+    public void getMapStructFormatThrowIllegalStructurePlacement2() throws NoSuchMethodException, IllegalAccessException {
+        Method method = DBops.class.getDeclaredMethod("getMapStructFormat", StructMap.class);
+        method.setAccessible(true);
+
+        StructMap structMap = new StructMap(10, 10);
+        structMap.addStruct("or", 0, 0, Direction.UP, -1);
+        structMap.addStruct("or", 2, 2, Direction.UP, -1);
+
+        try {
+            method.invoke(new DBops(), structMap);
+            fail("should have thrown an exception");
+        } catch (InvocationTargetException e) {
+            assertTrue(e.getCause() instanceof IllegalStructurePlacement);
+        }
+    }
+
+    @Test
+    public void getMapStructFormatNotThrowException() throws NoSuchMethodException, IllegalAccessException, InvocationTargetException {
+        Method method = DBops.class.getDeclaredMethod("getMapStructFormat", StructMap.class);
+        method.setAccessible(true);
+
+        StructMap structMap = new StructMap(10, 10);
+        structMap.addStruct("or", 0, 0, Direction.UP, -1);
+
+        assertDoesNotThrow(() -> method.invoke(new DBops(), structMap));
+    }
+
+    @Test
+    public void testPutStructToCellMapUp() throws InvocationTargetException, IllegalAccessException, NoSuchMethodException {
+        CellMap cellMap = new CellMap(5, 5);
+
+        Structure structure = new Or(0, 0, Direction.UP);
+
+        Method method = DBops.class.getDeclaredMethod("putStructToCellMap", CellMap.class, Structure.class);
+        method.setAccessible(true);
+        method.invoke(new DBops(), cellMap,structure);
+
+        assertEquals(EMPN, cellMap.getCell(0, 0).getState());
+        assertEquals(EMPN, cellMap.getCell(1, 1).getState());
+        assertEquals(WIRE, cellMap.getCell(1, 2).getState());
+        assertEquals(WIRE, cellMap.getCell(2, 1).getState());
+        assertEquals(EMPN, cellMap.getCell(4, 2).getState());
+        assertEquals(EMPA, cellMap.getCell(4, 3).getState());
+    }
+
+    @Test
+    public void testPutStructToCellMapRight() throws NoSuchMethodException, InvocationTargetException, IllegalAccessException {
+        CellMap cellMap = new CellMap(5, 5);
+
+        Structure structure = new Or(0, 4, Direction.RIGHT);
+
+        Method method = DBops.class.getDeclaredMethod("putStructToCellMap", CellMap.class, Structure.class);
+        method.setAccessible(true);
+        method.invoke(new DBops(), cellMap,structure);
+
+        assertEquals(EMPN, cellMap.getCell(0, 4).getState());
+        assertEquals(EMPN, cellMap.getCell(1, 3).getState());
+        assertEquals(WIRE, cellMap.getCell(2, 3).getState());
+        assertEquals(WIRE, cellMap.getCell(1, 2).getState());
+        assertEquals(EMPN, cellMap.getCell(2, 0).getState());
+        assertEquals(EMPA, cellMap.getCell(3, 0).getState());
+    }
+
+
+    @Test
+    public void testPutStructToCellMapDown() throws NoSuchMethodException, InvocationTargetException, IllegalAccessException {
+        CellMap cellMap = new CellMap(5, 5);
+
+        Structure structure = new Or(4, 4, Direction.DOWN);
+
+        Method method = DBops.class.getDeclaredMethod("putStructToCellMap", CellMap.class, Structure.class);
+        method.setAccessible(true);
+        method.invoke(new DBops(), cellMap,structure);
+
+        assertEquals(EMPN, cellMap.getCell(4, 4).getState());
+        assertEquals(EMPN, cellMap.getCell(3, 3).getState());
+        assertEquals(WIRE, cellMap.getCell(3, 2).getState());
+        assertEquals(WIRE, cellMap.getCell(2, 3).getState());
+        assertEquals(EMPN, cellMap.getCell(0, 2).getState());
+        assertEquals(EMPA, cellMap.getCell(0, 1).getState());
+    }
+
+    @Test
+    public void testPutStructToCellMapLeft() throws NoSuchMethodException, InvocationTargetException, IllegalAccessException {
+        CellMap cellMap = new CellMap(5, 5);
+
+        Structure structure = new Or(4, 0, Direction.LEFT);
+
+        Method method = DBops.class.getDeclaredMethod("putStructToCellMap", CellMap.class, Structure.class);
+        method.setAccessible(true);
+        method.invoke(new DBops(), cellMap,structure);
+
+        assertEquals(EMPN, cellMap.getCell(4, 0).getState());
+        assertEquals(EMPN, cellMap.getCell(3, 1).getState());
+        assertEquals(WIRE, cellMap.getCell(3, 2).getState());
+        assertEquals(WIRE, cellMap.getCell(2, 1).getState());
+        assertEquals(EMPN, cellMap.getCell(2, 4).getState());
+        assertEquals(EMPA, cellMap.getCell(0, 2).getState());
+    }
+
+    @Test
+    public void testCheckIfSpaceForStructureIsClearFailUp() throws NoSuchMethodException, InvocationTargetException, IllegalAccessException {
+        CellMap cellMap = new CellMap(10, 10);
+
+        Structure struct1 = new Or(0, 0, Direction.UP);
+        Structure struct2 = new Or(4, 4, Direction.UP);
+
+        Method method = DBops.class.getDeclaredMethod("checkIfSpaceForStructureIsClear", CellMap.class, Structure.class);
+        method.setAccessible(true);
+
+        Method method1 = DBops.class.getDeclaredMethod("putStructToCellMap", CellMap.class, Structure.class);
+        method1.setAccessible(true);
+        method1.invoke(new DBops(), cellMap,struct1);
+
+        assertFalse((Boolean) method.invoke(new DBops(), cellMap, struct2));
+    }
+
+    @Test
+    public void testCheckIfSpaceForStructureIsClearFailDown() throws NoSuchMethodException, InvocationTargetException, IllegalAccessException {
+        CellMap cellMap = new CellMap(10, 10);
+
+        Structure struct1 = new Or(0, 0, Direction.UP);
+        Structure struct2 = new Or(8, 8, Direction.DOWN);
+
+        Method method = DBops.class.getDeclaredMethod("checkIfSpaceForStructureIsClear", CellMap.class, Structure.class);
+        method.setAccessible(true);
+
+        Method method1 = DBops.class.getDeclaredMethod("putStructToCellMap", CellMap.class, Structure.class);
+        method1.setAccessible(true);
+        method1.invoke(new DBops(), cellMap,struct1);
+
+        assertFalse((Boolean) method.invoke(new DBops(), cellMap, struct2));
+    }
+
+    @Test
+    public void testCheckIfSpaceForStructureIsClearFailLeft() throws NoSuchMethodException, InvocationTargetException, IllegalAccessException {
+        CellMap cellMap = new CellMap(10, 10);
+
+        Structure struct1 = new Or(0, 0, Direction.UP);
+        Structure struct2 = new Or(7, 2, Direction.LEFT);
+
+        Method method = DBops.class.getDeclaredMethod("checkIfSpaceForStructureIsClear", CellMap.class, Structure.class);
+        method.setAccessible(true);
+
+        Method method1 = DBops.class.getDeclaredMethod("putStructToCellMap", CellMap.class, Structure.class);
+        method1.setAccessible(true);
+        method1.invoke(new DBops(), cellMap,struct1);
+
+        assertFalse((Boolean) method.invoke(new DBops(), cellMap, struct2));
+    }
+
+    @Test
+    public void testCheckIfSpaceForStructureIsClearFailRight() throws NoSuchMethodException, InvocationTargetException, IllegalAccessException {
+        CellMap cellMap = new CellMap(10, 10);
+
+        Structure struct1 = new Or(0, 0, Direction.UP);
+        Structure struct2 = new Or(2, 7, Direction.RIGHT);
+
+        Method method = DBops.class.getDeclaredMethod("checkIfSpaceForStructureIsClear", CellMap.class, Structure.class);
+        method.setAccessible(true);
+
+        Method method1 = DBops.class.getDeclaredMethod("putStructToCellMap", CellMap.class, Structure.class);
+        method1.setAccessible(true);
+        method1.invoke(new DBops(), cellMap,struct1);
+
+        assertFalse((Boolean) method.invoke(new DBops(), cellMap, struct2));
+    }
+
+    @Test
+    public void testCheckIfSpaceForStructureIsClearUp() throws NoSuchMethodException, InvocationTargetException, IllegalAccessException {
+        CellMap cellMap = new CellMap(10, 10);
+
+        Structure struct1 = new Or(0, 0, Direction.UP);
+        Structure struct2 = new Or(5, 5, Direction.UP);
+
+        Method method = DBops.class.getDeclaredMethod("checkIfSpaceForStructureIsClear", CellMap.class, Structure.class);
+        method.setAccessible(true);
+
+        Method method1 = DBops.class.getDeclaredMethod("putStructToCellMap", CellMap.class, Structure.class);
+        method1.setAccessible(true);
+        method1.invoke(new DBops(), cellMap,struct1);
+
+        assertTrue((Boolean) method.invoke(new DBops(), cellMap, struct2));
+    }
+
+    @Test
+    public void testCheckIfSpaceForStructureIsClearRight() throws NoSuchMethodException, InvocationTargetException, IllegalAccessException {
+        CellMap cellMap = new CellMap(10, 10);
+
+        Structure struct1 = new Or(0, 0, Direction.UP);
+        Structure struct2 = new Or(2, 9, Direction.RIGHT);
+
+        Method method = DBops.class.getDeclaredMethod("checkIfSpaceForStructureIsClear", CellMap.class, Structure.class);
+        method.setAccessible(true);
+
+        Method method1 = DBops.class.getDeclaredMethod("putStructToCellMap", CellMap.class, Structure.class);
+        method1.setAccessible(true);
+        method1.invoke(new DBops(), cellMap,struct1);
+
+        assertTrue((Boolean) method.invoke(new DBops(), cellMap, struct2));
+    }
+
+    @Test
+    public void testCheckIfSpaceForStructureIsClearDown() throws NoSuchMethodException, InvocationTargetException, IllegalAccessException {
+        CellMap cellMap = new CellMap(10, 10);
+
+        Structure struct1 = new Or(0, 0, Direction.UP);
+        Structure struct2 = new Or(6, 9, Direction.DOWN);
+
+        Method method = DBops.class.getDeclaredMethod("checkIfSpaceForStructureIsClear", CellMap.class, Structure.class);
+        method.setAccessible(true);
+
+        Method method1 = DBops.class.getDeclaredMethod("putStructToCellMap", CellMap.class, Structure.class);
+        method1.setAccessible(true);
+        method1.invoke(new DBops(), cellMap,struct1);
+
+        assertTrue((Boolean) method.invoke(new DBops(), cellMap, struct2));
+    }
+
+    @Test
+    public void testCheckIfSpaceForStructureIsClearLeft() throws NoSuchMethodException, InvocationTargetException, IllegalAccessException {
+        CellMap cellMap = new CellMap(10, 10);
+
+        Structure struct1 = new Or(0, 0, Direction.UP);
+        Structure struct2 = new Or(9, 4, Direction.LEFT);
+
+        Method method = DBops.class.getDeclaredMethod("checkIfSpaceForStructureIsClear", CellMap.class, Structure.class);
+        method.setAccessible(true);
+
+        Method method1 = DBops.class.getDeclaredMethod("putStructToCellMap", CellMap.class, Structure.class);
+        method1.setAccessible(true);
+        method1.invoke(new DBops(), cellMap,struct1);
+
+        assertTrue((Boolean) method.invoke(new DBops(), cellMap, struct2));
     }
 
     public void printStructMap(StructMap map) {
