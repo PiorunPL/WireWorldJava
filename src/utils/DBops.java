@@ -163,7 +163,6 @@ public class DBops {
 
     public static CellMap getMapFromFile(File in) throws NullPointerException {
         CellMap cellMap = null;
-        StructMap structMap;
         String option;
         String[] firstLine;
         int x = 0;
