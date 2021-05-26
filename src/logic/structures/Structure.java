@@ -4,15 +4,20 @@ import logic.CellMap;
 import logic.Direction;
 import logic.cells.Cell;
 
-import javax.security.sasl.SaslServer;
-import java.util.Scanner;
-
 public abstract class Structure {
     protected String name;
     protected int x, y;
     protected Direction direction;
     protected Cell[][] structure;
     protected int xsize, ysize;
+
+    public void nextDirection() {
+        if (direction == Direction.UP) direction = Direction.RIGHT;
+        else if (direction == Direction.RIGHT) direction = Direction.DOWN;
+        else if (direction == Direction.DOWN) direction = Direction.LEFT;
+        else if (direction == Direction.LEFT) direction = Direction.UP;
+        else throw new IllegalStateException();
+    }
 
     public String getName() {
         return name;
@@ -24,6 +29,14 @@ public abstract class Structure {
 
     public int getY() {
         return y;
+    }
+
+    public void setX(int x) {
+        this.x = x;
+    }
+
+    public void setY(int y) {
+        this.y = y;
     }
 
     public Direction getDirection() {
@@ -85,7 +98,7 @@ public abstract class Structure {
             }
         } else if (direction == Direction.RIGHT) {
             for (int j = 0; j < xsize; j++) {
-                temp2 = ysize - 1 - j;
+                temp2 = xsize - 1 - j;
                 for (int k = 0; k < ysize; k++) {
                     temp1 = 0 + k;
 
@@ -105,7 +118,7 @@ public abstract class Structure {
             for (int j = 0; j < xsize; j++) {
                 temp2 = 0 + j;
                 for (int k = 0; k < ysize; k++) {
-                    temp1 = xsize - 1 - k;
+                    temp1 = ysize - 1 - k;
 
                     cellMap.setCell(temp1, temp2, structure[j][k]);
                 }
@@ -138,17 +151,15 @@ public abstract class Structure {
         }
     }
 
-    public int getXSizeAfterRotation()
-    {
-        if(direction == Direction.UP || direction == Direction.DOWN)
+    public int getXSizeAfterRotation() {
+        if (direction == Direction.UP || direction == Direction.DOWN)
             return xsize;
         else
             return ysize;
     }
 
-    public int getYSizeAfterRotation()
-    {
-        if(direction == Direction.UP || direction == Direction.DOWN)
+    public int getYSizeAfterRotation() {
+        if (direction == Direction.UP || direction == Direction.DOWN)
             return ysize;
         else
             return xsize;

@@ -8,6 +8,8 @@ public class Wire extends Structure {
         this.xsize = 1;
         this.ysize = 1;
         this.name = "wire";
+        this.direction = Direction.UP;
+        this.structure = new Cell[][] {{new Cell(1)}};
     }
     public Wire(int x, int y) {
         this.xsize = 1;
@@ -15,6 +17,8 @@ public class Wire extends Structure {
         this.x = x;
         this.y = y;
         this.name = "wire";
+        this.direction = Direction.UP;
+        this.structure = new Cell[][] {{new Cell(1)}};
     }
     public Wire(int x, int y, Direction direction, int length) {
         this.x = x;
