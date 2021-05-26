@@ -552,7 +552,7 @@ public class MainPaneController implements Initializable {
             }
 
             if (map != null && !error) {
-                map.addStruct(clickedStructure.getName(), x0, y0, clickedStructure.getDirection(), clickedStructure.getXSize());
+                map.addStruct(clickedStructure.getName(), xMouse, yMouse, clickedStructure.getDirection(), clickedStructure.getXSize());
                 backup = null;
             }
         }

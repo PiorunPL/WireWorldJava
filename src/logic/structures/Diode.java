@@ -28,8 +28,8 @@ public class Diode extends Structure {
                 {new Cell(5), new Cell(5), new Cell(5), new Cell(5)},
                 {new Cell(5), new Cell(1), new Cell(1), new Cell(5)},
                 {new Cell(1), new Cell(1), new Cell(5), new Cell(1)},
-                {new Cell(5), new Cell(1), new Cell(1), new Cell(5),},
-                {new Cell(5), new Cell(5), new Cell(5), new Cell(5),}
+                {new Cell(5), new Cell(1), new Cell(1), new Cell(5)},
+                {new Cell(5), new Cell(5), new Cell(5), new Cell(5)}
         };
     }
 }
