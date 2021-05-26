@@ -21,6 +21,7 @@ import java.io.IOException;
 import java.net.URL;
 import java.util.ResourceBundle;
 
+import logic.Direction;
 import logic.Simulation;
 import utils.DBops;
 import utils.Dialogs;
@@ -407,12 +408,27 @@ public class MainPaneController implements Initializable {
         if (e.getTarget() instanceof Rectangle) {
             CellMap cellMap1 = clickedStructure.structureAfterDirection();
             Rectangle rec = (Rectangle) e.getTarget();
-            int x0 = GridPane.getRowIndex(rec);
-            int y0 = GridPane.getColumnIndex(rec);
-            int xSize = (grid.getRowCount() - clickedStructure.getXSizeAfterRotation() - x0) > 0
-                    ? clickedStructure.getXSizeAfterRotation() : grid.getRowCount() - x0;
-            int ySize = (grid.getColumnCount() - clickedStructure.getYSizeAfterRotation() - y0) > 0
-                    ? clickedStructure.getYSizeAfterRotation() : grid.getColumnCount() - y0;
+
+            int xMouse = GridPane.getRowIndex(rec), yMouse = GridPane.getColumnIndex(rec);
+            int xStart = 0, yStart = 0;
+            int xSize, ySize;
+
+            int x0 = clickedStructure.getDirection().equals(Direction.UP) ||
+                    clickedStructure.getDirection().equals(Direction.RIGHT) ?
+                    xMouse : xMouse - clickedStructure.getXSizeAfterRotation() + 1;
+            int y0 = clickedStructure.getDirection().equals(Direction.UP) ||
+                    clickedStructure.getDirection().equals(Direction.LEFT) ?
+                    yMouse : yMouse - clickedStructure.getYSizeAfterRotation() + 1;
+
+            if ((grid.getRowCount() - clickedStructure.getXSizeAfterRotation() - x0) >= 0) {
+                if (x0 < 0) { xStart = Math.abs(x0); x0 = 0; }
+                xSize = clickedStructure.getXSizeAfterRotation();
+            } else xSize = grid.getRowCount() - xMouse;
+
+            if ((grid.getColumnCount() - clickedStructure.getYSizeAfterRotation() - y0) >= 0) {
+                if (y0 < 0) { yStart = Math.abs(y0); y0 = 0; }
+                ySize = clickedStructure.getYSizeAfterRotation();
+            } else ySize = grid.getColumnCount() - yMouse;
 
             for (int i = 0; i < (backup != null && backup.tab != null ? backup.tab.length : 0); i++) {
                 for (int j = 0; j < (backup.tab[0] != null ? backup.tab[0].length : 0); j++) {
@@ -421,26 +437,26 @@ public class MainPaneController implements Initializable {
                 }
             }
 
-            Color[][] tab = new Color[xSize][ySize];
+            Color[][] tab = new Color[xSize - xStart][ySize - yStart];
 
             if (clickedStructure instanceof Wire) {
                 tab[0][0] = (Color) rec.getFill();
-                rec = (Rectangle) grid.getChildren().get(x0 * ysize + y0);
+                rec = (Rectangle) grid.getChildren().get(xMouse * ysize + yMouse);
                 if (wireStartPoint != null && wireStartPoint.getLength() > 0) {
                     int range = 0, i = 0;
-                    if (x0 == wireStartPoint.getX()) {
-                        range = y0 - wireStartPoint.getY() > 0 ? 0 : wireStartPoint.getY() - y0;
-                        i = y0 - wireStartPoint.getY() > 0 ? wireStartPoint.getY() - y0 : 0;
-                    } else if (y0 == wireStartPoint.getY()) {
-                        range = x0 - wireStartPoint.getX() > 0 ? 0 : wireStartPoint.getX() - x0;
-                        i = x0 - wireStartPoint.getX() > 0 ? wireStartPoint.getX() - x0 : 0;
+                    if (xMouse == wireStartPoint.getX()) {
+                        range = yMouse - wireStartPoint.getY() > 0 ? 0 : wireStartPoint.getY() - yMouse;
+                        i = yMouse - wireStartPoint.getY() > 0 ? wireStartPoint.getY() - yMouse : 0;
+                    } else if (yMouse == wireStartPoint.getY()) {
+                        range = xMouse - wireStartPoint.getX() > 0 ? 0 : wireStartPoint.getX() - xMouse;
+                        i = xMouse - wireStartPoint.getX() > 0 ? wireStartPoint.getX() - xMouse : 0;
                     }
 
                     for (; i <= range; i++) {
-                        if (x0 == wireStartPoint.getX()) {
-                            rec = (Rectangle) grid.getChildren().get(x0 * ysize + y0 + i);
-                        } else if (y0 == wireStartPoint.getY()) {
-                            rec = (Rectangle) grid.getChildren().get((x0 + i) * ysize + y0);
+                        if (xMouse == wireStartPoint.getX()) {
+                            rec = (Rectangle) grid.getChildren().get(xMouse * ysize + yMouse + i);
+                        } else if (yMouse == wireStartPoint.getY()) {
+                            rec = (Rectangle) grid.getChildren().get((xMouse + i) * ysize + yMouse);
                         }
                         rec.setFill(COLOR_OF_WIRE);
                     }
@@ -448,12 +464,11 @@ public class MainPaneController implements Initializable {
                     rec.setFill(COLOR_OF_WIRE);
                 }
             } else {
-                for (int i = 0; i < xSize; i++) {
-                    for (int j = 0; j < ySize; j++) {
+                for (int i = xStart; i < xSize; i++) {
+                    for (int j = yStart; j < ySize; j++) {
                         Cell cell = cellMap1.getCell(i, j);
-                        rec = (Rectangle) grid.getChildren().get((x0 + i) * ysize + y0 + j);
-                        tab[i][j] = (Color) rec.getFill();
-
+                        rec = (Rectangle) grid.getChildren().get((x0 - xStart + i) * ysize + y0 + j - yStart);
+                        tab[i - xStart][j - yStart] = (Color) rec.getFill();
                         rec.setFill(cell.getColor());
                     }
                 }
@@ -462,34 +477,41 @@ public class MainPaneController implements Initializable {
         }
     }
 
-
     public static boolean firstAdded = false;
 
     private void setStructureOnMap(MouseEvent e) {
         if (e.getTarget() instanceof Rectangle) {
             CellMap cellMap1 = clickedStructure.structureAfterDirection();
             Rectangle rec = (Rectangle) e.getTarget();
-            int x0 = GridPane.getRowIndex(rec);
-            int y0 = GridPane.getColumnIndex(rec);
-            int xSize = (grid.getRowCount() - clickedStructure.getXSizeAfterRotation() - x0) > 0
-                    ? clickedStructure.getXSizeAfterRotation() : grid.getRowCount() - x0;
-            int ySize = (grid.getColumnCount() - clickedStructure.getYSizeAfterRotation() - y0) > 0
-                    ? clickedStructure.getYSizeAfterRotation() : grid.getColumnCount() - y0;
 
-            Color[][] tab = new Color[xSize][ySize];
+            int xMouse = GridPane.getRowIndex(rec), yMouse = GridPane.getColumnIndex(rec);
+            int xStart = 0, yStart = 0;
+            int xSize, ySize;
 
-            for (int i = 0; i < xSize; i++) {
-                for (int j = 0; j < ySize; j++) {
+            int x0 = clickedStructure.getDirection().equals(Direction.UP) ||
+                    clickedStructure.getDirection().equals(Direction.RIGHT) ?
+                    xMouse : xMouse - clickedStructure.getXSizeAfterRotation() + 1;
+            int y0 = clickedStructure.getDirection().equals(Direction.UP) ||
+                    clickedStructure.getDirection().equals(Direction.LEFT) ?
+                    yMouse : yMouse - clickedStructure.getYSizeAfterRotation() + 1;
+
+            if ((grid.getRowCount() - clickedStructure.getXSizeAfterRotation() - x0) >= 0) {
+                if (x0 < 0) { xStart = Math.abs(x0); x0 = 0; }
+                xSize = clickedStructure.getXSizeAfterRotation();
+            } else xSize = grid.getRowCount() - xMouse;
+
+            if ((grid.getColumnCount() - clickedStructure.getYSizeAfterRotation() - y0) >= 0) {
+                if (y0 < 0) { yStart = Math.abs(y0); y0 = 0; }
+                ySize = clickedStructure.getYSizeAfterRotation();
+            } else ySize = grid.getColumnCount() - yMouse;
+
+            for (int i = xStart; i < xSize; i++) {
+                for (int j = yStart; j < ySize; j++) {
                     Cell cell = cellMap1.getCell(i, j);
-                    Rectangle rec1;
-                    rec1 = (Rectangle) grid.getChildren().get((x0 + i) * ysize + y0 + j);
-                    tab[i][j] = (Color) rec1.getFill();
-
-                    rec1.setFill(cell.getColor());
+                    rec = (Rectangle) grid.getChildren().get((x0 - xStart + i) * ysize + y0 + j - yStart);
+                    rec.setFill(cell.getColor());
                 }
             }
-            //backup = new Backup(x0, y0, tab);
-
 
             boolean error = false;
             try {
