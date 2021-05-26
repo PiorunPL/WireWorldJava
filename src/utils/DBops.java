@@ -34,7 +34,7 @@ public class DBops {
 
 
     public static void main(String[] args) {
-        StructMap m = new StructMap(50,50);
+        StructMap m = new StructMap(50, 50);
         m.addStruct("or", 10, 15, Direction.setDirection("l"), -1);
         try {
             saveMapToFile(m, new File("test/testz"));
@@ -74,7 +74,7 @@ public class DBops {
         fw.write("struct " + x + " " + y + "\n");
 
         //Zapisywanie struktur użytkownika
-        if(map.getUserStructures() != null){
+        if (map.getUserStructures() != null) {
             putUsersStructures(out, fw, map.getUserStructures());
         }
 
@@ -131,7 +131,7 @@ public class DBops {
                 str = structMap.getStructure(i);
                 fw.write(str.getName() + " " + str.getX() + " " + str.getY() + " " + str.getDirection());
             }
-        }catch(Exception e){
+        } catch (Exception e) {
             System.out.println("Pusta structMapa");
         }
     }
@@ -283,7 +283,7 @@ public class DBops {
         int ysize = structMap1.getYsize();
         CellMap cellMap = new CellMap(xsize, ysize);
 
-        if(structMap == null)
+        if (structMap == null)
             structMap = structMap1;
 
         for (int i = 0; i < structMap1.size(); i++) {
@@ -299,11 +299,19 @@ public class DBops {
 
     public static void getMapStructFormat(Structure struct, CellMap cellMap) throws IllegalStructurePlacement {
 
-            if (checkIfStructureFit(cellMap, struct) && checkIfSpaceForStructureIsClear(cellMap, struct)) {
-                putStructToCellMap(cellMap, struct);
-            } else {
-                throw new IllegalStructurePlacement();
-            }
+        boolean bool1 = checkIfStructureFit(cellMap, struct);
+        if (!bool1)
+            System.err.println("FIT");
+
+        boolean bool2 = checkIfSpaceForStructureIsClear(cellMap, struct);
+        if (!bool2)
+            System.err.println("SPACE");
+
+        if (bool1 && bool2) {
+            putStructToCellMap(cellMap, struct);
+        } else {
+            throw new IllegalStructurePlacement();
+        }
     }
 
     //DONE prztestować
@@ -319,37 +327,39 @@ public class DBops {
         for (int i = 0; i < x; i++) {
             for (int j = 0; j < y; j++) {
                 cellMap.setCell(struct.getXAfterRotation() + i, struct.getYAfterRotation() + j, cellMap1.getCell(i, j));
+                cellMap.getCell(struct.getXAfterRotation() + i, struct.getYAfterRotation() + j).setxMap(struct.getXAfterRotation() + i);
+                cellMap.getCell(struct.getXAfterRotation() + i, struct.getYAfterRotation() + j).setyMap(struct.getYAfterRotation()+ j);
             }
         }
     }
 
     //DONE Przetestować
     private static boolean checkIfStructureFit(CellMap cellMap, Structure struct) {
-        int tempX = struct.getX() + 1;
-        int tempY = struct.getY() + 1;
+        int tempX = struct.getX();
+        int tempY = struct.getY();
 
         int tempXSize = struct.getXSize() - 1;
         int tempYSize = struct.getYSize() - 1;
 
         if (struct.getDirection() == Direction.UP) {
-            if (tempX + tempXSize > cellMap.getXSize())
+            if (tempX + tempXSize > cellMap.getXSize() - 1)
                 return false;
-            if (tempY + tempYSize > cellMap.getYSize())
+            if (tempY + tempYSize > cellMap.getYSize() - 1)
                 return false;
         } else if (struct.getDirection() == Direction.RIGHT) {
-            if (tempX + tempYSize > cellMap.getXSize())
+            if (tempX + tempYSize > cellMap.getXSize() - 1)
                 return false;
-            if (tempY - tempXSize <= 0)
+            if (tempY - tempXSize < 0)
                 return false;
         } else if (struct.getDirection() == Direction.DOWN) {
-            if (tempX - tempXSize <= 0)
+            if (tempX - tempXSize < 0)
                 return false;
-            if (tempY - tempYSize <= 0)
+            if (tempY - tempYSize < 0)
                 return false;
         } else {
-            if (tempX - tempYSize <= 0)
+            if (tempX - tempYSize < 0)
                 return false;
-            if (tempY + tempXSize > cellMap.getYSize())
+            if (tempY + tempXSize > cellMap.getYSize() - 1)
                 return false;
         }
         return true;
@@ -357,52 +367,18 @@ public class DBops {
 
     //DONE przetestować
     private static boolean checkIfSpaceForStructureIsClear(CellMap cellMap, Structure struct) {
-        int temp1;
-        int temp2;
 
-        if (struct.getDirection() == Direction.UP) {
-            for (int j = 0; j < struct.getXSize(); j++) {
-                temp1 = struct.getX() + j;
-                for (int k = 0; k < struct.getYSize(); k++) {
-                    temp2 = struct.getY() + k;
+        CellMap cellMap1 = struct.structureAfterDirection();
 
-                    if (!canBePlaced(cellMap.getCell(temp1, temp2).getState(), struct.getCell(j, k).getState())) {
-                        return false;
-                    }
+        int x, y;
 
-                }
-            }
-        } else if (struct.getDirection() == Direction.RIGHT) {
-            for (int j = 0; j < struct.getXSize(); j++) {
-                temp2 = struct.getY() - j;
-                for (int k = 0; k < struct.getYSize(); k++) {
-                    temp1 = struct.getX() + k;
+        x = struct.getXSizeAfterRotation();
+        y = struct.getYSizeAfterRotation();
 
-                    if (!canBePlaced(cellMap.getCell(temp1, temp2).getState(), struct.getCell(j, k).getState())) {
-                        return false;
-                    }
-                }
-            }
-        } else if (struct.getDirection() == Direction.DOWN) {
-            for (int j = 0; j < struct.getXSize(); j++) {
-                temp1 = struct.getX() - j;
-                for (int k = 0; k < struct.getYSize(); k++) {
-                    temp2 = struct.getY() - k;
-
-                    if (!canBePlaced(cellMap.getCell(temp1, temp2).getState(), struct.getCell(j, k).getState())) {
-                        return false;
-                    }
-                }
-            }
-        } else {
-            for (int j = 0; j < struct.getXSize(); j++) {
-                temp2 = struct.getY() + j;
-                for (int k = 0; k < struct.getYSize(); k++) {
-                    temp1 = struct.getX() - k;
-
-                    if (!canBePlaced(cellMap.getCell(temp1, temp2).getState(), struct.getCell(j, k).getState())) {
-                        return false;
-                    }
+        for (int i = 0; i < x; i++) {
+            for (int j = 0; j < y; j++) {
+                if (!canBePlaced(cellMap.getCell(struct.getXAfterRotation(), struct.getYAfterRotation()).getState(), cellMap1.getCell(i, j).getState())) {
+                    return false;
                 }
             }
         }
@@ -432,7 +408,7 @@ public class DBops {
 
         String currentLine;
         while (!(currentLine = scanner.nextLine()).equals(structuresK + "<") && scanner.hasNextLine()) ;
-        if(!currentLine.equals(structuresK + "<")) return null;
+        if (!currentLine.equals(structuresK + "<")) return null;
 
         String name;
         int x, y;
