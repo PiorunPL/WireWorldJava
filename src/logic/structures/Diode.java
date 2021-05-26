@@ -20,8 +20,8 @@ public class Diode extends Structure {
     public Diode(int x, int y, Direction direction) {
         this.x = x;
         this.y = y;
-        this.xsize = 4;
-        this.ysize = 5;
+        this.xsize = 5;
+        this.ysize = 4;
         this.direction = direction;
         this.name = "diode";
         this.structure = new Cell[][]{

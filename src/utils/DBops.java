@@ -377,7 +377,7 @@ public class DBops {
 
         for (int i = 0; i < x; i++) {
             for (int j = 0; j < y; j++) {
-                if (!canBePlaced(cellMap.getCell(struct.getXAfterRotation(), struct.getYAfterRotation()).getState(), struct.getCell(i, j).getState())) {
+                if (!canBePlaced(cellMap.getCell(struct.getXAfterRotation(), struct.getYAfterRotation()).getState(), cellMap1.getCell(i, j).getState())) {
                     return false;
                 }
             }
