@@ -268,6 +268,17 @@ public class MainPaneController implements Initializable {
             rec.setFill(cellVector.get(0).getColor());
             cellVector.remove(0);
         }
+
+        for(int i = 0; i < xsize; i++)
+        {
+            for (int j = 0; j < ysize; j++)
+            {
+                Rectangle rec;
+                rec = (Rectangle) grid.getChildren().get(i * ysize + j);
+                Cell cell = cellMap.getCell(i, j);
+                rec.setFill(cell.getColor());
+            }
+        }
     }
 
     @FXML
@@ -516,9 +527,9 @@ public class MainPaneController implements Initializable {
             boolean error = false;
             try {
                 StructMap structMap = new StructMap(xsize, ysize);
-                clickedStructure.setX(x0);
-                clickedStructure.setY(y0);
-                structMap.addStruct(clickedStructure.getName(), x0, y0, clickedStructure.getDirection(), clickedStructure.getXSize());
+                clickedStructure.setX(xMouse);
+                clickedStructure.setY(yMouse);
+                structMap.addStruct(clickedStructure.getName(), xMouse, yMouse, clickedStructure.getDirection(), clickedStructure.getXSize());
                 if (firstAdded)
                     DBops.getMapStructFormat(clickedStructure, cellMap);
                 else {
