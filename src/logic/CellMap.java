@@ -67,6 +67,8 @@ public class CellMap {
         for (int i = 0; i < xsize; i++) {
             for (int j = 0; j < ysize; j++) {
                 map[i][j] = new Cell(4);
+                map[i][j].setxMap(i);
+                map[i][j].setyMap(j);
             }
         }
     }

@@ -21,6 +21,7 @@ import java.io.IOException;
 import java.net.URL;
 import java.util.ResourceBundle;
 
+import logic.Simulation;
 import utils.DBops;
 import utils.Dialogs;
 import logic.CellMap;
@@ -37,9 +38,12 @@ import java.io.File;
 import java.io.IOException;
 import java.net.URL;
 import java.util.ResourceBundle;
+import java.util.Vector;
+
+import static java.lang.Thread.sleep;
+import static logic.cells.CellState.*;
 
 public class MainPaneController implements Initializable {
-
 
 
     private void dragged(MouseEvent e) {
@@ -65,6 +69,8 @@ public class MainPaneController implements Initializable {
                 if (e.getButton().equals(MouseButton.PRIMARY)) {
                     if (editable && e.getTarget() instanceof Rectangle) {
                         Rectangle rec = (Rectangle) e.getTarget();
+                        int x0 = GridPane.getRowIndex(rec);
+                        int y0 = GridPane.getColumnIndex(rec);
                         if (clickedStructure != null) {
                             if (clickedStructure instanceof Wire && wireStartPoint == null) {
                                 wireStartPoint = new Wire(GridPane.getRowIndex(rec), GridPane.getColumnIndex(rec));
@@ -72,20 +78,37 @@ public class MainPaneController implements Initializable {
                                 setStructureOnMap(e);
                             }
                         } else {
-                            if (rec.getFill().equals(COLOR_OF_EMPTY)) rec.setFill(COLOR_OF_WIRE);
-                            else if (rec.getFill().equals(COLOR_OF_WIRE)) rec.setFill(COLOR_OF_EMPTY);
+                            if (rec.getFill().equals(COLOR_OF_EMPTY)) {
+                                rec.setFill(COLOR_OF_WIRE);
+                                cellMap.getCell(x0,y0).changeState(WIRE);
+                            }
+                            else if (rec.getFill().equals(COLOR_OF_WIRE)) {
+                                rec.setFill(COLOR_OF_EMPTY);
+                                cellMap.getCell(x0,y0).changeState(EMPA);
+                            }
                         }
                     }
                 } else if (e.getButton().equals(MouseButton.SECONDARY)) {
                     if (editable && e.getTarget() instanceof Rectangle) {
                         Rectangle rec = (Rectangle) e.getTarget();
+                        int x0 = GridPane.getRowIndex(rec);
+                        int y0 = GridPane.getColumnIndex(rec);
                         if (clickedStructure != null) {
                             clickedStructure.nextDirection();
                             showStructure(e);
                         }
-                        if (rec.getFill().equals(COLOR_OF_WIRE)) rec.setFill(COLOR_OF_HEAD);
-                        else if (rec.getFill().equals(COLOR_OF_HEAD)) rec.setFill(COLOR_OF_TAIL);
-                        else if (rec.getFill().equals(COLOR_OF_TAIL)) rec.setFill(COLOR_OF_WIRE);
+                        if (rec.getFill().equals(COLOR_OF_WIRE)) {
+                            rec.setFill(COLOR_OF_HEAD);
+                            cellMap.getCell(x0,y0).changeState(ELEH);
+                        }
+                        else if (rec.getFill().equals(COLOR_OF_HEAD)) {
+                            rec.setFill(COLOR_OF_TAIL);
+                            cellMap.getCell(x0,y0).changeState(ELET);
+                        }
+                        else if (rec.getFill().equals(COLOR_OF_TAIL)) {
+                            rec.setFill(COLOR_OF_WIRE);
+                            cellMap.getCell(x0,y0).changeState(WIRE);
+                        }
                     }
                 }
             }
@@ -180,9 +203,9 @@ public class MainPaneController implements Initializable {
 
     public static final Color COLOR_OF_WIRE = Color.SILVER;
     public static final Color COLOR_OF_EMPTY = Color.BLACK;
-    public static final Color COLOR_OF_HEAD = Color.ORANGE;
-    public static final Color COLOR_OF_TAIL = Color.RED;
-    public static final Color COLOR_OF_EMPTYNOTAPPENDABLE = Color.rgb(100,100,100);
+    public static final Color COLOR_OF_HEAD = Color.RED;
+    public static final Color COLOR_OF_TAIL = Color.ORANGE;
+    public static final Color COLOR_OF_EMPTYNOTAPPENDABLE = Color.rgb(100, 100, 100);
 
     @FXML
     private GridPane grid;
@@ -199,10 +222,14 @@ public class MainPaneController implements Initializable {
     void edit() {
         try {
             editable = Dialogs.editDialog();
+
         } catch (IllegalStateException e) {
             editable = false;
             e.printStackTrace();
         }
+
+        if(editable == true)
+            simulation = null;
     }
 
     @FXML
@@ -224,6 +251,22 @@ public class MainPaneController implements Initializable {
 
     @FXML
     void next() {
+        if(editable == true)
+            editable = false;
+
+        if (simulation == null) ;
+        simulation = new Simulation(cellMap);
+
+        simulation.simulate();
+        cellVector = simulation.getCellVectorChanged();
+
+        while(cellVector.size() != 0)
+        {
+            Rectangle rec;
+            rec = (Rectangle) grid.getChildren().get(cellVector.get(0).getxMap() * ysize + cellVector.get(0).getyMap());
+            rec.setFill(cellVector.get(0).getColor());
+            cellVector.remove(0);
+        }
     }
 
     @FXML
@@ -242,8 +285,14 @@ public class MainPaneController implements Initializable {
         }
     }
 
+    Simulation simulation = null;
+    Vector<Cell> cellVector;
+
     @FXML
     void play() {
+        for(int i = 0; i < Integer.parseInt(iterationTextField.getText()); i++){
+            next();
+        }
     }
 
     @FXML
@@ -326,10 +375,10 @@ public class MainPaneController implements Initializable {
             for (int j = 0; j < ysize; j++) {
                 rec = (Rectangle) grid.getChildren().get(i * ysize + j);
                 cell = map.getCell(i, j);
-                if (cell.getState().equals(CellState.EMPA)) rec.setFill(COLOR_OF_EMPTY);
+                if (cell.getState().equals(EMPA)) rec.setFill(COLOR_OF_EMPTY);
                 else if (cell.getState().equals(CellState.EMPN)) rec.setFill(COLOR_OF_EMPTYNOTAPPENDABLE);
-                else if (cell.getState().equals(CellState.WIRE)) rec.setFill(COLOR_OF_WIRE);
-                else if (cell.getState().equals(CellState.ELEH)) rec.setFill(COLOR_OF_HEAD);
+                else if (cell.getState().equals(WIRE)) rec.setFill(COLOR_OF_WIRE);
+                else if (cell.getState().equals(ELEH)) rec.setFill(COLOR_OF_HEAD);
                 else if (cell.getState().equals(CellState.ELET)) rec.setFill(COLOR_OF_TAIL);
 
             }
@@ -442,7 +491,6 @@ public class MainPaneController implements Initializable {
             //backup = new Backup(x0, y0, tab);
 
 
-
             boolean error = false;
             try {
                 StructMap structMap = new StructMap(xsize, ysize);
@@ -460,8 +508,7 @@ public class MainPaneController implements Initializable {
                 illegalStructurePlacement.printStackTrace();
                 error = true;
             }
-            if (error)
-            {
+            if (error) {
                 for (int i = 0; i < (backup != null && backup.tab != null ? backup.tab.length : 0); i++) {
                     for (int j = 0; j < (backup.tab[0] != null ? backup.tab[0].length : 0); j++) {
                         Rectangle rec1;
