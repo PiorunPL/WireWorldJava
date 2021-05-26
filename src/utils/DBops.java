@@ -205,31 +205,22 @@ public class DBops {
                 throw new IncorretNumberOfArgumentsException();
         } catch (IOException e) {
             e.printStackTrace();
-            System.out.println("cellMap = " + cellMap);
         } catch (IllegalFormatOptionException e) {
             e.getMessage();
-            System.out.println("cellMap = " + cellMap);
         } catch (TooManyCellsException e) {
             e.getMessage();
-            System.out.println("cellMap = " + cellMap);
         } catch (TooLessCellsException e) {
             e.getMessage();
-            System.out.println("cellMap = " + cellMap);
         } catch (IncorretNumberOfArgumentsException e) {
             e.getMessage();
-            System.out.println("cellMap = " + cellMap);
         } catch (NoSuchElementException e) {
             ExceptionsDialogs.warningDialog("Warning", "Typed to less lines than declared");
-            System.out.println("cellMap = " + cellMap);
         } catch (IllegalStructurePlacement e) {
             e.getMessage();
-            System.out.println("cellMap = " + cellMap);
         } catch(IllegalArgumentException e){
             ExceptionsDialogs.warningDialog("Warning", "Incorrect value in input file");
-            System.out.println("cellMap = " + cellMap);
         } catch(NegativeArraySizeException e){
             ExceptionsDialogs.warningDialog("Warning", "Typed illegal size. Only positive or [-1 -1] values are allowed");
-            System.out.println("cellMap = " + cellMap);
         }
         //testowanie czy struktury są dobrze wczytane
         /*for(int i=0; i<structMap.size(); i++){
