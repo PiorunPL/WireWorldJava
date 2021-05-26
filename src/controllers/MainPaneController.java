@@ -81,11 +81,10 @@ public class MainPaneController implements Initializable {
                         } else {
                             if (rec.getFill().equals(COLOR_OF_EMPTY)) {
                                 rec.setFill(COLOR_OF_WIRE);
-                                cellMap.getCell(x0,y0).changeState(WIRE);
-                            }
-                            else if (rec.getFill().equals(COLOR_OF_WIRE)) {
+                                cellMap.getCell(x0, y0).changeState(WIRE);
+                            } else if (rec.getFill().equals(COLOR_OF_WIRE)) {
                                 rec.setFill(COLOR_OF_EMPTY);
-                                cellMap.getCell(x0,y0).changeState(EMPA);
+                                cellMap.getCell(x0, y0).changeState(EMPA);
                             }
                         }
                     }
@@ -100,15 +99,13 @@ public class MainPaneController implements Initializable {
                         }
                         if (rec.getFill().equals(COLOR_OF_WIRE)) {
                             rec.setFill(COLOR_OF_HEAD);
-                            cellMap.getCell(x0,y0).changeState(ELEH);
-                        }
-                        else if (rec.getFill().equals(COLOR_OF_HEAD)) {
+                            cellMap.getCell(x0, y0).changeState(ELEH);
+                        } else if (rec.getFill().equals(COLOR_OF_HEAD)) {
                             rec.setFill(COLOR_OF_TAIL);
-                            cellMap.getCell(x0,y0).changeState(ELET);
-                        }
-                        else if (rec.getFill().equals(COLOR_OF_TAIL)) {
+                            cellMap.getCell(x0, y0).changeState(ELET);
+                        } else if (rec.getFill().equals(COLOR_OF_TAIL)) {
                             rec.setFill(COLOR_OF_WIRE);
-                            cellMap.getCell(x0,y0).changeState(WIRE);
+                            cellMap.getCell(x0, y0).changeState(WIRE);
                         }
                     }
                 }
@@ -229,7 +226,7 @@ public class MainPaneController implements Initializable {
             e.printStackTrace();
         }
 
-        if(editable == true)
+        if (editable == true)
             simulation = null;
     }
 
@@ -252,7 +249,7 @@ public class MainPaneController implements Initializable {
 
     @FXML
     void next() {
-        if(editable == true)
+        if (editable == true)
             editable = false;
 
         if (simulation == null) ;
@@ -261,24 +258,24 @@ public class MainPaneController implements Initializable {
         simulation.simulate();
         cellVector = simulation.getCellVectorChanged();
 
-        while(cellVector.size() != 0)
-        {
+        while (cellVector.size() != 0) {
             Rectangle rec;
             rec = (Rectangle) grid.getChildren().get(cellVector.get(0).getxMap() * ysize + cellVector.get(0).getyMap());
             rec.setFill(cellVector.get(0).getColor());
             cellVector.remove(0);
         }
 
-        for(int i = 0; i < xsize; i++)
-        {
-            for (int j = 0; j < ysize; j++)
-            {
+
+        /*
+        for (int i = 0; i < xsize; i++) {
+            for (int j = 0; j < ysize; j++) {
                 Rectangle rec;
                 rec = (Rectangle) grid.getChildren().get(i * ysize + j);
                 Cell cell = cellMap.getCell(i, j);
                 rec.setFill(cell.getColor());
             }
         }
+        */
     }
 
     @FXML
@@ -302,7 +299,7 @@ public class MainPaneController implements Initializable {
 
     @FXML
     void play() {
-        for(int i = 0; i < Integer.parseInt(iterationTextField.getText()); i++){
+        for (int i = 0; i < Integer.parseInt(iterationTextField.getText()); i++) {
             next();
         }
     }
@@ -432,12 +429,18 @@ public class MainPaneController implements Initializable {
                     yMouse : yMouse - clickedStructure.getYSizeAfterRotation() + 1;
 
             if ((grid.getRowCount() - clickedStructure.getXSizeAfterRotation() - x0) >= 0) {
-                if (x0 < 0) { xStart = Math.abs(x0); x0 = 0; }
+                if (x0 < 0) {
+                    xStart = Math.abs(x0);
+                    x0 = 0;
+                }
                 xSize = clickedStructure.getXSizeAfterRotation();
             } else xSize = grid.getRowCount() - xMouse;
 
             if ((grid.getColumnCount() - clickedStructure.getYSizeAfterRotation() - y0) >= 0) {
-                if (y0 < 0) { yStart = Math.abs(y0); y0 = 0; }
+                if (y0 < 0) {
+                    yStart = Math.abs(y0);
+                    y0 = 0;
+                }
                 ySize = clickedStructure.getYSizeAfterRotation();
             } else ySize = grid.getColumnCount() - yMouse;
 
@@ -507,12 +510,18 @@ public class MainPaneController implements Initializable {
                     yMouse : yMouse - clickedStructure.getYSizeAfterRotation() + 1;
 
             if ((grid.getRowCount() - clickedStructure.getXSizeAfterRotation() - x0) >= 0) {
-                if (x0 < 0) { xStart = Math.abs(x0); x0 = 0; }
+                if (x0 < 0) {
+                    xStart = Math.abs(x0);
+                    x0 = 0;
+                }
                 xSize = clickedStructure.getXSizeAfterRotation();
             } else xSize = grid.getRowCount() - xMouse;
 
             if ((grid.getColumnCount() - clickedStructure.getYSizeAfterRotation() - y0) >= 0) {
-                if (y0 < 0) { yStart = Math.abs(y0); y0 = 0; }
+                if (y0 < 0) {
+                    yStart = Math.abs(y0);
+                    y0 = 0;
+                }
                 ySize = clickedStructure.getYSizeAfterRotation();
             } else ySize = grid.getColumnCount() - yMouse;
 
@@ -530,9 +539,10 @@ public class MainPaneController implements Initializable {
                 clickedStructure.setX(xMouse);
                 clickedStructure.setY(yMouse);
                 structMap.addStruct(clickedStructure.getName(), xMouse, yMouse, clickedStructure.getDirection(), clickedStructure.getXSize());
-                if (firstAdded)
+                if (firstAdded) {
                     DBops.getMapStructFormat(clickedStructure, cellMap);
-                else {
+                    createNewStructure(clickedStructure.getName());
+                } else {
                     cellMap = DBops.getMapStructFormat(structMap);
                     firstAdded = true;
                 }
@@ -557,7 +567,22 @@ public class MainPaneController implements Initializable {
             }
         }
     }
+
+    private void createNewStructure(String name) {
+        if(name == "or") clickedStructure = new Or();
+        else if(name == "and") clickedStructure = new And();
+        else if(name == "clock") clickedStructure = new Clock();
+        else if(name == "diode") clickedStructure = new Diode();
+        else if(name == "not") clickedStructure = new Not();
+        else if(name == "wire") clickedStructure = new Wire();
+        else if(name == "xor") clickedStructure = new Xor();
+        else{
+
+        }
+
+    }
 }
+
 
 class Backup {
     public Backup(int x, int y, Color[][] tab) {
