@@ -50,7 +50,7 @@
                      <children>
                         <HBox prefHeight="40.0" prefWidth="307.0" spacing="2.0">
                            <children>
-                              <Button fx:id="previousButton" mnemonicParsing="false" onAction="#previous" prefHeight="40.0" prefWidth="100.0" style="-fx-text-fill: #F9AA33; -fx-background-color: #232F34; -fx-font-family: monospace; -fx-font-size: 16; -fx-background-radius: 0; -fx-font-weight: bold;" text="Previous" />
+                              <Button fx:id="previousButton" mnemonicParsing="false" onAction="#pause" prefHeight="40.0" prefWidth="100.0" style="-fx-text-fill: #F9AA33; -fx-background-color: #232F34; -fx-font-family: monospace; -fx-font-size: 16; -fx-background-radius: 0; -fx-font-weight: bold;" text="Pause" />
                               <Button fx:id="playButton" mnemonicParsing="false" onAction="#play" prefHeight="40.0" prefWidth="100.0" style="-fx-text-fill: #F9AA33; -fx-background-color: #232F34; -fx-font-family: monospace; -fx-font-size: 16; -fx-background-radius: 0; -fx-font-weight: bold;" text="Play" />
                               <Button fx:id="nextButton" mnemonicParsing="false" onAction="#next" prefHeight="40.0" prefWidth="100.0" style="-fx-text-fill: #F9AA33; -fx-background-color: #232F34; -fx-font-family: monospace; -fx-font-size: 16; -fx-background-radius: 0; -fx-font-weight: bold;" text="Next" />
                            </children>
