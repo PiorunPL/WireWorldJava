@@ -190,7 +190,7 @@ public class DBops {
                 // map format of file
                 if (option.equals(mapK)) {
                     cellMap = getMapMapFormat(in, x, y);
-
+                    System.out.println(cellMap.getXSize()+" "+ cellMap.getYSize());
                     // structural format of file
                 } else if (option.equals(structK)) {
                     // getting user defined structures
@@ -214,9 +214,13 @@ public class DBops {
         } catch (IncorretNumberOfArgumentsException e) {
             e.getMessage();
         } catch (NoSuchElementException e) {
-            System.out.println("Typed to less lines than declared");
+            ExceptionsDialogs.warningDialog("Warning", "Typed to less lines than declared");
         } catch (IllegalStructurePlacement e) {
             e.getMessage();
+        } catch(IllegalArgumentException e){
+            ExceptionsDialogs.warningDialog("Warning", "Incorrect value in input file");
+        } catch(NegativeArraySizeException e){
+            ExceptionsDialogs.warningDialog("Warning", "Typed illegal size. Only positive or [-1 -1] values are allowed");
         }
         //testowanie czy struktury są dobrze wczytane
         /*for(int i=0; i<structMap.size(); i++){
@@ -246,7 +250,30 @@ public class DBops {
      * @throws NoSuchElementException
      * @author Michał Ziober
      */
-    private static CellMap getMapMapFormat(File in, int x, int y) throws IOException, TooManyCellsException, TooLessCellsException, NoSuchElementException {
+    private static CellMap getMapMapFormat(File in, int x, int y) throws IOException, TooManyCellsException, TooLessCellsException, NoSuchElementException, NegativeArraySizeException{
+        if( x == -1 && y == -1){
+            //Wydupca wireworlda, poprawić
+            //instrukcje dla samoobliczającej się cellmapy- wystarczy zmienić x i y
+            System.out.println("samoobliczajacy się rozmiar");
+            int numberOfRows = 0;
+            Scanner counter = new Scanner(in);
+            String tmp = counter.nextLine();
+            String[] countElem;
+            if(counter.hasNextLine()){
+                countElem = (counter.nextLine()).split("\\s+");
+                y = countElem.length;
+                numberOfRows++;
+            }
+            while(counter.hasNextLine()) {
+                tmp = counter.nextLine();
+                numberOfRows++;
+            }
+            x = numberOfRows;
+        }
+        else if( x <= 0 || y <= 0 ) {
+            throw new NegativeArraySizeException();
+        }
+
         CellMap map = new CellMap(x, y);
         String line;
         String[] lineInTab;
