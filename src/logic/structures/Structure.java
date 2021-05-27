@@ -19,6 +19,8 @@ public abstract class Structure {
         else throw new IllegalStateException();
     }
 
+    public void setDirection(Direction direction) { this.direction = direction; }
+
     public String getName() {
         return name;
     }
