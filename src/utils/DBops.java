@@ -130,6 +130,8 @@ public class DBops {
                 fw.write("\n");
                 str = structMap.getStructure(i);
                 fw.write(str.getName() + " " + str.getX() + " " + str.getY() + " " + str.getDirection());
+                if(str.getName().equals("wire")) ;
+                    fw.write(" "+((Wire)str).getLength());
             }
         } catch (Exception e) {
             System.out.println("Pusta structMapa");
