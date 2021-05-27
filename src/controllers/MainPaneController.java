@@ -246,8 +246,8 @@ public class MainPaneController implements Initializable {
     void newBoard() {
         if (simThread == null || (simThread != null && !simThread.isAlive())) {
             int[] result = Dialogs.newBoardDialog();
-            xsize = result[0];
-            ysize = result[1];
+            if (result != null) { xsize = result[0]; ysize = result[1]; }
+            if (xsize < 0 || ysize < 0) { xsize = 30; ysize = 30; }
             clickedStructure = null;
             editable = false;
             firstAdded = false;
