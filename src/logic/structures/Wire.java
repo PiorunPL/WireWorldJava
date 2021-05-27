@@ -10,6 +10,9 @@ public class Wire extends Structure {
         this.name = "wire";
         this.direction = Direction.UP;
         this.structure = new Cell[][] {{new Cell(1)}};
+        this.x = -1;
+        this.y = -1;
+
     }
     public Wire(int x, int y) {
         this.xsize = 1;
@@ -23,20 +26,21 @@ public class Wire extends Structure {
     public Wire(int x, int y, Direction direction, int length) {
         this.x = x;
         this.y = y;
+        this.ysize = 1;
         this.direction = direction;
-        this.length = length;
         this.name = "wire";
-        this.structure = new Cell[length][1];
-        for (int i = 0; i < length; i++) {
-            this.structure[i][0] = new Cell(1);
-        }
+        setLength(length);
     }
-
-    private int length;
 
     public int getLength() {
         if (this.xsize > 0 && this.ysize == 1) return xsize;
-        else return -1;
+        else throw new IllegalStateException();
     }
-    public void setLength(int length) { this.length = length; }
+    public void setLength(int length) {
+        if (length != this.xsize) {
+            this.xsize = length;
+            this.structure = new Cell[xsize][1];
+            for (int i = 0; i < xsize; i++) structure[i][0] = new Cell(1);
+        }
+    }
 }
