@@ -34,7 +34,7 @@ public class Wire extends Structure {
 
     public int getLength() {
         if (this.xsize > 0 && this.ysize == 1) return xsize;
-        else return -1;
+        else throw new IllegalStateException();
     }
     public void setLength(int length) {
         if (length != this.xsize) {
