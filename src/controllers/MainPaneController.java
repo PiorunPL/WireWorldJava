@@ -251,7 +251,7 @@ public class MainPaneController implements Initializable {
         editable = false;
         firstAdded = false;
         saveFile = null;
-
+        cellMap = new CellMap(xsize, ysize);
         drawGrid();
     }
 
@@ -274,7 +274,7 @@ public class MainPaneController implements Initializable {
         }
 
 
-        /*
+
         for (int i = 0; i < xsize; i++) {
             for (int j = 0; j < ysize; j++) {
                 Rectangle rec;
@@ -283,7 +283,7 @@ public class MainPaneController implements Initializable {
                 rec.setFill(cell.getColor());
             }
         }
-        */
+
     }
 
     @FXML
@@ -292,13 +292,13 @@ public class MainPaneController implements Initializable {
         editable = false;
         saveFile = null;
         FileChooser fc = new FileChooser();
-        File dir = new File("C:\\Users\\sebas\\Documents\\Studia\\Informatka Stosowana\\2_semestr\\Języki i Metody Programowania 2\\Materiały\\Projekt_2\\WireWorldJava\\test");
-        fc.setInitialDirectory(dir);
+        //File dir = new File();
+        //fc.setInitialDirectory();
         File selected = fc.showOpenDialog(null);
 
         if (selected != null) {
-            CellMap map = DBops.getMapFromFile(selected);
-            displayMap(map);
+            cellMap = DBops.getMapFromFile(selected);
+            displayMap(cellMap);
         }
     }
 
@@ -417,7 +417,7 @@ public class MainPaneController implements Initializable {
             }
         }
         map = new StructMap(xsize, ysize);
-        cellMap = new CellMap(xsize, ysize);
+
     }
 
     public void showStructure(MouseEvent e) {
@@ -563,7 +563,7 @@ public class MainPaneController implements Initializable {
                 structMap.addStruct(clickedStructure.getName(), xMouse, yMouse, clickedStructure.getDirection(), clickedStructure.getXSize());
                 if (firstAdded) {
                     DBops.getMapStructFormat(clickedStructure, cellMap);
-                    createNewStructure(clickedStructure.getName());
+
                 } else {
                     cellMap = DBops.getMapStructFormat(structMap);
                     firstAdded = true;
@@ -586,6 +586,7 @@ public class MainPaneController implements Initializable {
             if (map != null && !error) {
                 map.addStruct(clickedStructure.getName(), xMouse, yMouse, clickedStructure.getDirection(), clickedStructure.getXSize());
                 backup = null;
+                createNewStructure(clickedStructure.getName());
             }
 
             if (clickedStructure instanceof Wire) {
