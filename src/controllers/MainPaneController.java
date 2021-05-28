@@ -2,13 +2,16 @@ package controllers;
 
 import javafx.event.EventHandler;
 import javafx.fxml.FXML;
+import javafx.fxml.FXMLLoader;
 import javafx.fxml.Initializable;
 import javafx.geometry.Insets;
+import javafx.scene.Scene;
 import javafx.scene.control.TextField;
 import javafx.scene.input.KeyEvent;
 import javafx.scene.input.MouseButton;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.input.ScrollEvent;
+import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.GridPane;
 import javafx.scene.layout.Pane;
@@ -21,6 +24,11 @@ import java.io.IOException;
 import java.net.URL;
 import java.util.ResourceBundle;
 
+import javafx.stage.Stage;
+import utils.exceptions.IllegalStructurePlacement;
+import java.util.Vector;
+
+
 import logic.Direction;
 import logic.Simulation;
 import utils.DBops;
@@ -30,20 +38,7 @@ import logic.StructMap;
 import logic.cells.Cell;
 import logic.cells.CellState;
 import logic.structures.*;
-import org.w3c.dom.css.Rect;
-import utils.DBops;
-import utils.Dialogs;
-import utils.exceptions.IllegalStructurePlacement;
-
-import java.io.File;
-import java.io.IOException;
-import java.net.URL;
-import java.util.ResourceBundle;
-import java.util.Vector;
-
-import static java.lang.Thread.sleep;
 import static logic.cells.CellState.*;
-
 public class MainPaneController implements Initializable {
 
 
@@ -73,10 +68,7 @@ public class MainPaneController implements Initializable {
                         int x0 = GridPane.getRowIndex(rec);
                         int y0 = GridPane.getColumnIndex(rec);
                         if (clickedStructure != null) {
-                            System.out.println(wireStartPoint);
                             if (clickedStructure instanceof Wire && wireStartPoint == null) {
-
-                                //todo możliwe że coś z tym wire
                                 wireStartPoint = new Wire(
                                         GridPane.getRowIndex(rec),
                                         GridPane.getColumnIndex(rec),
@@ -176,6 +168,7 @@ public class MainPaneController implements Initializable {
         fxmlRoot.addEventFilter(KeyEvent.KEY_PRESSED, click);
 
         // initialization of grid pane
+        cellMap = new CellMap(xsize, ysize);
         drawGrid();
 
         // setup of grid pane
@@ -225,38 +218,58 @@ public class MainPaneController implements Initializable {
     // action buttons
 
     @FXML
+    void delete() {}
+
+    @FXML
     void edit() {
-        try {
-            editable = Dialogs.editDialog();
+        if (simThread == null || (simThread != null && !simThread.isAlive())) {
+            try {
+                editable = Dialogs.editDialog();
 
-        } catch (IllegalStateException e) {
-            editable = false;
-            e.printStackTrace();
+            } catch (IllegalStateException e) {
+                editable = false;
+                e.printStackTrace();
+            }
+
+            if (editable == true)
+                simulation = null;
         }
-
-        if (editable == true)
-            simulation = null;
     }
 
     @FXML
     void help() {
+        FXMLLoader loader = new FXMLLoader(this.getClass().getResource("/FXMLs/HelpDialog.fxml"));
+        try {
+            AnchorPane pane = loader.load();
+            Stage stage = new Stage();
+            Scene scene = new Scene(pane);
+            stage.setResizable(false);
+            stage.setScene(scene);
+            stage.show();
+
+            HelpDialogController controller = loader.getController();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
     }
 
     @FXML
     void newBoard() {
-        int[] result = Dialogs.newBoardDialog();
-        xsize = result[0];
-        ysize = result[1];
-        clickedStructure = null;
-        editable = false;
-        firstAdded = false;
-        saveFile = null;
-        cellMap = new CellMap(xsize, ysize);
-        drawGrid();
+        if (simThread == null || (simThread != null && !simThread.isAlive())) {
+            int[] result = Dialogs.newBoardDialog();
+            if (result != null) { xsize = result[0]; ysize = result[1]; }
+            if (xsize < 0 || ysize < 0) { xsize = 30; ysize = 30; }
+            clickedStructure = null;
+            editable = false;
+            firstAdded = false;
+            saveFile = null;
+            cellMap = new CellMap(xsize, ysize);
+            drawGrid();
+        }
     }
 
     @FXML
-    void next() {
+    public void next() {
         if (editable == true)
             editable = false;
 
@@ -273,8 +286,6 @@ public class MainPaneController implements Initializable {
             cellVector.remove(0);
         }
 
-
-
         for (int i = 0; i < xsize; i++) {
             for (int j = 0; j < ysize; j++) {
                 Rectangle rec;
@@ -282,63 +293,91 @@ public class MainPaneController implements Initializable {
                 Cell cell = cellMap.getCell(i, j);
                 rec.setFill(cell.getColor());
             }
-        }
 
+        }
     }
 
     @FXML
     void open() {
-        clickedStructure = null;
-        editable = false;
-        saveFile = null;
-        FileChooser fc = new FileChooser();
-        //File dir = new File();
-        //fc.setInitialDirectory();
-        File selected = fc.showOpenDialog(null);
+        if (simThread == null || (simThread != null && !simThread.isAlive())) {
+            clickedStructure = null;
+            editable = false;
+            saveFile = null;
+            FileChooser fc = new FileChooser();
+            //File dir = new File();
+            //fc.setInitialDirectory();
+            File selected = fc.showOpenDialog(null);
 
-        if (selected != null) {
-            cellMap = DBops.getMapFromFile(selected);
-            displayMap(cellMap);
+            if (selected != null) {
+                cellMap = DBops.getMapFromFile(selected);
+                displayMap(cellMap);
+            }
         }
     }
 
     Simulation simulation = null;
     Vector<Cell> cellVector;
 
+    SimThread simThread;
+    private int iterations = 100;
+    private int timeStep = 1000;
+
     @FXML
     void play() {
-        for (int i = 0; i < Integer.parseInt(iterationTextField.getText()); i++) {
-            next();
+        if ((iterationTextField.getText()) != null && !iterationTextField.getText().trim().isEmpty()) {
+            try {
+                iterations = Integer.parseInt(iterationTextField.getText());
+            } catch (NumberFormatException e) {
+                // inserted value is not a number
+            }
+            iterationTextField.clear();
         }
+
+        if ((timeStepTextField.getText()) != null && !timeStepTextField.getText().trim().isEmpty()) {
+            try {
+                timeStep = Integer.parseInt(timeStepTextField.getText());
+            } catch (NumberFormatException e) {
+                // inserted value is not a number
+            }
+            timeStepTextField.clear();
+        }
+
+        if (simThread == null || (simThread != null && !simThread.isAlive()))
+            simThread = new SimThread(this, iterations, timeStep);
     }
 
     @FXML
-    void previous() {
+    void pause() {
+        if (simThread != null && simThread.isAlive()) simThread.interrupt();
     }
 
     @FXML
     void save() {
-        if (saveFile == null) {
-            FileChooser fc = new FileChooser();
-            saveFile = fc.showSaveDialog(null);
-        }
-        try {
-            if (saveFile != null) DBops.saveMapToFile(map, saveFile);
-        } catch (IOException e) {
-            e.printStackTrace();
+        if (simThread == null || (simThread != null && !simThread.isAlive())) {
+            if (saveFile == null) {
+                FileChooser fc = new FileChooser();
+                saveFile = fc.showSaveDialog(null);
+            }
+            try {
+                if (saveFile != null) DBops.saveMapToFile(map, saveFile);
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
         }
     }
 
     @FXML
     void saveAs() {
-        FileChooser fc = new FileChooser();
-        saveFile = fc.showSaveDialog(null);
+        if (simThread == null || (simThread != null && !simThread.isAlive())) {
+            FileChooser fc = new FileChooser();
+            saveFile = fc.showSaveDialog(null);
 
-        if (saveFile != null) {
-            try {
-                DBops.saveMapToFile(map, saveFile);
-            } catch (IOException e) {
-                e.printStackTrace();
+            if (saveFile != null) {
+                try {
+                    DBops.saveMapToFile(map, saveFile);
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
             }
         }
     }
@@ -407,6 +446,9 @@ public class MainPaneController implements Initializable {
             grid.getChildren().clear();
         }
 
+        iterations = 100;
+        timeStep = 1000;
+
         Rectangle rec;
         grid.setHgap(BREAK);
         grid.setVgap(BREAK);
@@ -443,8 +485,6 @@ public class MainPaneController implements Initializable {
                     ((Wire) clickedStructure).setLength(Math.abs(yMouse - clickedStructure.getY()) + 1);
                     if (yMouse > clickedStructure.getY()) clickedStructure.setDirection(Direction.RIGHT);
                     else clickedStructure.setDirection(Direction.LEFT);
-                    xSize = clickedStructure.getXSizeAfterRotation();
-                    ySize = clickedStructure.getYSizeAfterRotation();
                     x0 = clickedStructure.getX();
                     y0 = clickedStructure.getDirection().equals(Direction.RIGHT) ?
                             clickedStructure.getY() : yMouse;
@@ -452,10 +492,8 @@ public class MainPaneController implements Initializable {
                     ((Wire) clickedStructure).setLength(Math.abs(xMouse - clickedStructure.getX()) + 1);
                     if (xMouse > clickedStructure.getX()) clickedStructure.setDirection(Direction.DOWN);
                     else clickedStructure.setDirection(Direction.UP);
-                    xSize = clickedStructure.getXSizeAfterRotation();
-                    ySize = clickedStructure.getYSizeAfterRotation();
                     x0 = clickedStructure.getDirection().equals(Direction.UP) ?
-                            xMouse: clickedStructure.getX();
+                            xMouse : clickedStructure.getX();
                     y0 = clickedStructure.getY();
                 } else {
                     ((Wire) clickedStructure).setLength(1);
@@ -485,24 +523,14 @@ public class MainPaneController implements Initializable {
                 ySize = clickedStructure.getYSizeAfterRotation();
             } else ySize = grid.getColumnCount() - yMouse;
 
-            System.out.printf("direction: %s\nx0: %d, y0: %d\nxMouse: %d, yMouse: %d\nxStartPoint: %d, yStartPoint: %d\nxStart: %d, yStart: %d\nxSize: %d, ySize: %d\n\n",
-                    clickedStructure.getDirection(), x0, y0, xMouse, yMouse, clickedStructure.getX(), clickedStructure.getY(), xStart, yStart, xSize,ySize);
-
             CellMap cellMap1 = clickedStructure.structureAfterDirection();
 
-            for (int i = 0; i < (backup != null && backup.tab != null ? backup.tab.length : 0); i++) {
-                for (int j = 0; j < (backup.tab[0] != null ? backup.tab[0].length : 0); j++) {
-                    rec = (Rectangle) grid.getChildren().get((backup.x + i) * ysize + backup.y + j);
-                    rec.setFill(backup.tab[i][j]);
-                }
-            }
+            if (backup != null) backup.display(grid, ysize);
 
             Color[][] tab = new Color[xSize - xStart][ySize - yStart];
 
             for (int i = xStart; i < xSize; i++) {
                 for (int j = yStart; j < ySize; j++) {
-                    //System.out.printf("xStart: %d, i: %d, xSize: %d\nyStart: %d, j: %d, ySize: %d\n\n",
-                      //      xStart, i, xSize, yStart, j, ySize);
                     Cell cell = cellMap1.getCell(i, j);
                     rec = (Rectangle) grid.getChildren().get((x0 - xStart + i) * ysize + y0 + j - yStart);
                     tab[i - xStart][j - yStart] = (Color) rec.getFill();
@@ -560,7 +588,9 @@ public class MainPaneController implements Initializable {
                 StructMap structMap = new StructMap(xsize, ysize);
                 clickedStructure.setX(xMouse);
                 clickedStructure.setY(yMouse);
+
                 structMap.addStruct(clickedStructure.getName(), xMouse, yMouse, clickedStructure.getDirection(), clickedStructure.getXSize());
+
                 if (firstAdded) {
                     DBops.getMapStructFormat(clickedStructure, cellMap);
 
@@ -568,20 +598,13 @@ public class MainPaneController implements Initializable {
                     cellMap = DBops.getMapStructFormat(structMap);
                     firstAdded = true;
                 }
-
             } catch (IllegalStructurePlacement illegalStructurePlacement) {
                 illegalStructurePlacement.printStackTrace();
                 error = true;
             }
-            if (error) {
-                for (int i = 0; i < (backup != null && backup.tab != null ? backup.tab.length : 0); i++) {
-                    for (int j = 0; j < (backup.tab[0] != null ? backup.tab[0].length : 0); j++) {
-                        Rectangle rec1;
-                        rec1 = (Rectangle) grid.getChildren().get((backup.x + i) * ysize + backup.y + j);
-                        rec1.setFill(backup.tab[i][j]);
-                    }
-                }
-            }
+
+            if (error)
+                if (backup != null) backup.display(grid, ysize);
 
             if (map != null && !error) {
                 map.addStruct(clickedStructure.getName(), xMouse, yMouse, clickedStructure.getDirection(), clickedStructure.getXSize());
@@ -604,13 +627,8 @@ public class MainPaneController implements Initializable {
         else if (name == "not") clickedStructure = new Not();
         else if (name == "wire") clickedStructure = new Wire();
         else if (name == "xor") clickedStructure = new Xor();
-        else {
-
-        }
-
     }
 }
-
 
 class Backup {
     public Backup(int x, int y, Color[][] tab) {
@@ -622,5 +640,40 @@ class Backup {
     int x;
     int y;
     Color[][] tab;
+
+    public void display(GridPane grid, int ysize) {
+        for (int i = 0; i < (tab != null ? tab.length : 0); i++) {
+            for (int j = 0; j < (tab[0] != null ? tab[0].length : 0); j++) {
+                Rectangle rec1;
+                rec1 = (Rectangle) grid.getChildren().get((x + i) * ysize + y + j);
+                rec1.setFill(tab[i][j]);
+            }
+        }
+    }
+}
+
+class SimThread extends Thread {
+    public SimThread(MainPaneController controller, int iterations, int timeStep) {
+        this.controller = controller;
+        this.iterations = iterations;
+        this.timeStep = timeStep;
+        start();
+    }
+
+    private final MainPaneController controller;
+    private final int iterations;
+    private final int timeStep;
+
+    @Override
+    public void run() {
+        for (int i = 0; i < iterations; i++) {
+            controller.next();
+            try {
+                sleep(timeStep);
+            } catch (InterruptedException e) {
+                return;
+            }
+        }
+    }
 }
 

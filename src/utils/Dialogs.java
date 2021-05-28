@@ -13,12 +13,14 @@ import java.util.Optional;
 public class Dialogs {
 
     public static int[] newBoardDialog() {
-        Dialog<Pair<String, String>> dialog = new Dialog<>();
+        Alert dialog = new Alert(Alert.AlertType.CONFIRMATION);
         dialog.setTitle("New Board");
         dialog.setHeaderText("Please, insert dimensions of the new board.");
 
-        ButtonType okButton = new ButtonType("OK", ButtonBar.ButtonData.OK_DONE);
-        dialog.getDialogPane().getButtonTypes().addAll(okButton, ButtonType.CANCEL);
+        ButtonType okButton = new ButtonType("OK");
+        ButtonType closeButton = new ButtonType("Close");
+
+        dialog.getButtonTypes().setAll(okButton, closeButton);
 
         HBox pane = new HBox();
         pane.setSpacing(10);
@@ -27,24 +29,30 @@ public class Dialogs {
 
         Label rowsLabel = new Label("Rows:");
         TextField rows = new TextField();
-        rows.setPromptText("100");
+        rows.setPromptText("30");
         Label colsLabel = new Label("Cols:");
         TextField cols = new TextField();
-        cols.setPromptText("100");
+        cols.setPromptText("30");
 
         pane.getChildren().addAll(rowsLabel, rows, colsLabel, cols);
 
         dialog.getDialogPane().setContent(pane);
 
-        dialog.showAndWait();
+        Optional<ButtonType> result = dialog.showAndWait();
 
-        int[] result;
-        try {
-            result = new int[] {Integer.parseInt(rows.getText()), Integer.parseInt(cols.getText())};
-        } catch (NumberFormatException e) {
-            result = new int[] {100, 100};
-        }
-        return result;
+        if (result.get() == okButton) {
+            if (!rows.getText().trim().isEmpty() && !cols.getText().trim().isEmpty()) {
+                try {
+                    return new int[]{Integer.parseInt(rows.getText()), Integer.parseInt(cols.getText())};
+                } catch (NumberFormatException e) {
+                    return null;
+                }
+            } else {
+                return new int[] {-1, -1};
+            }
+        } else if (result.get() == closeButton) {
+            return null;
+        } else throw new IllegalStateException();
     }
 
     public static boolean editDialog() throws IllegalStateException {
