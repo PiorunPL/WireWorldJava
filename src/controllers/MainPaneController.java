@@ -317,6 +317,7 @@ public class MainPaneController implements Initializable {
             firstAdded = false;
             saveFile = null;
             cellMap = new CellMap(xsize, ysize);
+            map = new StructMap(xsize, ysize);
             drawGrid();
         }
     }
@@ -351,7 +352,7 @@ public class MainPaneController implements Initializable {
     }
 
     @FXML
-    void open() {
+    void open() throws IllegalStructurePlacement {
         if (simThread == null || (simThread != null && !simThread.isAlive())) {
             clickedStructure = null;
             editable = false;
@@ -362,7 +363,8 @@ public class MainPaneController implements Initializable {
             File selected = fc.showOpenDialog(null);
 
             if (selected != null) {
-                cellMap = DBops.getMapFromFile(selected);
+                map = DBops.getMapFromFile(selected);
+                cellMap = DBops.getMapStructFormat(map);
                 displayMap(cellMap);
                 firstAdded = true;
             }
@@ -514,7 +516,7 @@ public class MainPaneController implements Initializable {
                 rec.setFill(COLOR_OF_EMPTY);
             }
         }
-        map = new StructMap(xsize, ysize);
+
 
     }
 

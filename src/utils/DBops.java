@@ -197,7 +197,7 @@ public class DBops {
     }
 
 
-    public static CellMap getMapFromFile(File in) throws NullPointerException {
+    public static StructMap getMapFromFile(File in) throws NullPointerException {
         CellMap cellMap = null;
         String option;
         String[] firstLine;
@@ -221,21 +221,7 @@ public class DBops {
                     container = getUsersStructures(in);
                     // getting map
                     structMap = getMap(in, x, y, container);
-                    cellMap = getMapStructFormat(structMap);
 
-                    for(int i = 0; i < electronHead.size(); i++)
-                    {
-                        Cell cell = electronHead.get(i);
-                        cellMap.getCell(cell.getxMap(), cell.getyMap()).changeState(ELEH);
-                    }
-                    electronHead = null;
-
-                    for(int i = 0; i < electronTail.size(); i++)
-                    {
-                        Cell cell = electronTail.get(i);
-                        cellMap.getCell(cell.getxMap(), cell.getyMap()).changeState(ELET);
-                    }
-                    electronTail = null;
 
                 } else {
                     throw new IllegalFormatOptionException();
@@ -254,8 +240,6 @@ public class DBops {
             e.getMessage();
         } catch (NoSuchElementException e) {
             ExceptionsDialogs.warningDialog("Warning", "Typed to less lines than declared");
-        } catch (IllegalStructurePlacement e) {
-            e.getMessage();
         } catch (IllegalArgumentException e) {
             ExceptionsDialogs.warningDialog("Warning", "Incorrect value in input file");
         } catch (NegativeArraySizeException e) {
@@ -272,7 +256,7 @@ public class DBops {
             }
             System.out.println();
         }*/
-        return cellMap;
+        return structMap;
     }
 
 
@@ -359,6 +343,21 @@ public class DBops {
                 throw new IllegalStructurePlacement();
             }
         }
+
+        for(int i = 0; i < electronHead.size(); i++)
+        {
+            Cell cell = electronHead.get(i);
+            cellMap.getCell(cell.getxMap(), cell.getyMap()).changeState(ELEH);
+        }
+        electronHead = null;
+
+        for(int i = 0; i < electronTail.size(); i++)
+        {
+            Cell cell = electronTail.get(i);
+            cellMap.getCell(cell.getxMap(), cell.getyMap()).changeState(ELET);
+        }
+        electronTail = null;
+
         return cellMap;
     }
 
