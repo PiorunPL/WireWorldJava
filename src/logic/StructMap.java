@@ -19,6 +19,11 @@ public class StructMap {
     // container for all structures used in this map
     private List<Structure> list;
 
+
+    public void removeStructure(Structure structure){
+        list.remove(structure);
+    }
+
     // user's structures used in this map
     private UsersStructuresContainer userStructures;
 

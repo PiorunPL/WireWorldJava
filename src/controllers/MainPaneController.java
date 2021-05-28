@@ -26,6 +26,7 @@ import java.util.ResourceBundle;
 
 import javafx.stage.Stage;
 import utils.exceptions.IllegalStructurePlacement;
+
 import java.util.Vector;
 
 
@@ -38,7 +39,9 @@ import logic.StructMap;
 import logic.cells.Cell;
 import logic.cells.CellState;
 import logic.structures.*;
+
 import static logic.cells.CellState.*;
+
 public class MainPaneController implements Initializable {
 
 
@@ -78,13 +81,17 @@ public class MainPaneController implements Initializable {
                             } else {
                                 setStructureOnMap(e);
                             }
+                        } else if (deleteStructureSwitch) {
+                            deleteStructure(e);
                         } else {
                             if (rec.getFill().equals(COLOR_OF_EMPTY)) {
-                                rec.setFill(COLOR_OF_WIRE);
-                                cellMap.getCell(x0, y0).changeState(WIRE);
+                                clickedStructure = new Wire(1,1);
+                                setStructureOnMap(e);
+                                clickedStructure = null;
                             } else if (rec.getFill().equals(COLOR_OF_WIRE)) {
-                                rec.setFill(COLOR_OF_EMPTY);
-                                cellMap.getCell(x0, y0).changeState(EMPA);
+                                Structure structure = cellMap.getCell(x0, y0).getStruct();
+                                if(structure instanceof Wire && ((Wire) structure).getLength() == 1)
+                                    deleteStructure(e);
                             }
                         }
                     }
@@ -155,6 +162,7 @@ public class MainPaneController implements Initializable {
                         break;
                     case ESCAPE:
                         clickedStructure = null;
+                        deleteStructureSwitch = false;
                         Rectangle rec;
                         wireStartPoint = null;
                         for (int i = 0; i < (backup != null && backup.tab != null ? backup.tab.length : 0); i++) {
@@ -184,6 +192,34 @@ public class MainPaneController implements Initializable {
         BorderPane.setMargin(grid, new Insets(BREAK, BREAK, BREAK, BREAK));
     }
 
+    private void deleteStructure(MouseEvent e) {
+        Rectangle rec = (Rectangle) e.getTarget();
+        int xMouse = GridPane.getRowIndex(rec), yMouse = GridPane.getColumnIndex(rec);
+
+        Structure struct = cellMap.getCell(xMouse, yMouse).getStruct();
+
+        if (struct == null)
+            return;
+
+        //CellMap cellMap1 = struct.structureAfterDirection();
+
+        int x, y;
+
+        x = struct.getXSizeAfterRotation();
+        y = struct.getYSizeAfterRotation();
+
+        for (int i = 0; i < x; i++) {
+            for (int j = 0; j < y; j++) {
+                cellMap.setCell(struct.getXAfterRotation() + i, struct.getYAfterRotation() + j, new Cell(4));
+            }
+        }
+
+        map.removeStructure(struct);
+        displayMap(cellMap);
+
+    }
+
+
     // size and gap in grid pane
     private final double SIZE = 50;
     private final double BREAK = 3;
@@ -200,6 +236,11 @@ public class MainPaneController implements Initializable {
     private boolean editable = false;
     private File saveFile;
     private Backup backup;
+
+    private boolean deleteStructureSwitch = false;
+
+    private Vector<Cell> electronHeadCellVector = null;
+    private Vector<Cell> electronTailCellVector = null;
 
     public static final Color COLOR_OF_WIRE = Color.SILVER;
     public static final Color COLOR_OF_EMPTY = Color.BLACK;
@@ -219,7 +260,11 @@ public class MainPaneController implements Initializable {
     // action buttons
 
     @FXML
-    void delete() {}
+    void delete() {
+        clickedStructure = null;
+        deleteStructureSwitch = true;
+
+    }
 
     @FXML
     void edit() {
@@ -249,7 +294,7 @@ public class MainPaneController implements Initializable {
             stage.setAlwaysOnTop(true);
             stage.show();
 
-            HelpDialogController controller = loader.getController();
+            //HelpDialogController controller = loader.getController();
         } catch (IOException e) {
             e.printStackTrace();
         }
@@ -259,8 +304,14 @@ public class MainPaneController implements Initializable {
     void newBoard() {
         if (simThread == null || (simThread != null && !simThread.isAlive())) {
             int[] result = Dialogs.newBoardDialog();
-            if (result != null) { xsize = result[0]; ysize = result[1]; }
-            if (xsize < 0 || ysize < 0) { xsize = 30; ysize = 30; }
+            if (result != null) {
+                xsize = result[0];
+                ysize = result[1];
+            }
+            if (xsize < 0 || ysize < 0) {
+                xsize = 30;
+                ysize = 30;
+            }
             clickedStructure = null;
             editable = false;
             firstAdded = false;
@@ -313,6 +364,7 @@ public class MainPaneController implements Initializable {
             if (selected != null) {
                 cellMap = DBops.getMapFromFile(selected);
                 displayMap(cellMap);
+                firstAdded = true;
             }
         }
     }
@@ -359,9 +411,10 @@ public class MainPaneController implements Initializable {
             if (saveFile == null) {
                 FileChooser fc = new FileChooser();
                 saveFile = fc.showSaveDialog(null);
+                findAllElectrons();
             }
             try {
-                if (saveFile != null) DBops.saveMapToFile(map, saveFile);
+                if (saveFile != null) DBops.saveMapToFile(map, saveFile, electronHeadCellVector, electronTailCellVector);
             } catch (IOException e) {
                 e.printStackTrace();
             }
@@ -373,10 +426,11 @@ public class MainPaneController implements Initializable {
         if (simThread == null || (simThread != null && !simThread.isAlive())) {
             FileChooser fc = new FileChooser();
             saveFile = fc.showSaveDialog(null);
+            findAllElectrons();
 
             if (saveFile != null) {
                 try {
-                    DBops.saveMapToFile(map, saveFile);
+                    DBops.saveMapToFile(map, saveFile, electronHeadCellVector, electronTailCellVector);
                 } catch (IOException e) {
                     e.printStackTrace();
                 }
@@ -629,6 +683,27 @@ public class MainPaneController implements Initializable {
         else if (name == "not") clickedStructure = new Not();
         else if (name == "wire") clickedStructure = new Wire();
         else if (name == "xor") clickedStructure = new Xor();
+    }
+
+    private void findAllElectrons()
+    {
+        electronHeadCellVector = new Vector<Cell>();
+        electronTailCellVector = new Vector<Cell>();
+        for(int i = 0; i < xsize; i++)
+        {
+            for(int j = 0; j < ysize; j++)
+            {
+                Cell cell = cellMap.getCell(i, j);
+                if(cell.getState() == ELEH)
+                {
+                    electronHeadCellVector.add(cell);
+                }
+                else if(cell.getState() == ELET)
+                {
+                    electronTailCellVector.add(cell);
+                }
+            }
+        }
     }
 }
 
