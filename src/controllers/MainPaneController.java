@@ -85,11 +85,13 @@ public class MainPaneController implements Initializable {
                             deleteStructure(e);
                         } else {
                             if (rec.getFill().equals(COLOR_OF_EMPTY)) {
-                                rec.setFill(COLOR_OF_WIRE);
-                                cellMap.getCell(x0, y0).changeState(WIRE);
+                                clickedStructure = new Wire(1,1);
+                                setStructureOnMap(e);
+                                clickedStructure = null;
                             } else if (rec.getFill().equals(COLOR_OF_WIRE)) {
-                                rec.setFill(COLOR_OF_EMPTY);
-                                cellMap.getCell(x0, y0).changeState(EMPA);
+                                Structure structure = cellMap.getCell(x0, y0).getStruct();
+                                if(structure instanceof Wire && ((Wire) structure).getLength() == 1)
+                                    deleteStructure(e);
                             }
                         }
                     }
