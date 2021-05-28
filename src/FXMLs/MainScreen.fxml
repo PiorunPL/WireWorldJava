@@ -103,7 +103,9 @@
                         </VBox>
                      </children>
                   </Pane>
-                  <Pane prefHeight="200.0" prefWidth="142.0" style="-fx-background-color: #344955;" VBox.vgrow="ALWAYS" />
+                  <Pane prefHeight="160.0" prefWidth="142.0" style="-fx-background-color: #344955;" VBox.vgrow="ALWAYS" />
+                  <Pane prefHeight="2.0" prefWidth="200.0" style="-fx-background-color: #F9AA33;" />
+                  <Button fx:id="deleteButton" mnemonicParsing="false" onAction="#delete" prefHeight="40.0" prefWidth="142.0" style="-fx-text-fill: #F9AA33; -fx-background-color: #344955; -fx-font-family: monospace; -fx-font-size: 16; -fx-background-radius: 0; -fx-font-weight: bold;" text="Delete" />
                </children>
             </VBox>
          </children>

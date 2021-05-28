@@ -2,13 +2,16 @@ package controllers;
 
 import javafx.event.EventHandler;
 import javafx.fxml.FXML;
+import javafx.fxml.FXMLLoader;
 import javafx.fxml.Initializable;
 import javafx.geometry.Insets;
+import javafx.scene.Scene;
 import javafx.scene.control.TextField;
 import javafx.scene.input.KeyEvent;
 import javafx.scene.input.MouseButton;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.input.ScrollEvent;
+import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.GridPane;
 import javafx.scene.layout.Pane;
@@ -21,6 +24,11 @@ import java.io.IOException;
 import java.net.URL;
 import java.util.ResourceBundle;
 
+import javafx.stage.Stage;
+import utils.exceptions.IllegalStructurePlacement;
+import java.util.Vector;
+
+
 import logic.Direction;
 import logic.Simulation;
 import utils.DBops;
@@ -30,20 +38,7 @@ import logic.StructMap;
 import logic.cells.Cell;
 import logic.cells.CellState;
 import logic.structures.*;
-import org.w3c.dom.css.Rect;
-import utils.DBops;
-import utils.Dialogs;
-import utils.exceptions.IllegalStructurePlacement;
-
-import java.io.File;
-import java.io.IOException;
-import java.net.URL;
-import java.util.ResourceBundle;
-import java.util.Vector;
-
-import static java.lang.Thread.sleep;
 import static logic.cells.CellState.*;
-
 public class MainPaneController implements Initializable {
 
 
@@ -223,6 +218,9 @@ public class MainPaneController implements Initializable {
     // action buttons
 
     @FXML
+    void delete() {}
+
+    @FXML
     void edit() {
         if (simThread == null || (simThread != null && !simThread.isAlive())) {
             try {
@@ -240,6 +238,19 @@ public class MainPaneController implements Initializable {
 
     @FXML
     void help() {
+        FXMLLoader loader = new FXMLLoader(this.getClass().getResource("/FXMLs/HelpDialog.fxml"));
+        try {
+            AnchorPane pane = loader.load();
+            Stage stage = new Stage();
+            Scene scene = new Scene(pane);
+            stage.setResizable(false);
+            stage.setScene(scene);
+            stage.show();
+
+            HelpDialogController controller = loader.getController();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
     }
 
     @FXML
@@ -317,7 +328,7 @@ public class MainPaneController implements Initializable {
             try {
                 iterations = Integer.parseInt(iterationTextField.getText());
             } catch (NumberFormatException e) {
-                // insertet value is not a number
+                // inserted value is not a number
             }
             iterationTextField.clear();
         }
@@ -326,7 +337,7 @@ public class MainPaneController implements Initializable {
             try {
                 timeStep = Integer.parseInt(timeStepTextField.getText());
             } catch (NumberFormatException e) {
-                // insertet value is not a number
+                // inserted value is not a number
             }
             timeStepTextField.clear();
         }
@@ -616,10 +627,6 @@ public class MainPaneController implements Initializable {
         else if (name == "not") clickedStructure = new Not();
         else if (name == "wire") clickedStructure = new Wire();
         else if (name == "xor") clickedStructure = new Xor();
-        else {
-
-        }
-
     }
 }
 
