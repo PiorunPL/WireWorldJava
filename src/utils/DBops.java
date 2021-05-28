@@ -129,9 +129,10 @@ public class DBops {
             for (int i = 0; i < structMap.size(); i++) {
                 fw.write("\n");
                 str = structMap.getStructure(i);
-                fw.write(str.getName() + " " + str.getX() + " " + str.getY() + " " + str.getDirection());
-                if(str.getName().equals("wire")) ;
-                    fw.write(" "+((Wire)str).getLength());
+                if (str instanceof Wire)
+                    fw.write(str.getName() + " " + str.getX() + " " + str.getY() + " " + str.getDirection() + " " + str.getXSize());
+                else
+                    fw.write(str.getName() + " " + str.getX() + " " + str.getY() + " " + str.getDirection());
             }
         } catch (Exception e) {
             System.out.println("Pusta structMapa");
@@ -192,7 +193,7 @@ public class DBops {
                 // map format of file
                 if (option.equals(mapK)) {
                     cellMap = getMapMapFormat(in, x, y);
-                    System.out.println(cellMap.getXSize()+" "+ cellMap.getYSize());
+                    System.out.println(cellMap.getXSize() + " " + cellMap.getYSize());
                     // structural format of file
                 } else if (option.equals(structK)) {
                     // getting user defined structures
@@ -219,9 +220,9 @@ public class DBops {
             ExceptionsDialogs.warningDialog("Warning", "Typed to less lines than declared");
         } catch (IllegalStructurePlacement e) {
             e.getMessage();
-        } catch(IllegalArgumentException e){
+        } catch (IllegalArgumentException e) {
             ExceptionsDialogs.warningDialog("Warning", "Incorrect value in input file");
-        } catch(NegativeArraySizeException e){
+        } catch (NegativeArraySizeException e) {
             ExceptionsDialogs.warningDialog("Warning", "Typed illegal size. Only positive or [-1 -1] values are allowed");
         }
         //testowanie czy struktury są dobrze wczytane
@@ -252,8 +253,8 @@ public class DBops {
      * @throws NoSuchElementException
      * @author Michał Ziober
      */
-    private static CellMap getMapMapFormat(File in, int x, int y) throws IOException, TooManyCellsException, TooLessCellsException, NoSuchElementException, NegativeArraySizeException{
-        if( x == -1 && y == -1){
+    private static CellMap getMapMapFormat(File in, int x, int y) throws IOException, TooManyCellsException, TooLessCellsException, NoSuchElementException, NegativeArraySizeException {
+        if (x == -1 && y == -1) {
             //Wydupca wireworlda, poprawić
             //instrukcje dla samoobliczającej się cellmapy- wystarczy zmienić x i y
             System.out.println("samoobliczajacy się rozmiar");
@@ -261,18 +262,17 @@ public class DBops {
             Scanner counter = new Scanner(in);
             String tmp = counter.nextLine();
             String[] countElem;
-            if(counter.hasNextLine()){
+            if (counter.hasNextLine()) {
                 countElem = (counter.nextLine()).split("\\s+");
                 y = countElem.length;
                 numberOfRows++;
             }
-            while(counter.hasNextLine()) {
+            while (counter.hasNextLine()) {
                 tmp = counter.nextLine();
                 numberOfRows++;
             }
             x = numberOfRows;
-        }
-        else if( x <= 0 || y <= 0 ) {
+        } else if (x <= 0 || y <= 0) {
             throw new NegativeArraySizeException();
         }
 
@@ -357,7 +357,7 @@ public class DBops {
             for (int j = 0; j < y; j++) {
                 cellMap.setCell(struct.getXAfterRotation() + i, struct.getYAfterRotation() + j, cellMap1.getCell(i, j));
                 cellMap.getCell(struct.getXAfterRotation() + i, struct.getYAfterRotation() + j).setxMap(struct.getXAfterRotation() + i);
-                cellMap.getCell(struct.getXAfterRotation() + i, struct.getYAfterRotation() + j).setyMap(struct.getYAfterRotation()+ j);
+                cellMap.getCell(struct.getXAfterRotation() + i, struct.getYAfterRotation() + j).setyMap(struct.getYAfterRotation() + j);
             }
         }
     }
