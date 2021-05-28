@@ -55,12 +55,6 @@ class DBopsTest {
         assertTrue(cont.equals(DBops.getUsersStructures(testStructFormatFile)));
     }
 
-    // temporary test, does not test this method, only prints StructMap
-    public void getMapFromFileTest() throws FileNotFoundException {
-        CellMap map = DBops.getMapFromFile(testStructFormatFile);
-        //printStructMap(map);
-    }
-
     @Test
     public void isCheckIfStructureFitWhenStructureFitDirectionUP() throws NoSuchMethodException, InvocationTargetException, IllegalAccessException {
         Method method = DBops.class.getDeclaredMethod("checkIfStructureFit", CellMap.class, Structure.class);
