@@ -78,7 +78,12 @@ public class MainPaneController implements Initializable {
                             } else {
                                 setStructureOnMap(e);
                             }
-                        } else {
+                            //TODO dodać obsługę po kliknięciu
+                        }
+                        else if(deleteStructureSwitch) {
+                            deleteStructure(e);
+                        }
+                        else {
                             if (rec.getFill().equals(COLOR_OF_EMPTY)) {
                                 rec.setFill(COLOR_OF_WIRE);
                                 cellMap.getCell(x0, y0).changeState(WIRE);
@@ -153,6 +158,7 @@ public class MainPaneController implements Initializable {
                         break;
                     case ESCAPE:
                         clickedStructure = null;
+                        deleteStructureSwitch = false;
                         Rectangle rec;
                         wireStartPoint = null;
                         for (int i = 0; i < (backup != null && backup.tab != null ? backup.tab.length : 0); i++) {
@@ -183,6 +189,35 @@ public class MainPaneController implements Initializable {
         BorderPane.setMargin(grid, new Insets(BREAK, BREAK, BREAK, BREAK));
     }
 
+    private void deleteStructure(MouseEvent e) {
+        Rectangle rec = (Rectangle) e.getTarget();
+        int xMouse = GridPane.getRowIndex(rec), yMouse = GridPane.getColumnIndex(rec);
+
+        Structure struct = cellMap.getCell(xMouse, yMouse).getStruct();
+
+        if(struct == null)
+            return;
+
+        //CellMap cellMap1 = struct.structureAfterDirection();
+
+        int x, y;
+
+        x = struct.getXSizeAfterRotation();
+        y = struct.getYSizeAfterRotation();
+
+        for (int i = 0; i < x; i++) {
+            for (int j = 0; j < y; j++) {
+                cellMap.setCell(struct.getXAfterRotation() + i, struct.getYAfterRotation() + j, new Cell(4));
+                cellMap.getCell(struct.getXAfterRotation() + i, struct.getYAfterRotation() + j).setxMap(struct.getXAfterRotation() + i);
+                cellMap.getCell(struct.getXAfterRotation() + i, struct.getYAfterRotation() + j).setyMap(struct.getYAfterRotation() + j);
+                cellMap.getCell(struct.getXAfterRotation() + i, struct.getYAfterRotation() + j).setStruct(null);
+            }
+        }
+
+        displayMap(cellMap);
+
+    }
+
     // size and gap in grid pane
     private final double SIZE = 50;
     private final double BREAK = 3;
@@ -199,6 +234,8 @@ public class MainPaneController implements Initializable {
     private boolean editable = false;
     private File saveFile;
     private Backup backup;
+
+    private boolean deleteStructureSwitch = false;
 
     public static final Color COLOR_OF_WIRE = Color.SILVER;
     public static final Color COLOR_OF_EMPTY = Color.BLACK;
@@ -218,7 +255,11 @@ public class MainPaneController implements Initializable {
     // action buttons
 
     @FXML
-    void delete() {}
+    void delete() {
+        clickedStructure = null;
+        deleteStructureSwitch = true;
+
+    }
 
     @FXML
     void edit() {
