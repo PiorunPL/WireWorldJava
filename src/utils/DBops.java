@@ -14,6 +14,7 @@ import java.io.FileNotFoundException;
 import java.io.FileWriter;
 import java.util.NoSuchElementException;
 import java.util.Scanner;
+import java.util.Vector;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 import java.io.IOException;
@@ -36,11 +37,11 @@ public class DBops {
     public static void main(String[] args) {
         StructMap m = new StructMap(50, 50);
         m.addStruct("or", 10, 15, Direction.setDirection("l"), -1);
-        try {
-            saveMapToFile(m, new File("test/testz"));
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
+   //     try {
+          //  saveMapToFile(m, new File("test/testz"));
+     //   } catch (IOException e) {
+      //      e.printStackTrace();
+    //    }
         //CellMap map = getMapFromFile(new File("C:\\Users\\lolol\\OneDrive - Politechnika Warszawska\\Pulpit\\Sem2\\JiMP2\\Wire\\src\\utils\\Test"));
 //        CellMap map = getMapFromFile(new File("test/testStruct2"));
 //        //Wyswietlanie mapy
@@ -65,7 +66,7 @@ public class DBops {
      * @throws IOException
      * @author Michał Ziober
      */
-    public static void saveMapToFile(StructMap map, File out) throws IOException {
+    public static void saveMapToFile(StructMap map, File out, Vector<Cell> electronHeadsVector, Vector<Cell> electronTailsVector) throws IOException {
         int x = map.getXsize();
         int y = map.getYsize();
         out.createNewFile();
@@ -80,8 +81,27 @@ public class DBops {
 
         fw.write("board<");
         putStructuresOnBoard(out, map, fw);
-        fw.write("\n>");
+        putElectronHeadsOnBoard(fw, electronHeadsVector);
+        putElectronTailsOnBoard(fw, electronTailsVector);
+        fw.write(">");
+
         fw.close();
+    }
+
+    private static void putElectronHeadsOnBoard(FileWriter fw, Vector<Cell> electronHeadsVector) throws IOException {
+        for(int i = 0; i < electronHeadsVector.size(); i++)
+        {
+            Cell cell = electronHeadsVector.get(i);
+            fw.write("electronHead " + cell.getxMap() + " " + cell.getyMap() + "\n");
+        }
+    }
+
+    private static void putElectronTailsOnBoard(FileWriter fw, Vector<Cell> electronTailsVector) throws IOException {
+        for(int i = 0; i < electronTailsVector.size(); i++)
+        {
+            Cell cell = electronTailsVector.get(i);
+            fw.write("electronTail " + cell.getxMap() + " " + cell.getyMap() + "\n");
+        }
     }
 
     /**
@@ -134,6 +154,7 @@ public class DBops {
                 else
                     fw.write(str.getName() + " " + str.getX() + " " + str.getY() + " " + str.getDirection());
             }
+            fw.write("\n");
         } catch (Exception e) {
             System.out.println("Pusta structMapa");
         }
@@ -201,6 +222,21 @@ public class DBops {
                     // getting map
                     structMap = getMap(in, x, y, container);
                     cellMap = getMapStructFormat(structMap);
+
+                    for(int i = 0; i < electronHead.size(); i++)
+                    {
+                        Cell cell = electronHead.get(i);
+                        cellMap.getCell(cell.getxMap(), cell.getyMap()).changeState(ELEH);
+                    }
+                    electronHead = null;
+
+                    for(int i = 0; i < electronTail.size(); i++)
+                    {
+                        Cell cell = electronTail.get(i);
+                        cellMap.getCell(cell.getxMap(), cell.getyMap()).changeState(ELET);
+                    }
+                    electronTail = null;
+
                 } else {
                     throw new IllegalFormatOptionException();
                 }
@@ -503,14 +539,28 @@ public class DBops {
         Scanner scanner = new Scanner(in);
         String line;
         String[] lineArr;
-
+        electronHead = new Vector<Cell>();
+        electronTail = new Vector<Cell>();
         map.addUserStructures(container);
 
         while (!scanner.nextLine().equals(boardK + "<")) ;
 
         while (!(line = scanner.nextLine()).equals(">")) {
             lineArr = line.split(" ");
-            if (lineArr.length == 4 || lineArr.length == 5) {
+            if(lineArr[0].equals("electronHead"))
+            {
+                Cell cell = new Cell(4);
+                cell.setxMap(Integer.parseInt(lineArr[1]));
+                cell.setyMap(Integer.parseInt(lineArr[2]));
+                electronHead.add(cell);
+            }
+            else if(lineArr[0].equals("electronTail")) {
+                Cell cell = new Cell(4);
+                cell.setxMap(Integer.parseInt(lineArr[1]));
+                cell.setyMap(Integer.parseInt(lineArr[2]));
+                electronTail.add(cell);
+            }
+            else if (lineArr.length == 4 || lineArr.length == 5) {
                 map.addStruct(
                         lineArr[0],
                         Integer.parseInt(lineArr[1]),
@@ -523,6 +573,8 @@ public class DBops {
         return map;
     }
 
+    private static Vector<Cell> electronHead;
+    private static Vector<Cell> electronTail;
 
     /**
      * @param in plik wejściowy, z którego ma być odczytana pierwsza linia
