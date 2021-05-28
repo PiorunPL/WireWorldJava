@@ -358,6 +358,7 @@ public class DBops {
                 cellMap.setCell(struct.getXAfterRotation() + i, struct.getYAfterRotation() + j, cellMap1.getCell(i, j));
                 cellMap.getCell(struct.getXAfterRotation() + i, struct.getYAfterRotation() + j).setxMap(struct.getXAfterRotation() + i);
                 cellMap.getCell(struct.getXAfterRotation() + i, struct.getYAfterRotation() + j).setyMap(struct.getYAfterRotation() + j);
+                cellMap.getCell(struct.getXAfterRotation() + i, struct.getYAfterRotation() + j).setStruct(struct);
             }
         }
     }
@@ -406,7 +407,7 @@ public class DBops {
 
         for (int i = 0; i < x; i++) {
             for (int j = 0; j < y; j++) {
-                if (!canBePlaced(cellMap.getCell(struct.getXAfterRotation(), struct.getYAfterRotation()).getState(), cellMap1.getCell(i, j).getState())) {
+                if (!canBePlaced(cellMap.getCell(struct.getXAfterRotation() + i, struct.getYAfterRotation() + j).getState(), cellMap1.getCell(i, j).getState())) {
                     return false;
                 }
             }

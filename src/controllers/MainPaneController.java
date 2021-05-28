@@ -247,7 +247,7 @@ public class MainPaneController implements Initializable {
             stage.setScene(scene);
             stage.show();
 
-            HelpDialogController controller = loader.getController();
+            //HelpDialogController controller = loader.getController();
         } catch (IOException e) {
             e.printStackTrace();
         }
@@ -311,6 +311,7 @@ public class MainPaneController implements Initializable {
             if (selected != null) {
                 cellMap = DBops.getMapFromFile(selected);
                 displayMap(cellMap);
+                firstAdded = true;
             }
         }
     }

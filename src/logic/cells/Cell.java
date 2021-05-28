@@ -4,6 +4,7 @@ package logic.cells;
 import controllers.Main;
 import controllers.MainPaneController;
 import javafx.scene.paint.Color;
+import logic.structures.Structure;
 
 import java.awt.*;
 
@@ -23,8 +24,18 @@ public class Cell {
     private Color color;
     private int xMap;
     private int yMap;
+    private Structure struct = null;
 
     public Color getColor() { return color; }
+
+    public Structure getStruct() {
+        return struct;
+    }
+
+    public void setStruct(Structure struct) {
+        this.struct = struct;
+    }
+
     public CellState getState() { return state; }
     public CellState getPreviousState() { return previousState; }
 
