@@ -120,6 +120,8 @@ public class MainPaneController implements Initializable {
         };
         fxmlRoot.addEventFilter(MouseEvent.MOUSE_CLICKED, mouseClick);
 
+
+
         // scrolling event
         EventHandler<ScrollEvent> mouseScroll = new EventHandler<ScrollEvent>() {
             @Override
@@ -186,7 +188,6 @@ public class MainPaneController implements Initializable {
         fxmlRoot.setCenter(pane);
         pane.setViewOrder(1);
 
-        grid.toBack();
         grid.setViewOrder(1);
         BorderPane.setMargin(grid, new Insets(BREAK, BREAK, BREAK, BREAK));
     }
@@ -290,6 +291,7 @@ public class MainPaneController implements Initializable {
             Scene scene = new Scene(pane);
             stage.setResizable(false);
             stage.setScene(scene);
+            stage.setAlwaysOnTop(true);
             stage.show();
 
             //HelpDialogController controller = loader.getController();
