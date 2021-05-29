@@ -49,4 +49,7 @@ public class StructMap {
         }
         else System.out.printf("Structure '%s' doesn't exist in this context.\n", name);
     }
+    public void addStruct(Structure structure){
+        this.list.add(structure);
+    }
 }
