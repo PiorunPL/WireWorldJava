@@ -85,12 +85,12 @@ public class MainPaneController implements Initializable {
                             deleteStructure(e);
                         } else {
                             if (rec.getFill().equals(COLOR_OF_EMPTY)) {
-                                clickedStructure = new Wire(1,1);
+                                clickedStructure = new Wire(1, 1);
                                 setStructureOnMap(e);
                                 clickedStructure = null;
                             } else if (rec.getFill().equals(COLOR_OF_WIRE)) {
                                 Structure structure = cellMap.getCell(x0, y0).getStruct();
-                                if(structure instanceof Wire && ((Wire) structure).getLength() == 1)
+                                if (structure instanceof Wire && ((Wire) structure).getLength() == 1)
                                     deleteStructure(e);
                             }
                         }
@@ -119,7 +119,6 @@ public class MainPaneController implements Initializable {
             }
         };
         fxmlRoot.addEventFilter(MouseEvent.MOUSE_CLICKED, mouseClick);
-
 
 
         // scrolling event
@@ -179,6 +178,7 @@ public class MainPaneController implements Initializable {
 
         // initialization of grid pane
         cellMap = new CellMap(xsize, ysize);
+        map = new StructMap(xsize, ysize);
         drawGrid();
 
         // setup of grid pane
@@ -416,7 +416,8 @@ public class MainPaneController implements Initializable {
                 findAllElectrons();
             }
             try {
-                if (saveFile != null) DBops.saveMapToFile(map, saveFile, electronHeadCellVector, electronTailCellVector);
+                if (saveFile != null)
+                    DBops.saveMapToFile(map, saveFile, electronHeadCellVector, electronTailCellVector);
             } catch (IOException e) {
                 e.printStackTrace();
             }
@@ -646,16 +647,7 @@ public class MainPaneController implements Initializable {
                 StructMap structMap = new StructMap(xsize, ysize);
                 clickedStructure.setX(xMouse);
                 clickedStructure.setY(yMouse);
-
-                structMap.addStruct(clickedStructure.getName(), xMouse, yMouse, clickedStructure.getDirection(), clickedStructure.getXSize());
-
-                if (firstAdded) {
-                    DBops.getMapStructFormat(clickedStructure, cellMap);
-
-                } else {
-                    cellMap = DBops.getMapStructFormat(structMap);
-                    firstAdded = true;
-                }
+                DBops.getMapStructFormat(clickedStructure, cellMap);
             } catch (IllegalStructurePlacement illegalStructurePlacement) {
                 illegalStructurePlacement.printStackTrace();
                 error = true;
@@ -687,21 +679,15 @@ public class MainPaneController implements Initializable {
         else if (name == "xor") clickedStructure = new Xor();
     }
 
-    private void findAllElectrons()
-    {
+    private void findAllElectrons() {
         electronHeadCellVector = new Vector<Cell>();
         electronTailCellVector = new Vector<Cell>();
-        for(int i = 0; i < xsize; i++)
-        {
-            for(int j = 0; j < ysize; j++)
-            {
+        for (int i = 0; i < xsize; i++) {
+            for (int j = 0; j < ysize; j++) {
                 Cell cell = cellMap.getCell(i, j);
-                if(cell.getState() == ELEH)
-                {
+                if (cell.getState() == ELEH) {
                     electronHeadCellVector.add(cell);
-                }
-                else if(cell.getState() == ELET)
-                {
+                } else if (cell.getState() == ELET) {
                     electronTailCellVector.add(cell);
                 }
             }
