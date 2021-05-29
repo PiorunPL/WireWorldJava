@@ -59,8 +59,8 @@ public class Cell {
         if (i == 1) color = MainPaneController.COLOR_OF_WIRE;
         else if (i == 2) color = MainPaneController.COLOR_OF_TAIL;
         else if (i == 3) color = MainPaneController.COLOR_OF_HEAD;
-        else if (i == 4) color = MainPaneController.COLOR_OF_EMPTY;
-        else if (i == 5) color = MainPaneController.COLOR_OF_EMPTYNOTAPPENDABLE;
+        else if (i == 4) color = MainPaneController.COLOR_OF_EMPA;
+        else if (i == 5) color = MainPaneController.COLOR_OF_EMPN;
         else throw new IllegalArgumentException();
         this.state = CellState.setCellState(i);
     }
@@ -70,8 +70,8 @@ public class Cell {
         if (state1 == WIRE) color = MainPaneController.COLOR_OF_WIRE;
         else if (state1 == ELET) color = MainPaneController.COLOR_OF_TAIL;
         else if (state1 == ELEH) color = MainPaneController.COLOR_OF_HEAD;
-        else if (state1 == EMPA) color = MainPaneController.COLOR_OF_EMPTY;
-        else if (state1 == EMPN) color = MainPaneController.COLOR_OF_EMPTYNOTAPPENDABLE;
+        else if (state1 == EMPA) color = MainPaneController.COLOR_OF_EMPA;
+        else if (state1 == EMPN) color = MainPaneController.COLOR_OF_EMPN;
         else throw new IllegalArgumentException();
     }
 

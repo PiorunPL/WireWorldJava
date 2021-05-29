@@ -30,32 +30,6 @@ class DBopsTest {
     }
 
     @Test
-    public void getUsersStructuresTest() throws FileNotFoundException {
-        UsersStructuresContainer cont = new UsersStructuresContainer();
-        Cell[][] cell1 = {
-                {new Cell(0), new Cell(1), new Cell(0), new Cell(1), new Cell(1)},
-                {new Cell(0), new Cell(1), new Cell(0), new Cell(1), new Cell(0)}
-        };
-        UsersStructure struct = new UsersStructure(
-                "structName1", 2, 5, cell1);
-        cont.add(struct);
-
-        Cell[][] cell2 = {
-                {new Cell(1), new Cell(0), new Cell(1), new Cell(0), new Cell(1)},
-                {new Cell(1), new Cell(1), new Cell(1), new Cell(0), new Cell(1)}
-        };
-        struct = new UsersStructure(
-                "structName2", 2, 5, cell2);
-        cont.add(struct);
-
-        //DBops.getUsersStructures(testStructFormatFile).get(0).print();
-        //DBops.getUsersStructures(testStructFormatFile).get(1).print();
-        //cont.get(0).print();
-        //cont.get(1).print();
-        assertTrue(cont.equals(DBops.getUsersStructures(testStructFormatFile)));
-    }
-
-    @Test
     public void isCheckIfStructureFitWhenStructureFitDirectionUP() throws NoSuchMethodException, InvocationTargetException, IllegalAccessException {
         Method method = DBops.class.getDeclaredMethod("checkIfStructureFit", CellMap.class, Structure.class);
         method.setAccessible(true);

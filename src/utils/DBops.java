@@ -33,31 +33,6 @@ public class DBops {
     private static UsersStructuresContainer container = null;
     private static StructMap structMap = null;
 
-
-    public static void main(String[] args) {
-        StructMap m = new StructMap(50, 50);
-        m.addStruct("or", 10, 15, Direction.setDirection("l"), -1);
-   //     try {
-          //  saveMapToFile(m, new File("test/testz"));
-     //   } catch (IOException e) {
-      //      e.printStackTrace();
-    //    }
-        //CellMap map = getMapFromFile(new File("C:\\Users\\lolol\\OneDrive - Politechnika Warszawska\\Pulpit\\Sem2\\JiMP2\\Wire\\src\\utils\\Test"));
-//        CellMap map = getMapFromFile(new File("test/testStruct2"));
-//        //Wyswietlanie mapy
-//        try {
-//            saveMapToFile(structMap, new File("test/testStruct2out"));
-//        } catch (IOException e) {
-//            e.printStackTrace();
-//        }
-//        for (int i = 0; i < map.getXSize(); i++) {
-//            for (int j = 0; j < map.getYSize(); j++) {
-//                System.out.print(map.getCell(i, j).getState() + " ");
-//            }
-//            System.out.println();
-//        }
-    }
-
     /**
      * Zapisuje mapę do pliku w formacie strukturalnym
      *
@@ -465,9 +440,7 @@ public class DBops {
         return true;
     }
 
-
-    //TODO: zmienić na private
-    public static UsersStructuresContainer getUsersStructures(File in) throws FileNotFoundException {
+    private static UsersStructuresContainer getUsersStructures(File in) throws FileNotFoundException {
         Scanner scanner = new Scanner(in);
 
         UsersStructuresContainer usersStructures = new UsersStructuresContainer();
@@ -532,8 +505,7 @@ public class DBops {
         return usersStructures;
     }
 
-    //TODO: zmienić na private
-    public static StructMap getMap(File in, int x, int y, UsersStructuresContainer container)
+    private static StructMap getMap(File in, int x, int y, UsersStructuresContainer container)
             throws FileNotFoundException {
         StructMap map = new StructMap(x, y);
         Scanner scanner = new Scanner(in);
