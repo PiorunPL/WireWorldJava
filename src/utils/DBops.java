@@ -34,27 +34,23 @@ public class DBops {
 
 
     public static void main(String[] args) {
-        StructMap m = new StructMap(50, 50);
-        m.addStruct("or", 10, 15, Direction.setDirection("l"), -1);
-        try {
-            saveMapToFile(m, new File("test/testz"));
+
+
+        //CellMap map = getMapFromFile(new File("C:\\Users\\lolol\\OneDrive - Politechnika Warszawska\\Pulpit\\Sem2\\JiMP2\\Wire\\src\\utils\\Test"));
+        CellMap map = getMapFromFile(new File("test/testStruct2"));
+        System.out.println(map);
+//        //Wyswietlanie mapy
+        /*try {
+            saveMapToFile(structMap, new File("test/testStruct2out"));
         } catch (IOException e) {
             e.printStackTrace();
+        }*/
+        for (int i = 0; i < map.getXSize(); i++) {
+            for (int j = 0; j < map.getYSize(); j++) {
+                System.out.print(map.getCell(i, j).getState() + " ");
+            }
+            System.out.println();
         }
-        //CellMap map = getMapFromFile(new File("C:\\Users\\lolol\\OneDrive - Politechnika Warszawska\\Pulpit\\Sem2\\JiMP2\\Wire\\src\\utils\\Test"));
-//        CellMap map = getMapFromFile(new File("test/testStruct2"));
-//        //Wyswietlanie mapy
-//        try {
-//            saveMapToFile(structMap, new File("test/testStruct2out"));
-//        } catch (IOException e) {
-//            e.printStackTrace();
-//        }
-//        for (int i = 0; i < map.getXSize(); i++) {
-//            for (int j = 0; j < map.getYSize(); j++) {
-//                System.out.print(map.getCell(i, j).getState() + " ");
-//            }
-//            System.out.println();
-//        }
     }
 
     /**
@@ -253,6 +249,7 @@ public class DBops {
      * @throws NoSuchElementException
      * @author Michał Ziober
      */
+    //TODO ogarnąć tak, żeby liczba kolumn mogła się nie zgadzać
     private static CellMap getMapMapFormat(File in, int x, int y) throws IOException, TooManyCellsException, TooLessCellsException, NoSuchElementException, NegativeArraySizeException {
         if (x == -1 && y == -1) {
             //Wydupca wireworlda, poprawić
@@ -310,18 +307,72 @@ public class DBops {
     public static CellMap getMapStructFormat(StructMap structMap1) throws IllegalStructurePlacement {
         int xsize = structMap1.getXsize();
         int ysize = structMap1.getYsize();
-        CellMap cellMap = new CellMap(xsize, ysize);
+        boolean specifiedSize = true;
+        CellMap cellMap;
+        if (xsize == -1 && ysize == -1){
+            specifiedSize = false;
+            cellMap = new CellMap(2, 2);
+        }
+        else if (xsize <= 0 || ysize <= 0) {
+            throw new NegativeArraySizeException();
+        }
+        else {
+            cellMap = new CellMap(xsize, ysize);
+        }
 
         if (structMap == null)
             structMap = structMap1;
 
         for (int i = 0; i < structMap1.size(); i++) {
             Structure struct = structMap1.getStructure(i);
+            if(!specifiedSize) {
+                cellMap = changeX(cellMap, struct);
+                cellMap = changeY(cellMap, struct);
+                System.out.println("\n\n"+cellMap.getXSize());
+                System.out.println("\n\n"+cellMap.getYSize());
+
+            }
             if (checkIfStructureFit(cellMap, struct) && checkIfSpaceForStructureIsClear(cellMap, struct)) {
                 putStructToCellMap(cellMap, struct);
             } else {
                 throw new IllegalStructurePlacement();
             }
+        }
+        return cellMap;
+    }
+
+    //To już powinno działać
+    private static CellMap changeX(CellMap cellMap, Structure structure){
+        Direction direction = structure.getDirection();
+        if (direction.equals(Direction.UP) && structure.getX()+1 > cellMap.getXSize()) {
+            cellMap = cellMap.changeSize(cellMap, structure.getX()+1, cellMap.getYSize());
+        } else if (direction.equals(Direction.RIGHT) && (structure.getX()+1+structure.getXSize()) > cellMap.getXSize()) {
+            cellMap = cellMap.changeSize(cellMap,structure.getX()+1 + structure.getXSize(), cellMap.getYSize());
+        } else if (direction.equals(Direction.DOWN) && (structure.getX()+1 + structure.getYSize()) > cellMap.getXSize()) {
+            cellMap = cellMap.changeSize(cellMap,structure.getX()+1 + structure.getYSize(), cellMap.getYSize());
+        } else if (direction.equals(Direction.LEFT) && structure.getX()+1 + structure.getXSize() > cellMap.getXSize()) {
+            cellMap = cellMap.changeSize(cellMap, structure.getX()+1 + structure.getXSize(), cellMap.getYSize());
+        }
+        return cellMap;
+    }
+
+    private static CellMap changeY(CellMap cellMap, Structure structure){
+        Direction direction = structure.getDirection();
+        if (direction.equals(Direction.UP) && structure.getY()+1 + structure.getXSize() > cellMap.getYSize()){
+            cellMap = cellMap.changeSize(cellMap, cellMap.getXSize(), structure.getY()+1 + structure.getXSize());
+        }
+        else if (direction.equals(Direction.RIGHT) && structure.getY()+1 + structure.getYSize() > cellMap.getYSize()){
+            System.out.println("structure.getY() " + structure.getY());
+            System.out.println("structure.getYSize() "+structure.getYSize());
+            System.out.println("cellMap.getYSize() " + cellMap.getYSize());
+            System.out.println("cellMap.getXSize() "+cellMap.getXSize());
+            cellMap = cellMap.changeSize(cellMap, cellMap.getXSize(), structure.getY()+1 + structure.getYSize());
+        }
+        else if (direction.equals(Direction.DOWN) && structure.getY()+1 > cellMap.getYSize()){
+            cellMap = cellMap.changeSize(cellMap, cellMap.getXSize(), structure.getY()+1);
+        }
+        else if (direction.equals(Direction.LEFT) && structure.getY()+1 > cellMap.getYSize()){
+            cellMap = cellMap.changeSize(cellMap, cellMap.getXSize(), structure.getY()+1);
         }
         return cellMap;
     }
