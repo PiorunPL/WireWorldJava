@@ -152,10 +152,7 @@ public class MainPaneController implements Initializable {
         // scrolling event
         EventHandler<ScrollEvent> mouseScroll = e -> {
             double translate = grid.getTranslateZ() - e.getDeltaY();
-            if (translate >= -1000 && translate <= 3480) {
-                grid.translateZProperty().set(translate);
-                System.out.println(grid.getTranslateZ());
-            }
+            if (translate >= -1000 && translate <= 3480) grid.translateZProperty().set(translate);
         };
         fxmlRoot.addEventFilter(ScrollEvent.SCROLL, mouseScroll);
 
