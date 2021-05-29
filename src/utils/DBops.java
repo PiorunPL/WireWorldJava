@@ -378,6 +378,7 @@ public class DBops {
         }
     }
 
+
     //DONE prztestować
     private static void putStructToCellMap(CellMap cellMap, Structure struct) {
 
