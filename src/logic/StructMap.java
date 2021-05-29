@@ -6,19 +6,16 @@ import logic.structures.UsersStructuresContainer;
 import java.util.ArrayList;
 import java.util.List;
 
-// co to tak na prawdę są te x i y w tym przypadku?
 public class StructMap {
     public StructMap(int x, int y) {
-        if (x > 0 && y > 0) this.knownDimensions = true;
-        else this.knownDimensions = false;
-        this.xsize = x;
-        this.ysize = y;
+        this.knownDimensions = x > 0 && y > 0;
+        this.xSize = x;
+        this.ySize = y;
         list = new ArrayList<Structure>();
     }
 
     // container for all structures used in this map
     private List<Structure> list;
-
 
     public void removeStructure(Structure structure){
         list.remove(structure);
@@ -28,15 +25,16 @@ public class StructMap {
     private UsersStructuresContainer userStructures;
 
     // map dimensions
-    private int xsize, ysize;
+    private final int xSize;
+    private final int ySize;
 
     // are map dimensions known?
-    private boolean knownDimensions;
+    private final boolean knownDimensions;
 
     public UsersStructuresContainer getUserStructures() { return this.userStructures; }
     public Structure getStructure(int i) { return this.list.get(i); }
-    public int getXsize() { return this.xsize; }
-    public int getYsize() { return this.ysize; }
+    public int getXSize() { return this.xSize; }
+    public int getYSize() { return this.ySize; }
     public boolean getKnownDimensions() { return knownDimensions; }
 
     public int size() { return list.size(); }
@@ -48,8 +46,5 @@ public class StructMap {
             this.list.add(struct);
         }
         else System.out.printf("Structure '%s' doesn't exist in this context.\n", name);
-    }
-    public void addStruct(Structure structure){
-        this.list.add(structure);
     }
 }

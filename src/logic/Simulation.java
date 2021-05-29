@@ -1,14 +1,13 @@
 package logic;
 
 import logic.cells.Cell;
-import logic.structures.Structure;
 
 import java.util.Vector;
 
 import static logic.cells.CellState.*;
 
 public class Simulation {
-    private CellMap cellMap;
+    private final CellMap cellMap;
     private Vector<Cell> cellVectorChanged;
 
     public CellMap getCellMap() {
@@ -27,16 +26,12 @@ public class Simulation {
         save();
     }
 
-    //TODO Zmiana symulacji z tabeli na jakąś inna strukturę? coś co będzie trzymało tylko electronhead, electrontail i wire (możliwe ze równiez notappendable)
-    //DONE Zapisywanie zaktualizowanych (Nowych takich, których wcześniejszy stan był inny) do wektora (lub jakiejs innej struktury)
     public void simulate() {
         setPreviousStateMap();
         cleanCellVectorChanged();
         for (int i = 0; i < cellMap.getXSize(); i++) {
             for (int j = 0; j < cellMap.getYSize(); j++) {
-                if (cellMap.getCell(i, j).getPreviousState() == EMPN) ;
-                else if (cellMap.getCell(i, j).getPreviousState() == EMPA) ;
-                else if (cellMap.getCell(i, j).getPreviousState() == WIRE) {
+                if (cellMap.getCell(i, j).getPreviousState() == WIRE) {
                     if (isNumberOfHeadsCorrect(i, j)) {
                         cellMap.getCell(i, j).changeState(ELEH);
                         cellVectorChanged.add(cellMap.getCell(i, j));
@@ -78,10 +73,7 @@ public class Simulation {
             }
         }
 
-        if (numberOfElectronHeads != 0)
-            return true;
-        return false;
-
+        return numberOfElectronHeads != 0;
     }
 
     public Vector<Cell> getCellVectorChanged() {

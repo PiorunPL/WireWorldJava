@@ -3,18 +3,14 @@ package utils;
 import logic.CellMap;
 import logic.Direction;
 import logic.StructMap;
-import logic.cells.Cell;
 import logic.cells.CellState;
 import logic.structures.Or;
 import logic.structures.Structure;
-import logic.structures.UsersStructure;
-import logic.structures.UsersStructuresContainer;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
 import utils.exceptions.IllegalStructurePlacement;
 
 import java.io.File;
-import java.io.FileNotFoundException;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 
@@ -618,8 +614,8 @@ class DBopsTest {
     public void printStructMap(StructMap map) {
         System.out.printf("StructMap\n\tlength: %d\n", map.size());
         System.out.printf("\tsize: [%d, %d], %s\n",
-                map.getXsize(),
-                map.getYsize(),
+                map.getXSize(),
+                map.getYSize(),
                 map.getKnownDimensions() ? "known" : "not known"
         );
         for (int i = 0; i < map.size(); i++) {

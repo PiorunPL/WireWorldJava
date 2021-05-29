@@ -5,8 +5,8 @@ import logic.cells.Cell;
 
 public class Xor extends Structure {
     public Xor() {
-        this.xsize = 5;
-        this.ysize = 6;
+        this.xSize = 5;
+        this.ySize = 6;
         this.direction = Direction.UP;
         this.name = "xor";
         this.structure = new Cell[][]{
@@ -21,8 +21,8 @@ public class Xor extends Structure {
     public Xor(int x, int y, Direction direction) {
         this.x = x;
         this.y = y;
-        this.xsize = 5;
-        this.ysize = 6;
+        this.xSize = 5;
+        this.ySize = 6;
         this.direction = direction;
         this.name = "xor";
         this.structure = new Cell[][]{
@@ -34,6 +34,4 @@ public class Xor extends Structure {
 
         };
     }
-
-
 }

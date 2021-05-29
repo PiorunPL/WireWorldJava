@@ -5,8 +5,8 @@ import logic.cells.Cell;
 
 public class Diode extends Structure {
     public Diode() {
-        this.xsize = 5;
-        this.ysize = 4;
+        this.xSize = 5;
+        this.ySize = 4;
         this.direction = Direction.UP;
         this.name = "diode";
         this.structure = new Cell[][]{
@@ -20,8 +20,8 @@ public class Diode extends Structure {
     public Diode(int x, int y, Direction direction) {
         this.x = x;
         this.y = y;
-        this.xsize = 5;
-        this.ysize = 4;
+        this.xSize = 5;
+        this.ySize = 4;
         this.direction = direction;
         this.name = "diode";
         this.structure = new Cell[][]{

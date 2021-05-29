@@ -26,11 +26,9 @@ public class DBops {
     //map files keywords
     private final static String structK = "struct";
     private final static String mapK = "map";
-    private final static String dimensionsK = "dimensions";
     private final static String structuresK = "structures";
     private final static String boardK = "board";
 
-    private static UsersStructuresContainer container = null;
     private static StructMap structMap = null;
 
     /**
@@ -38,12 +36,11 @@ public class DBops {
      *
      * @param map StructMap do zapisu
      * @param out Plik w którym będzie zapisywane
-     * @throws IOException
      * @author Michał Ziober
      */
     public static void saveMapToFile(StructMap map, File out, Vector<Cell> electronHeadsVector, Vector<Cell> electronTailsVector) throws IOException {
-        int x = map.getXsize();
-        int y = map.getYsize();
+        int x = map.getXSize();
+        int y = map.getYSize();
         out.createNewFile();
 
         FileWriter fw = new FileWriter(out);
@@ -51,11 +48,11 @@ public class DBops {
 
         //Zapisywanie struktur użytkownika
         if (map.getUserStructures() != null) {
-            putUsersStructures(out, fw, map.getUserStructures());
+            putUsersStructures(fw, map.getUserStructures());
         }
 
         fw.write("board<");
-        putStructuresOnBoard(out, map, fw);
+        putStructuresOnBoard(map, fw);
         putElectronHeadsOnBoard(fw, electronHeadsVector);
         putElectronTailsOnBoard(fw, electronTailsVector);
         fw.write(">");
@@ -64,30 +61,24 @@ public class DBops {
     }
 
     private static void putElectronHeadsOnBoard(FileWriter fw, Vector<Cell> electronHeadsVector) throws IOException {
-        for(int i = 0; i < electronHeadsVector.size(); i++)
-        {
-            Cell cell = electronHeadsVector.get(i);
-            fw.write("electronHead " + cell.getxMap() + " " + cell.getyMap() + "\n");
+        for (Cell cell : electronHeadsVector) {
+            fw.write("electronHead " + cell.getXMap() + " " + cell.getYMap() + "\n");
         }
     }
 
     private static void putElectronTailsOnBoard(FileWriter fw, Vector<Cell> electronTailsVector) throws IOException {
-        for(int i = 0; i < electronTailsVector.size(); i++)
-        {
-            Cell cell = electronTailsVector.get(i);
-            fw.write("electronTail " + cell.getxMap() + " " + cell.getyMap() + "\n");
+        for (Cell cell : electronTailsVector) {
+            fw.write("electronTail " + cell.getXMap() + " " + cell.getYMap() + "\n");
         }
     }
 
     /**
      * Metoda wykorzystywana do zapisywania pliku w formacie strukturalnym; zapisuje struktury zdefiniowane przez użytkownika
      *
-     * @param out Plik do zapisu
      * @param fw  FileWriter zapisujący
-     * @throws IOException
      * @author Michał Ziober
      */
-    private static void putUsersStructures(File out, FileWriter fw, UsersStructuresContainer container) throws IOException {
+    private static void putUsersStructures(FileWriter fw, UsersStructuresContainer container) throws IOException {
         fw.write("structures<\n");
         UsersStructure us;
         for (int i = 0; i < container.size(); i++) {
@@ -113,13 +104,11 @@ public class DBops {
     /**
      * Metoda wykorzystywana do zapisywania pliku w formacie strukturalnym; zapisuje struktury w zakładce board
      *
-     * @param out Plik do zapisu
      * @param fw  FileWriter zapisujący
-     * @throws IOException
      * @author Michał Ziober
      */
-    private static void putStructuresOnBoard(File out, StructMap structMap, FileWriter fw) throws IOException {
-        Structure str = null;
+    private static void putStructuresOnBoard(StructMap structMap, FileWriter fw) {
+        Structure str;
         try {
             for (int i = 0; i < structMap.size(); i++) {
                 fw.write("\n");
@@ -135,49 +124,12 @@ public class DBops {
         }
     }
 
-    /**
-     * Zapisuje mapę w formacie mapy komórek do pliku
-     *
-     * @param cellMap Mapa do zapisania
-     * @param out     Plik w którym mapa będzie zapisywana
-     * @author Michał Ziober
-     */
-    public static void saveMapToFile(CellMap cellMap, File out) throws IOException {
-        int x = cellMap.getXSize();
-        int y = cellMap.getYSize();
-        out.createNewFile();
-
-        FileWriter fw = new FileWriter(out);
-        fw.write("map " + x + " " + y + "\n");
-        for (int i = 0; i < x; i++) {
-            for (int j = 0; j < y; j++) {
-                int state = 0;
-                CellState cellState = cellMap.getCell(i, j).getState();
-                if (WIRE.equals(cellState)) {
-                    state = 1;
-                } else if (ELET.equals(cellState)) {
-                    state = 2;
-                } else if (ELEH.equals(cellState)) {
-                    state = 3;
-                } else if (EMPA.equals(cellState)) {
-                    state = 4;
-                } else if (EMPN.equals(cellState)) {
-                    state = 5;
-                }
-                fw.write(state + " ");
-            }
-            fw.write("\n");
-        }
-        fw.close();
-    }
-
-
     public static StructMap getMapFromFile(File in) throws NullPointerException {
-        CellMap cellMap = null;
+        CellMap cellMap;
         String option;
         String[] firstLine;
-        int x = 0;
-        int y = 0;
+        int x;
+        int y;
 
         try {
             firstLine = firstLineToArray(in);
@@ -193,16 +145,14 @@ public class DBops {
                     // structural format of file
                 } else if (option.equals(structK)) {
                     // getting user defined structures
-                    container = getUsersStructures(in);
+                    UsersStructuresContainer container = getUsersStructures(in);
                     // getting map
                     structMap = getMap(in, x, y, container);
-
-
                 } else {
                     throw new IllegalFormatOptionException();
                 }
             } else
-                throw new IncorretNumberOfArgumentsException();
+                throw new IncorrectNumberOfArgumentsException();
         } catch (IOException e) {
             e.printStackTrace();
         } catch (IllegalFormatOptionException e) {
@@ -211,7 +161,7 @@ public class DBops {
             e.getMessage();
         } catch (TooLessCellsException e) {
             e.getMessage();
-        } catch (IncorretNumberOfArgumentsException e) {
+        } catch (IncorrectNumberOfArgumentsException e) {
             e.getMessage();
         } catch (NoSuchElementException e) {
             ExceptionsDialogs.warningDialog("Warning", "Typed to less lines than declared");
@@ -220,20 +170,8 @@ public class DBops {
         } catch (NegativeArraySizeException e) {
             ExceptionsDialogs.warningDialog("Warning", "Typed illegal size. Only positive or [-1 -1] values are allowed");
         }
-        //testowanie czy struktury są dobrze wczytane
-        /*for(int i=0; i<structMap.size(); i++){
-            Structure struct = structMap.getStructure(i);
-            for(int j=0; j<struct.getXsize(); j++){
-                for(int k=0; k<struct.getYsize(); k++){
-                    System.out.print(struct.getCell(j, k).getState()+" ");
-                }
-                System.out.println();
-            }
-            System.out.println();
-        }*/
         return structMap;
     }
-
 
     /**
      * Funkcja konwertuje plik wejściowy w mapowym formacie na CellMap
@@ -242,20 +180,13 @@ public class DBops {
      * @param x  Ilość wierszy mapy
      * @param y  Ilośc kolumn mapy
      * @return Przekonwertowany plik na CellMap
-     * @throws IOException
-     * @throws TooManyCellsException
-     * @throws TooLessCellsException
-     * @throws NoSuchElementException
      * @author Michał Ziober
      */
     private static CellMap getMapMapFormat(File in, int x, int y) throws IOException, TooManyCellsException, TooLessCellsException, NoSuchElementException, NegativeArraySizeException {
         if (x == -1 && y == -1) {
-            //Wydupca wireworlda, poprawić
-            //instrukcje dla samoobliczającej się cellmapy- wystarczy zmienić x i y
             System.out.println("samoobliczajacy się rozmiar");
             int numberOfRows = 0;
             Scanner counter = new Scanner(in);
-            String tmp = counter.nextLine();
             String[] countElem;
             if (counter.hasNextLine()) {
                 countElem = (counter.nextLine()).split("\\s+");
@@ -263,7 +194,6 @@ public class DBops {
                 numberOfRows++;
             }
             while (counter.hasNextLine()) {
-                tmp = counter.nextLine();
                 numberOfRows++;
             }
             x = numberOfRows;
@@ -272,10 +202,8 @@ public class DBops {
         }
 
         CellMap map = new CellMap(x, y);
-        String line;
         String[] lineInTab;
         Scanner scan = new Scanner(in);
-        line = scan.nextLine();
         for (int i = 0; i < x; i++) {
             lineInTab = (scan.nextLine()).split("\\s+");
             if (lineInTab.length > y)
@@ -290,21 +218,14 @@ public class DBops {
         return map;
     }
 
-    //DONE Trzeba dodać sprawdzanie, czy dane pole można nadpisać (tzn. czy znajdują się tam jedynie pola EMPA, inaczej w przypadku elektronu, on musi nadpisywać kabel)
-    //DONE Zmienić - ELektron teraz może być stawiany wszędzie
-    //DONE Sprawdzić, czy struktury mieszczą się na planszy
-    //DONE stworzyć testy dla metod konwertujących strukturę na cellMapę
-
     /**
-     * @param structMap1
+     * @param structMap1 Mapa do przekształcenia
      * @return Zwraca Mapę komórek (CellMap), stworzoną z przekształcenia Mapy struktur (StructMap)
-     * @throws IllegalStructurePlacement
      * @author Jakub Maciejewski
      */
-    //DONE przetestować
     public static CellMap getMapStructFormat(StructMap structMap1) throws IllegalStructurePlacement {
-        int xsize = structMap1.getXsize();
-        int ysize = structMap1.getYsize();
+        int xsize = structMap1.getXSize();
+        int ysize = structMap1.getYSize();
         CellMap cellMap = new CellMap(xsize, ysize);
 
         if (structMap == null)
@@ -319,17 +240,13 @@ public class DBops {
             }
         }
 
-        for(int i = 0; i < electronHead.size(); i++)
-        {
-            Cell cell = electronHead.get(i);
-            cellMap.getCell(cell.getxMap(), cell.getyMap()).changeState(ELEH);
+        for (Cell cell : electronHead) {
+            cellMap.getCell(cell.getXMap(), cell.getYMap()).changeState(ELEH);
         }
         electronHead = null;
 
-        for(int i = 0; i < electronTail.size(); i++)
-        {
-            Cell cell = electronTail.get(i);
-            cellMap.getCell(cell.getxMap(), cell.getyMap()).changeState(ELET);
+        for (Cell cell : electronTail) {
+            cellMap.getCell(cell.getXMap(), cell.getYMap()).changeState(ELET);
         }
         electronTail = null;
 
@@ -353,8 +270,6 @@ public class DBops {
         }
     }
 
-
-    //DONE prztestować
     private static void putStructToCellMap(CellMap cellMap, Structure struct) {
 
         CellMap cellMap1 = struct.structureAfterDirection();
@@ -367,14 +282,13 @@ public class DBops {
         for (int i = 0; i < x; i++) {
             for (int j = 0; j < y; j++) {
                 cellMap.setCell(struct.getXAfterRotation() + i, struct.getYAfterRotation() + j, cellMap1.getCell(i, j));
-                cellMap.getCell(struct.getXAfterRotation() + i, struct.getYAfterRotation() + j).setxMap(struct.getXAfterRotation() + i);
-                cellMap.getCell(struct.getXAfterRotation() + i, struct.getYAfterRotation() + j).setyMap(struct.getYAfterRotation() + j);
+                cellMap.getCell(struct.getXAfterRotation() + i, struct.getYAfterRotation() + j).setXMap(struct.getXAfterRotation() + i);
+                cellMap.getCell(struct.getXAfterRotation() + i, struct.getYAfterRotation() + j).setYMap(struct.getYAfterRotation() + j);
                 cellMap.getCell(struct.getXAfterRotation() + i, struct.getYAfterRotation() + j).setStruct(struct);
             }
         }
     }
 
-    //DONE Przetestować
     private static boolean checkIfStructureFit(CellMap cellMap, Structure struct) {
         int tempX = struct.getX();
         int tempY = struct.getY();
@@ -406,7 +320,6 @@ public class DBops {
         return true;
     }
 
-    //DONE przetestować
     private static boolean checkIfSpaceForStructureIsClear(CellMap cellMap, Structure struct) {
 
         CellMap cellMap1 = struct.structureAfterDirection();
@@ -427,7 +340,6 @@ public class DBops {
         return true;
     }
 
-    //DONE przetestować
     private static boolean canBePlaced(CellState cellMapState, CellState cellStructState) {
         if (cellMapState == EMPN || cellMapState == ELET || cellMapState == ELEH) {
             return false;
@@ -522,14 +434,14 @@ public class DBops {
             if(lineArr[0].equals("electronHead"))
             {
                 Cell cell = new Cell(4);
-                cell.setxMap(Integer.parseInt(lineArr[1]));
-                cell.setyMap(Integer.parseInt(lineArr[2]));
+                cell.setXMap(Integer.parseInt(lineArr[1]));
+                cell.setYMap(Integer.parseInt(lineArr[2]));
                 electronHead.add(cell);
             }
             else if(lineArr[0].equals("electronTail")) {
                 Cell cell = new Cell(4);
-                cell.setxMap(Integer.parseInt(lineArr[1]));
-                cell.setyMap(Integer.parseInt(lineArr[2]));
+                cell.setXMap(Integer.parseInt(lineArr[1]));
+                cell.setYMap(Integer.parseInt(lineArr[2]));
                 electronTail.add(cell);
             }
             else if (lineArr.length == 4 || lineArr.length == 5) {
@@ -551,13 +463,12 @@ public class DBops {
     /**
      * @param in plik wejściowy, z którego ma być odczytana pierwsza linia
      * @return Pierwsza linia przekształcona do tablicy (rozdzielnikami są białe znaki)
-     * @throws FileNotFoundException
      * @author Michał Ziober
      */
     private static String[] firstLineToArray(File in) throws FileNotFoundException {
-        String[] tab = null;
-        Scanner scaner = null;
-        String line = null;
+        String[] tab;
+        Scanner scaner;
+        String line;
 
         try {
             scaner = new Scanner(in);

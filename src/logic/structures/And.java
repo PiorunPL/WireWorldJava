@@ -5,8 +5,8 @@ import logic.cells.Cell;
 
 public class And extends Structure {
     public And() {
-        this.xsize = 8;
-        this.ysize = 9;
+        this.xSize = 8;
+        this.ySize = 9;
         this.direction = Direction.UP;
         this.name = "and";
         this.structure = new Cell[][]{
@@ -24,8 +24,8 @@ public class And extends Structure {
     public And(int x, int y, Direction direction) {
         this.x = x;
         this.y = y;
-        this.xsize = 8;
-        this.ysize = 9;
+        this.xSize = 8;
+        this.ySize = 9;
         this.direction = direction;
         this.name = "and";
         this.structure = new Cell[][]{

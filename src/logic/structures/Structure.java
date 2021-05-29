@@ -9,7 +9,7 @@ public abstract class Structure {
     protected int x, y;
     protected Direction direction;
     protected Cell[][] structure;
-    protected int xsize, ysize;
+    protected int xSize, ySize;
 
     public void nextDirection() {
         if (direction == Direction.UP) direction = Direction.RIGHT;
@@ -46,11 +46,11 @@ public abstract class Structure {
     }
 
     public int getXSize() {
-        return xsize;
+        return xSize;
     }
 
     public int getYSize() {
-        return ysize;
+        return ySize;
     }
 
     public Cell getCell(int x, int y) {
@@ -77,50 +77,50 @@ public abstract class Structure {
     }
 
     public CellMap structureAfterDirection() {
-        CellMap cellMap = null;
+        CellMap cellMap;
 
         if (direction == Direction.UP || direction == Direction.DOWN) {
-            cellMap = new CellMap(xsize, ysize);
+            cellMap = new CellMap(xSize, ySize);
         } else {
-            cellMap = new CellMap(ysize, xsize);
+            cellMap = new CellMap(ySize, xSize);
         }
 
         int temp1;
         int temp2;
 
         if (direction == Direction.UP) {
-            for (int j = 0; j < xsize; j++) {
-                temp1 = 0 + j;
-                for (int k = 0; k < ysize; k++) {
-                    temp2 = 0 + k;
+            for (int j = 0; j < xSize; j++) {
+                temp1 = j;
+                for (int k = 0; k < ySize; k++) {
+                    temp2 = k;
 
                     cellMap.setCell(temp1, temp2, structure[j][k]);
 
                 }
             }
         } else if (direction == Direction.RIGHT) {
-            for (int j = 0; j < xsize; j++) {
-                temp2 = xsize - 1 - j;
-                for (int k = 0; k < ysize; k++) {
-                    temp1 = 0 + k;
+            for (int j = 0; j < xSize; j++) {
+                temp2 = xSize - 1 - j;
+                for (int k = 0; k < ySize; k++) {
+                    temp1 = k;
 
                     cellMap.setCell(temp1, temp2, structure[j][k]);
                 }
             }
         } else if (direction == Direction.DOWN) {
-            for (int j = 0; j < xsize; j++) {
-                temp1 = xsize - 1 - j;
-                for (int k = 0; k < ysize; k++) {
-                    temp2 = ysize - 1 - k;
+            for (int j = 0; j < xSize; j++) {
+                temp1 = xSize - 1 - j;
+                for (int k = 0; k < ySize; k++) {
+                    temp2 = ySize - 1 - k;
 
                     cellMap.setCell(temp1, temp2, structure[j][k]);
                 }
             }
         } else {
-            for (int j = 0; j < xsize; j++) {
-                temp2 = 0 + j;
-                for (int k = 0; k < ysize; k++) {
-                    temp1 = ysize - 1 - k;
+            for (int j = 0; j < xSize; j++) {
+                temp2 = j;
+                for (int k = 0; k < ySize; k++) {
+                    temp1 = ySize - 1 - k;
 
                     cellMap.setCell(temp1, temp2, structure[j][k]);
                 }
@@ -135,9 +135,9 @@ public abstract class Structure {
         } else if (direction == Direction.RIGHT) {
             return x;
         } else if (direction == Direction.DOWN) {
-            return x - (xsize - 1);
+            return x - (xSize - 1);
         } else {
-            return x - (ysize - 1);
+            return x - (ySize - 1);
         }
     }
 
@@ -145,9 +145,9 @@ public abstract class Structure {
         if (direction == Direction.UP) {
             return y;
         } else if (direction == Direction.RIGHT) {
-            return y - (xsize - 1);
+            return y - (xSize - 1);
         } else if (direction == Direction.DOWN) {
-            return y - (ysize - 1);
+            return y - (ySize - 1);
         } else {
             return y;
         }
@@ -155,16 +155,16 @@ public abstract class Structure {
 
     public int getXSizeAfterRotation() {
         if (direction == Direction.UP || direction == Direction.DOWN)
-            return xsize;
+            return xSize;
         else
-            return ysize;
+            return ySize;
     }
 
     public int getYSizeAfterRotation() {
         if (direction == Direction.UP || direction == Direction.DOWN)
-            return ysize;
+            return ySize;
         else
-            return xsize;
+            return xSize;
     }
 
 
