@@ -33,27 +33,6 @@ public class DBops {
     private static UsersStructuresContainer container = null;
     private static StructMap structMap = null;
 
-
-    public static void main(String[] args) {
-
-
-        //CellMap map = getMapFromFile(new File("C:\\Users\\lolol\\OneDrive - Politechnika Warszawska\\Pulpit\\Sem2\\JiMP2\\Wire\\src\\utils\\Test"));
-        CellMap map = getMapFromFile(new File("test/testStruct2"));
-        System.out.println(map);
-//        //Wyswietlanie mapy
-        /*try {
-            saveMapToFile(structMap, new File("test/testStruct2out"));
-        } catch (IOException e) {
-            e.printStackTrace();
-        }*/
-        for (int i = 0; i < map.getXSize(); i++) {
-            for (int j = 0; j < map.getYSize(); j++) {
-                System.out.print(map.getCell(i, j).getState() + " ");
-            }
-            System.out.println();
-        }
-    }
-
     /**
      * Zapisuje mapę do pliku w formacie strukturalnym
      *
@@ -163,6 +142,7 @@ public class DBops {
      * @param out     Plik w którym mapa będzie zapisywana
      * @author Michał Ziober
      */
+    //Po zmianach w projekcie nie używamy tego, ale zostawiam- może się przydać
     public static void saveMapToFile(CellMap cellMap, File out) throws IOException {
         int x = cellMap.getXSize();
         int y = cellMap.getYSize();
@@ -194,7 +174,6 @@ public class DBops {
 
 
     public static StructMap getMapFromFile(File in) throws NullPointerException {
-        CellMap cellMap = null;
         String option;
         String[] firstLine;
         int x = 0;
@@ -209,15 +188,13 @@ public class DBops {
 
                 // map format of file
                 if (option.equals(mapK)) {
-                    cellMap = getMapMapFormat(in, x, y);
-                    System.out.println(cellMap.getXSize() + " " + cellMap.getYSize());
+                    structMap = getMapMapFormat(in, x, y);
                     // structural format of file
                 } else if (option.equals(structK)) {
                     // getting user defined structures
                     container = getUsersStructures(in);
                     // getting map
                     structMap = getMap(in, x, y, container);
-
 
                 } else {
                     throw new IllegalFormatOptionException();
@@ -241,17 +218,6 @@ public class DBops {
         } catch (NegativeArraySizeException e) {
             ExceptionsDialogs.warningDialog("Warning", "Typed illegal size. Only positive or [-1 -1] values are allowed");
         }
-        //testowanie czy struktury są dobrze wczytane
-        /*for(int i=0; i<structMap.size(); i++){
-            Structure struct = structMap.getStructure(i);
-            for(int j=0; j<struct.getXsize(); j++){
-                for(int k=0; k<struct.getYsize(); k++){
-                    System.out.print(struct.getCell(j, k).getState()+" ");
-                }
-                System.out.println();
-            }
-            System.out.println();
-        }*/
         return structMap;
     }
 
@@ -269,10 +235,10 @@ public class DBops {
      * @throws NoSuchElementException
      * @author Michał Ziober
      */
-    private static CellMap getMapMapFormat(File in, int x, int y) throws IOException, TooManyCellsException, TooLessCellsException, NoSuchElementException, NegativeArraySizeException {
+    private static StructMap getMapMapFormat(File in, int x, int y) throws IOException, TooManyCellsException, TooLessCellsException, NoSuchElementException, NegativeArraySizeException {
+        electronHead = new Vector<Cell>();
+        electronTail = new Vector<Cell>();
         if (x == -1 && y == -1) {
-            //Wydupca wireworlda, poprawić
-            //instrukcje dla samoobliczającej się cellmapy- wystarczy zmienić x i y
             System.out.println("samoobliczajacy się rozmiar");
             int numberOfRows = 0;
             Scanner counter = new Scanner(in);
@@ -292,7 +258,8 @@ public class DBops {
             throw new NegativeArraySizeException();
         }
 
-        CellMap map = new CellMap(x, y);
+        StructMap strMap = new StructMap(x,y);
+
         String line;
         String[] lineInTab;
         Scanner scan = new Scanner(in);
@@ -304,11 +271,34 @@ public class DBops {
             else if (lineInTab.length < y)
                 throw new TooLessCellsException();
             for (int j = 0; j < y; j++) {
-                map.getCell(i, j).changeState(Integer.parseInt(lineInTab[j]));
+                int actual = Integer.parseInt(lineInTab[j]);
+                String nameOfActual;
+                if(actual == 3)
+                {
+                    Cell cell = new Cell(4);
+                    cell.setxMap(i);
+                    cell.setyMap(j);
+                    electronHead.add(cell);
+                }
+                else if(actual == 2) {
+                    Cell cell = new Cell(4);
+                    cell.setxMap(i);
+                    cell.setyMap(j);
+                    electronTail.add(cell);
+                }
+                else if ( actual == 1){
+                    strMap.addStruct(
+                            "wire",
+                            i,
+                            j,
+                            Direction.setDirection("r"),
+                            1
+                    );
+                }
             }
 
         }
-        return map;
+        return strMap;
     }
 
     //DONE Trzeba dodać sprawdzanie, czy dane pole można nadpisać (tzn. czy znajdują się tam jedynie pola EMPA, inaczej w przypadku elektronu, on musi nadpisywać kabel)
@@ -347,9 +337,6 @@ public class DBops {
             if(!specifiedSize) {
                 cellMap = changeX(cellMap, struct);
                 cellMap = changeY(cellMap, struct);
-                System.out.println("\n\n"+cellMap.getXSize());
-                System.out.println("\n\n"+cellMap.getYSize());
-
             }
             if (checkIfStructureFit(cellMap, struct) && checkIfSpaceForStructureIsClear(cellMap, struct)) {
                 putStructToCellMap(cellMap, struct);
@@ -375,38 +362,33 @@ public class DBops {
         return cellMap;
     }
 
-    //To już powinno działać
     private static CellMap changeX(CellMap cellMap, Structure structure){
         Direction direction = structure.getDirection();
-        if (direction.equals(Direction.UP) && structure.getX()+1 > cellMap.getXSize()) {
-            cellMap = cellMap.changeSize(cellMap, structure.getX()+1, cellMap.getYSize());
+        if (direction.equals(Direction.UP) && structure.getX()+1 + structure.getXSize()> cellMap.getXSize()) {
+            cellMap = cellMap.changeSize(cellMap, structure.getX()+1 + structure.getXSize(), cellMap.getYSize());
         } else if (direction.equals(Direction.RIGHT) && (structure.getX()+1+structure.getXSize()) > cellMap.getXSize()) {
             cellMap = cellMap.changeSize(cellMap,structure.getX()+1 + structure.getXSize(), cellMap.getYSize());
-        } else if (direction.equals(Direction.DOWN) && (structure.getX()+1 + structure.getYSize()) > cellMap.getXSize()) {
-            cellMap = cellMap.changeSize(cellMap,structure.getX()+1 + structure.getYSize(), cellMap.getYSize());
-        } else if (direction.equals(Direction.LEFT) && structure.getX()+1 + structure.getXSize() > cellMap.getXSize()) {
-            cellMap = cellMap.changeSize(cellMap, structure.getX()+1 + structure.getXSize(), cellMap.getYSize());
+        } else if (direction.equals(Direction.DOWN) && (structure.getX()+1) > cellMap.getXSize()) {
+            cellMap = cellMap.changeSize(cellMap,structure.getX()+1, cellMap.getYSize());
+        } else if (direction.equals(Direction.LEFT) && structure.getX()+1 > cellMap.getXSize()) {
+            cellMap = cellMap.changeSize(cellMap, structure.getX()+1, cellMap.getYSize());
         }
         return cellMap;
     }
 
     private static CellMap changeY(CellMap cellMap, Structure structure){
         Direction direction = structure.getDirection();
-        if (direction.equals(Direction.UP) && structure.getY()+1 + structure.getXSize() > cellMap.getYSize()){
-            cellMap = cellMap.changeSize(cellMap, cellMap.getXSize(), structure.getY()+1 + structure.getXSize());
-        }
-        else if (direction.equals(Direction.RIGHT) && structure.getY()+1 + structure.getYSize() > cellMap.getYSize()){
-            System.out.println("structure.getY() " + structure.getY());
-            System.out.println("structure.getYSize() "+structure.getYSize());
-            System.out.println("cellMap.getYSize() " + cellMap.getYSize());
-            System.out.println("cellMap.getXSize() "+cellMap.getXSize());
+        if (direction.equals(Direction.UP) && structure.getY()+1 + structure.getYSize() > cellMap.getYSize()){
             cellMap = cellMap.changeSize(cellMap, cellMap.getXSize(), structure.getY()+1 + structure.getYSize());
+        }
+        else if (direction.equals(Direction.RIGHT) && structure.getY()+1 > cellMap.getYSize()){
+            cellMap = cellMap.changeSize(cellMap, cellMap.getXSize(), structure.getY()+1);
         }
         else if (direction.equals(Direction.DOWN) && structure.getY()+1 > cellMap.getYSize()){
             cellMap = cellMap.changeSize(cellMap, cellMap.getXSize(), structure.getY()+1);
         }
-        else if (direction.equals(Direction.LEFT) && structure.getY()+1 > cellMap.getYSize()){
-            cellMap = cellMap.changeSize(cellMap, cellMap.getXSize(), structure.getY()+1);
+        else if (direction.equals(Direction.LEFT) && structure.getY()+1 + structure.getXSize() > cellMap.getYSize()){
+            cellMap = cellMap.changeSize(cellMap, cellMap.getXSize(), structure.getY()+1 + structure.getXSize());
         }
         return cellMap;
     }
