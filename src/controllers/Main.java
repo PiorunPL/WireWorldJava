@@ -15,16 +15,10 @@ public class Main extends Application {
     // dimensions of scene
     private static double sceneSizeX = 970;
     private static double sceneSizeY = 600;
-    public static double getSceneSizeX() { return sceneSizeX;}
-    public static double getSceneSizeY() { return sceneSizeY; }
-    public static void setSceneSizeX(double sceneSizeX) { Main.sceneSizeX = sceneSizeX; }
-    public static void setSceneSizeY(double sceneSizeY) { Main.sceneSizeY = sceneSizeY; }
 
     // offset between stage and scene coordinates
     private static final double STAGE_OFFSET = 8;
     private static final double STAGE_OFFSET_TOP = 31;
-    public static double getStageOffset() { return STAGE_OFFSET; }
-    public static double getStageOffsetTop() { return STAGE_OFFSET_TOP; }
 
     @Override
     public void start(Stage stage) throws Exception {
