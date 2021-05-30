@@ -366,8 +366,8 @@ public class DBops {
         Direction direction = structure.getDirection();
         if (direction.equals(Direction.UP) && structure.getX()+1 + structure.getXSize()> cellMap.getXSize()) {
             cellMap = cellMap.changeSize(cellMap, structure.getX()+1 + structure.getXSize(), cellMap.getYSize());
-        } else if (direction.equals(Direction.RIGHT) && (structure.getX()+1+structure.getXSize()) > cellMap.getXSize()) {
-            cellMap = cellMap.changeSize(cellMap,structure.getX()+1 + structure.getXSize(), cellMap.getYSize());
+        } else if (direction.equals(Direction.RIGHT) && (structure.getX() + 1 + structure.getYSize()) > cellMap.getXSize()) {
+            cellMap = cellMap.changeSize(cellMap,structure.getX()+1 + structure.getYSize(), cellMap.getYSize());
         } else if (direction.equals(Direction.DOWN) && (structure.getX()+1) > cellMap.getXSize()) {
             cellMap = cellMap.changeSize(cellMap,structure.getX()+1, cellMap.getYSize());
         } else if (direction.equals(Direction.LEFT) && structure.getX()+1 > cellMap.getXSize()) {
