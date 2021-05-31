@@ -101,8 +101,6 @@ public class MainPaneController implements Initializable {
 
         // mouse click event
         EventHandler<MouseEvent> mouseClick = e -> {
-            System.err.println("Timestep: "+ timeStep);
-            System.err.println("Iteration: " + iterations);
             if (e.getButton().equals(MouseButton.PRIMARY)) {
                 if (editable && e.getTarget() instanceof Rectangle) {
                     Rectangle rec = (Rectangle) e.getTarget();
