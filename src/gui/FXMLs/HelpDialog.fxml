@@ -1,0 +1,80 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.geometry.Insets?>
+<?import javafx.scene.control.Button?>
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.control.ScrollPane?>
+<?import javafx.scene.layout.AnchorPane?>
+<?import javafx.scene.layout.HBox?>
+<?import javafx.scene.layout.Pane?>
+
+<AnchorPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="600.0" prefWidth="505.0" xmlns="http://javafx.com/javafx/15.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="gui.controllers.HelpDialogController">
+   <children>
+      <Pane fx:id="helpPane" layoutX="58.0" prefHeight="40.0" prefWidth="200.0" style="-fx-background-color: #232F34;" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
+         <children>
+            <Label layoutX="226.0" layoutY="7.0" style="-fx-text-fill: #F9AA33; -fx-font-family: monospace; -fx-font-size: 22; -fx-font-weight: bold;" text="Help" />
+         </children>
+      </Pane>
+      <Pane fx:id="orangePane" prefHeight="44.0" prefWidth="505.0" style="-fx-background-color: #F9AA33;" AnchorPane.topAnchor="40.0">
+         <children>
+            <HBox alignment="CENTER" prefHeight="44.0" prefWidth="505.0" spacing="2.0">
+               <children>
+                  <Button mnemonicParsing="false" onAction="#cells" prefHeight="40.0" prefWidth="100.0" style="-fx-text-fill: #F9AA33; -fx-background-color: #344955; -fx-font-family: monospace; -fx-font-size: 16; -fx-background-radius: 0; -fx-font-weight: bold;" text="Cells" />
+                  <Button mnemonicParsing="false" onAction="#structs" prefHeight="40.0" prefWidth="100.0" style="-fx-text-fill: #F9AA33; -fx-background-color: #344955; -fx-font-family: monospace; -fx-font-size: 16; -fx-background-radius: 0; -fx-font-weight: bold;" text="Structs" />
+                  <Button mnemonicParsing="false" onAction="#controls" prefHeight="40.0" prefWidth="100.0" style="-fx-text-fill: #F9AA33; -fx-background-color: #344955; -fx-font-family: monospace; -fx-font-size: 16; -fx-background-radius: 0; -fx-font-weight: bold;" text="Controls" />
+                  <Button mnemonicParsing="false" onAction="#buttons" prefHeight="40.0" prefWidth="100.0" style="-fx-text-fill: #F9AA33; -fx-background-color: #344955; -fx-font-family: monospace; -fx-font-size: 16; -fx-background-radius: 0; -fx-font-weight: bold;" text="Buttons" />
+                  <Button mnemonicParsing="false" onAction="#files" prefHeight="40.0" prefWidth="100.0" style="-fx-text-fill: #F9AA33; -fx-background-color: #344955; -fx-font-family: monospace; -fx-font-size: 16; -fx-background-radius: 0; -fx-font-weight: bold;" text="Files" />
+               </children>
+               <padding>
+                  <Insets bottom="2.0" top="2.0" />
+               </padding>
+            </HBox>
+         </children>
+      </Pane>
+      <ScrollPane fx:id="filesPane" prefHeight="200.0" prefWidth="200.0" style="-fx-background-color: #ffffff;" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="84.0">
+         <content>
+            <AnchorPane accessibleRole="SCROLL_PANE" prefHeight="516.0" prefWidth="505.0" style="-fx-background-color: #ffffff;">
+               <children>
+                  <Label fx:id="filesLabel" alignment="TOP_LEFT" layoutX="-176.0" layoutY="32.0" style="-fx-font-family: monospace; -fx-font-weight: bold;" text="files" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0" />
+               </children>
+            </AnchorPane>
+         </content>
+      </ScrollPane>
+      <ScrollPane fx:id="cellsPane" prefHeight="200.0" prefWidth="200.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="84.0">
+         <content>
+            <AnchorPane prefHeight="516.0" prefWidth="505.0" style="-fx-background-color: #ffffff;">
+               <children>
+                  <Label fx:id="cellsLabel" alignment="TOP_LEFT" style="-fx-font-family: monospace; -fx-font-weight: bold;" text="cells" AnchorPane.bottomAnchor="10.0" AnchorPane.leftAnchor="10.0" AnchorPane.rightAnchor="10.0" AnchorPane.topAnchor="10.0" />
+               </children>
+            </AnchorPane>
+         </content>
+      </ScrollPane>
+      <ScrollPane fx:id="structsPane" layoutX="10.0" layoutY="10.0" prefHeight="200.0" prefWidth="200.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="84.0">
+         <content>
+            <AnchorPane prefHeight="516.0" prefWidth="505.0" style="-fx-background-color: #ffffff;">
+               <children>
+                  <Label fx:id="structsLabel" alignment="TOP_LEFT" style="-fx-font-family: monospace; -fx-font-weight: bold;" text="structs" AnchorPane.bottomAnchor="10.0" AnchorPane.leftAnchor="10.0" AnchorPane.rightAnchor="10.0" AnchorPane.topAnchor="10.0" />
+               </children>
+            </AnchorPane>
+         </content>
+      </ScrollPane>
+      <ScrollPane fx:id="controlsPane" layoutX="10.0" layoutY="10.0" prefHeight="200.0" prefWidth="200.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="84.0">
+         <content>
+            <AnchorPane prefHeight="516.0" prefWidth="505.0" style="-fx-background-color: #ffffff;">
+               <children>
+                  <Label fx:id="controlsLabel" alignment="TOP_LEFT" style="-fx-font-family: monospace; -fx-font-weight: bold;" text="controls" AnchorPane.bottomAnchor="10.0" AnchorPane.leftAnchor="10.0" AnchorPane.rightAnchor="10.0" AnchorPane.topAnchor="10.0" />
+               </children>
+            </AnchorPane>
+         </content>
+      </ScrollPane>
+      <ScrollPane fx:id="buttonsPane" layoutX="10.0" layoutY="10.0" prefHeight="200.0" prefWidth="200.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="84.0">
+         <content>
+            <AnchorPane prefHeight="516.0" prefWidth="505.0" style="-fx-background-color: #ffffff;">
+               <children>
+                  <Label fx:id="buttonsLabel" alignment="TOP_LEFT" style="-fx-font-family: monospace; -fx-font-weight: bold;" text="buttons" AnchorPane.bottomAnchor="10.0" AnchorPane.leftAnchor="10.0" AnchorPane.rightAnchor="10.0" AnchorPane.topAnchor="10.0" />
+               </children>
+            </AnchorPane>
+         </content>
+      </ScrollPane>
+   </children>
+</AnchorPane>

@@ -6,7 +6,7 @@ public final class Direction {
     @Override
     public String toString() { return name; }
 
-    private String name;
+    private final String name;
     public static final Direction
             UP = new Direction("u"),
             DOWN = new Direction("d"),
@@ -14,46 +14,12 @@ public final class Direction {
             LEFT = new Direction("l");
 
     public static Direction setDirection(String name) {
-        if (name.equals("u")) return UP;
-        else if (name.equals("d")) return DOWN;
-        else if (name.equals("r")) return RIGHT;
-        else if (name.equals("l")) return LEFT;
-        else return null;
-    }
-
-    public void setUp() {
-
-    }
-
-    public void setDown() {
-
-    }
-
-    public void setRight() {
-
-    }
-
-    public void setLeft() {
-
-    }
-
-    public Boolean isUp() {
-        boolean b = false;
-        return b;
-    }
-
-    public Boolean isDown() {
-        boolean b = false;
-        return b;
-    }
-
-    public Boolean isLeft() {
-        boolean b = false;
-        return b;
-    }
-
-    public Boolean isRight() {
-        boolean b = false;
-        return b;
+        return switch (name) {
+            case "u" -> UP;
+            case "d" -> DOWN;
+            case "r" -> RIGHT;
+            case "l" -> LEFT;
+            default -> null;
+        };
     }
 }
