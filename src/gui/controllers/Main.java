@@ -1,8 +1,7 @@
-package controllers;
+package gui.controllers;
 
 import javafx.application.Application;
 import javafx.fxml.FXMLLoader;
-import javafx.scene.Parent;
 import javafx.scene.PerspectiveCamera;
 import javafx.scene.Scene;
 import javafx.scene.layout.Pane;
@@ -13,8 +12,8 @@ public class Main extends Application {
     public static void main(String[] args) { launch(args); }
 
     // dimensions of scene
-    private static double sceneSizeX = 970;
-    private static double sceneSizeY = 600;
+    private final static double sceneSizeX = 970;
+    private final static double sceneSizeY = 600;
 
     // offset between stage and scene coordinates
     private static final double STAGE_OFFSET = 8;
@@ -24,7 +23,7 @@ public class Main extends Application {
     public void start(Stage stage) throws Exception {
 
         // loading fxml document
-        FXMLLoader loader = new FXMLLoader(this.getClass().getResource("/FXMLs/MainScreen.fxml"));
+        FXMLLoader loader = new FXMLLoader(this.getClass().getResource("/gui/FXMLs/MainScreen.fxml"));
         Pane mainPane = loader.load();
 
         // creating scene

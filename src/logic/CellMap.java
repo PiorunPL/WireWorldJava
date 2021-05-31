@@ -1,19 +1,16 @@
 package logic;
 
 import logic.cells.Cell;
-import logic.cells.CellState;
-
-import static logic.cells.CellState.*;
 
 public class CellMap {
-    private Cell map[][] = null;
-    private int xsize, ysize;
+    private Cell[][] map = null;
+    private int xSize, ySize;
 
-    public CellMap(int xsize, int ysize) throws NegativeArraySizeException {
+    public CellMap(int xSize, int ySize) throws NegativeArraySizeException {
         try {
-            this.xsize = xsize;
-            this.ysize = ysize;
-            map = new Cell[xsize][ysize];
+            this.xSize = xSize;
+            this.ySize = ySize;
+            map = new Cell[xSize][ySize];
             emptyCellMap();
         }catch (ArrayIndexOutOfBoundsException e){
             e.printStackTrace();
@@ -23,7 +20,7 @@ public class CellMap {
     }
 
     public Cell getCell(int x, int y) {
-        Cell cell = null;
+        Cell cell;
         try{
             cell = map[x][y];
         }catch(ArrayIndexOutOfBoundsException e){
@@ -37,38 +34,20 @@ public class CellMap {
         map[x][y] = cell;
     }
 
-    public void setCellState(int type, int x, int y) {
-        try {
-            map[x][y].changeState(type);
-        }catch(ArrayIndexOutOfBoundsException e){
-            e.printStackTrace();
-        }
-    }
-
     public int getXSize(){
-        return xsize;
+        return xSize;
     }
 
     public int getYSize(){
-        return ysize;
+        return ySize;
     }
 
-    /**
-     * Zmienai rozmiar mapy o podane wartości
-     * @param x ilość wierszy do dodania
-     * @param y ilość kolumn do dodania
-     */
-    public void changeSize(int x, int y){
-
-    }
-
-    //TUTAJ ZMIENIĆ TYP CELLA JAK ZMIENI SIĘ W CELL STATE!!!
     private void emptyCellMap() {
-        for (int i = 0; i < xsize; i++) {
-            for (int j = 0; j < ysize; j++) {
+        for (int i = 0; i < xSize; i++) {
+            for (int j = 0; j < ySize; j++) {
                 map[i][j] = new Cell(4);
-                map[i][j].setxMap(i);
-                map[i][j].setyMap(j);
+                map[i][j].setXMap(i);
+                map[i][j].setYMap(j);
             }
         }
     }

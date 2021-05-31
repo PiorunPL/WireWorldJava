@@ -1,12 +1,10 @@
 
 package logic.cells;
 
-import controllers.Main;
-import controllers.MainPaneController;
+import gui.controllers.MainPaneController;
 import javafx.scene.paint.Color;
 import logic.structures.Structure;
-
-import java.awt.*;
+import utils.exceptions.IllegalCellException;
 
 import static logic.cells.CellState.*;
 
@@ -39,19 +37,19 @@ public class Cell {
     public CellState getState() { return state; }
     public CellState getPreviousState() { return previousState; }
 
-    public int getxMap() {
+    public int getXMap() {
         return xMap;
     }
 
-    public void setxMap(int xMap) {
+    public void setXMap(int xMap) {
         this.xMap = xMap;
     }
 
-    public void setyMap(int yMap) {
+    public void setYMap(int yMap) {
         this.yMap = yMap;
     }
 
-    public int getyMap() {
+    public int getYMap() {
         return yMap;
     }
 
@@ -59,10 +57,14 @@ public class Cell {
         if (i == 1) color = MainPaneController.COLOR_OF_WIRE;
         else if (i == 2) color = MainPaneController.COLOR_OF_TAIL;
         else if (i == 3) color = MainPaneController.COLOR_OF_HEAD;
-        else if (i == 4) color = MainPaneController.COLOR_OF_EMPTY;
-        else if (i == 5) color = MainPaneController.COLOR_OF_EMPTYNOTAPPENDABLE;
+        else if (i == 4) color = MainPaneController.COLOR_OF_EMPA;
+        else if (i == 5) color = MainPaneController.COLOR_OF_EMPN;
         else throw new IllegalArgumentException();
-        this.state = CellState.setCellState(i);
+        try {
+            this.state = CellState.setCellState(i);
+        } catch (IllegalCellException e) {
+            e.printStackTrace();
+        }
     }
 
     public void changeState(CellState state1) {
@@ -70,8 +72,8 @@ public class Cell {
         if (state1 == WIRE) color = MainPaneController.COLOR_OF_WIRE;
         else if (state1 == ELET) color = MainPaneController.COLOR_OF_TAIL;
         else if (state1 == ELEH) color = MainPaneController.COLOR_OF_HEAD;
-        else if (state1 == EMPA) color = MainPaneController.COLOR_OF_EMPTY;
-        else if (state1 == EMPN) color = MainPaneController.COLOR_OF_EMPTYNOTAPPENDABLE;
+        else if (state1 == EMPA) color = MainPaneController.COLOR_OF_EMPA;
+        else if (state1 == EMPN) color = MainPaneController.COLOR_OF_EMPN;
         else throw new IllegalArgumentException();
     }
 
