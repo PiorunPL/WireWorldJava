@@ -202,6 +202,7 @@ public class MainPaneController implements Initializable {
     void delete() {
         clickedStructure = null;
         deleteStructureSwitch = true;
+        if (backup != null) backup.display(grid, ySize);
 
     }
 
@@ -286,14 +287,17 @@ public class MainPaneController implements Initializable {
 
             if (selected != null) {
                 map = DBops.getMapFromFile(selected);
-                cellMap = DBops.getMapStructFormat(map);
+                try {
+                    cellMap = DBops.getMapStructFormat(map);
+                    displayMap(cellMap);
+                    firstAdded = true;
+                    clickedStructure = null;
+                    editable = false;
+                    saveFile = null;
+                    simulation = null;
+                }catch(Exception e){
 
-                displayMap(cellMap);
-                firstAdded = true;
-                clickedStructure = null;
-                editable = false;
-                saveFile = null;
-                simulation = null;
+                }
             }
         }
     }

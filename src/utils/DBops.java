@@ -186,7 +186,7 @@ public class DBops {
      * @throws NoSuchElementException
      * @author Michał Ziober
      */
-    private static StructMap getMapMapFormat(File in, int x, int y) throws IOException, TooManyCellsException, TooLessCellsException, NoSuchElementException, NegativeArraySizeException {
+    private static StructMap getMapMapFormat(File in, int x, int y) throws IOException, TooManyCellsException, TooLessCellsException, NoSuchElementException, NegativeArraySizeException{
         electronHead = new Vector<Cell>();
         electronTail = new Vector<Cell>();
         if (x == -1 && y == -1) {
@@ -223,6 +223,10 @@ public class DBops {
             for (int j = 0; j < y; j++) {
                 int actual = Integer.parseInt(lineInTab[j]);
                 String nameOfActual;
+                if(actual == 1 || actual == 2 || actual == 3)
+                    strMap.addStruct("wire", i, j, Direction.setDirection("r"), 1);
+                else if(actual != 4)
+                    throw new IllegalArgumentException();
                 if(actual == 3)
                 {
                     Cell cell = new Cell(4);
@@ -235,15 +239,6 @@ public class DBops {
                     cell.setXMap(i);
                     cell.setYMap(j);
                     electronTail.add(cell);
-                }
-                else if ( actual == 1){
-                    strMap.addStruct(
-                            "wire",
-                            i,
-                            j,
-                            Direction.setDirection("r"),
-                            1
-                    );
                 }
             }
 
