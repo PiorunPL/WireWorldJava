@@ -201,6 +201,7 @@ public class MainPaneController implements Initializable {
 
     @FXML
     void delete() {
+        if (backup != null) backup.display(grid, ySize);
         clickedStructure = null;
         deleteStructureSwitch = true;
         if (backup != null) backup.display(grid, ySize);
@@ -627,8 +628,8 @@ class Backup {
         this.tab = new CellMap(xSize, ySize);
     }
 
-    int x, y;
-    CellMap tab;
+    private final int x, y;
+    private final CellMap tab;
 
     public void display(GridPane grid, int ySize) {
         for (int i = 0; i < (tab != null ? tab.getXSize() : 0); i++) {
