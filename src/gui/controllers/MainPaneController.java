@@ -201,7 +201,6 @@ public class MainPaneController implements Initializable {
 
     @FXML
     void delete() {
-        if (backup != null) backup.display(grid, ySize);
         clickedStructure = null;
         deleteStructureSwitch = true;
         if (backup != null) backup.display(grid, ySize);
