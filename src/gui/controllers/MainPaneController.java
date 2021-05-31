@@ -101,6 +101,8 @@ public class MainPaneController implements Initializable {
 
         // mouse click event
         EventHandler<MouseEvent> mouseClick = e -> {
+            System.err.println("Timestep: "+ timeStep);
+            System.err.println("Iteration: " + iterations);
             if (e.getButton().equals(MouseButton.PRIMARY)) {
                 if (editable && e.getTarget() instanceof Rectangle) {
                     Rectangle rec = (Rectangle) e.getTarget();
@@ -248,6 +250,9 @@ public class MainPaneController implements Initializable {
                 map = new StructMap(xSize, ySize);
                 drawGrid();
                 simulation = null;
+                iterations = 100;
+                timeStep = 1000;
+
             }
         }
     }
@@ -294,6 +299,9 @@ public class MainPaneController implements Initializable {
                 editable = false;
                 saveFile = null;
                 simulation = null;
+                iterations = 100;
+                timeStep = 1000;
+
             }
         }
     }
@@ -417,9 +425,6 @@ public class MainPaneController implements Initializable {
         if (grid.getChildren() != null) {
             grid.getChildren().clear();
         }
-
-        iterations = 100;
-        timeStep = 1000;
 
         grid.setHgap(BREAK);
         grid.setVgap(BREAK);
