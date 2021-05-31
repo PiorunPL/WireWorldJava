@@ -284,21 +284,30 @@ public class MainPaneController implements Initializable {
     }
 
     @FXML
-    void open() throws IllegalStructurePlacement {
+    void open(){
         if (simThread == null || !simThread.isAlive()) {
             FileChooser fc = new FileChooser();
             File selected = fc.showOpenDialog(null);
 
             if (selected != null) {
+                StructMap backupMap = null;
+                    if(map != null) {
+                        backupMap = StructMap.backupMap(map);
+                    }
                     map = DBops.getMapFromFile(selected);
-                    cellMap = DBops.getMapStructFormat(map);
-                    if(cellMap != null) {
+
+                    try{
+                        cellMap = DBops.getMapStructFormat(map);
                         displayMap(cellMap);
                         firstAdded = true;
                         clickedStructure = null;
                         editable = false;
                         saveFile = null;
                         simulation = null;
+                    }
+                    catch(IllegalStructurePlacement e) {
+                        map = backupMap;
+                        e.getMessage();
                     }
 
                 }

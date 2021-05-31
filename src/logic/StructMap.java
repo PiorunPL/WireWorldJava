@@ -2,6 +2,7 @@ package logic;
 
 import logic.structures.Structure;
 import logic.structures.UsersStructuresContainer;
+import logic.structures.Wire;
 
 import java.util.List;
 import java.util.Vector;
@@ -46,5 +47,21 @@ public class StructMap {
             this.vector.add(struct);
         }
         else System.out.printf("Structure '%s' doesn't exist in this context.\n", name);
+    }
+    public static StructMap backupMap(StructMap toBackup){
+        StructMap backupMap;
+        backupMap = new StructMap(toBackup.getXSize(), toBackup.getYSize());
+        backupMap.addUserStructures(toBackup.getUserStructures());
+        Structure str;
+        int length = -1;
+        for(int i = 0; i<toBackup.size(); i++){
+            str = toBackup.getStructure(i);
+            if (str.getName().equals("wire")) {
+                length = ((Wire) str).getLength();
+            }
+            backupMap.addStruct(str.getName(), str.getX(), str.getY(), str.getDirection(), length);
+            length = -1;
+        }
+        return backupMap;
     }
 }
