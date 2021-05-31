@@ -3,22 +3,22 @@ package logic;
 import logic.structures.Structure;
 import logic.structures.UsersStructuresContainer;
 
-import java.util.ArrayList;
 import java.util.List;
+import java.util.Vector;
 
 public class StructMap {
     public StructMap(int x, int y) {
         this.knownDimensions = x > 0 && y > 0;
         this.xSize = x;
         this.ySize = y;
-        list = new ArrayList<Structure>();
+        vector = new Vector<Structure>();
     }
 
     // container for all structures used in this map
-    private List<Structure> list;
+    private List<Structure> vector;
 
     public void removeStructure(Structure structure){
-        list.remove(structure);
+        vector.remove(structure);
     }
 
     // user's structures used in this map
@@ -32,18 +32,18 @@ public class StructMap {
     private final boolean knownDimensions;
 
     public UsersStructuresContainer getUserStructures() { return this.userStructures; }
-    public Structure getStructure(int i) { return this.list.get(i); }
+    public Structure getStructure(int i) { return this.vector.get(i); }
     public int getXSize() { return this.xSize; }
     public int getYSize() { return this.ySize; }
     public boolean getKnownDimensions() { return knownDimensions; }
 
-    public int size() { return list.size(); }
+    public int size() { return vector.size(); }
 
     public void addUserStructures(UsersStructuresContainer container) { this.userStructures = container; }
     public void addStruct(String name, int x, int y, Direction direction, int length) {
         Structure struct;
         if ((struct = Structure.isStructure(name, this.userStructures, x, y, direction, length)) != null) {
-            this.list.add(struct);
+            this.vector.add(struct);
         }
         else System.out.printf("Structure '%s' doesn't exist in this context.\n", name);
     }

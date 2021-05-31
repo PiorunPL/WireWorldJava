@@ -362,6 +362,10 @@ public class DBops {
                 cellMap.getCell(struct.getXAfterRotation() + i, struct.getYAfterRotation() + j).setXMap(struct.getXAfterRotation() + i);
                 cellMap.getCell(struct.getXAfterRotation() + i, struct.getYAfterRotation() + j).setYMap(struct.getYAfterRotation() + j);
                 cellMap.getCell(struct.getXAfterRotation() + i, struct.getYAfterRotation() + j).setStruct(struct);
+
+                if(cellMap.getCell(struct.getXAfterRotation() + i, struct.getYAfterRotation() + j).getState() == ELEH || cellMap.getCell(struct.getXAfterRotation() + i, struct.getYAfterRotation() + j).getState() == ELET){
+                    cellMap.getCell(struct.getXAfterRotation() + i, struct.getYAfterRotation() + j).changeState(WIRE);
+                }
             }
         }
     }
