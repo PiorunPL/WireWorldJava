@@ -152,10 +152,7 @@ public class MainPaneController implements Initializable {
         // scrolling event
         EventHandler<ScrollEvent> mouseScroll = e -> {
             double translate = grid.getTranslateZ() - e.getDeltaY();
-            if (translate >= -1000 && translate <= 3480) {
-                grid.translateZProperty().set(translate);
-                System.out.println(grid.getTranslateZ());
-            }
+            if (translate >= -1000 && translate <= 3480) grid.translateZProperty().set(translate);
         };
         fxmlRoot.addEventFilter(ScrollEvent.SCROLL, mouseScroll);
 
@@ -242,14 +239,15 @@ public class MainPaneController implements Initializable {
 
             if (result != null) { xSize = result[0]; ySize = result[1]; }
             if (xSize < 0 || ySize < 0) { xSize = 30; ySize = 30; }
-
-            clickedStructure = null;
-            editable = false;
-            firstAdded = false;
-            saveFile = null;
-            cellMap = new CellMap(xSize, ySize);
-            map = new StructMap(xSize, ySize);
-            drawGrid();
+            if (result != null) {
+                clickedStructure = null;
+                editable = false;
+                firstAdded = false;
+                saveFile = null;
+                cellMap = new CellMap(xSize, ySize);
+                map = new StructMap(xSize, ySize);
+                drawGrid();
+            }
         }
     }
 
@@ -280,18 +278,15 @@ public class MainPaneController implements Initializable {
     }
 
     @FXML
-    void open() {
+    void open() throws IllegalStructurePlacement {
         if (simThread == null || !simThread.isAlive()) {
             FileChooser fc = new FileChooser();
             File selected = fc.showOpenDialog(null);
 
             if (selected != null) {
                 map = DBops.getMapFromFile(selected);
-                try {
-                    cellMap = DBops.getMapStructFormat(map);
-                } catch (IllegalStructurePlacement illegalStructurePlacement) {
-                    illegalStructurePlacement.printStackTrace();
-                }
+                cellMap = DBops.getMapStructFormat(map);
+
                 displayMap(cellMap);
                 firstAdded = true;
                 clickedStructure = null;
