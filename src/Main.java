@@ -1,5 +1,3 @@
-package gui.controllers;
-
 import javafx.application.Application;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.PerspectiveCamera;
@@ -20,8 +18,7 @@ public class Main extends Application {
     private static final double STAGE_OFFSET_TOP = 31;
 
     @Override
-    public void start(Stage stage) throws Exception {
-
+    public void start(Stage primaryStage) throws Exception {
         // loading fxml document
         FXMLLoader loader = new FXMLLoader(this.getClass().getResource("/gui/FXMLs/MainScreen.fxml"));
         Pane mainPane = loader.load();
@@ -31,11 +28,16 @@ public class Main extends Application {
         scene.setCamera(new PerspectiveCamera());
 
         // setting up stage
-        stage.setMinWidth(sceneSizeX + 2 * STAGE_OFFSET);
-        stage.setMinHeight(sceneSizeY + STAGE_OFFSET + STAGE_OFFSET_TOP);
-        stage.setResizable(true);
-        stage.setTitle("Wireworld");
-        stage.setScene(scene);
-        stage.show();
+        primaryStage.setMinWidth(sceneSizeX + 2 * STAGE_OFFSET);
+        primaryStage.setMinHeight(sceneSizeY + STAGE_OFFSET + STAGE_OFFSET_TOP);
+        primaryStage.setResizable(true);
+        primaryStage.setTitle("Wireworld");
+        primaryStage.setScene(scene);
+        primaryStage.show();
+    }
+
+    @Override
+    public void stop() throws Exception {
+        System.exit(0);
     }
 }
