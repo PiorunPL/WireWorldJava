@@ -1,14 +1,13 @@
 package logic;
 
 import logic.cells.Cell;
-import logic.cells.CellState;
-
 import java.util.HashMap;
 
 
 public class CellMap {
-    private HashMap<Integer, HashMap<Integer, Cell>> hashMap;
-    private int xsize, ysize;
+    private final HashMap<Integer, HashMap<Integer, Cell>> hashMap;
+    private final int xsize;
+    private final int ysize;
 
     public CellMap(int xsize, int ysize) throws NegativeArraySizeException {
         this.xsize = xsize;
