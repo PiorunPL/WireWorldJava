@@ -9,7 +9,7 @@ public class CellMap {
     private final int xsize;
     private final int ysize;
 
-    public CellMap(int xsize, int ysize) throws NegativeArraySizeException {
+    public CellMap(int xsize, int ysize){
         this.xsize = xsize;
         this.ysize = ysize;
         hashMap = new HashMap<>();
