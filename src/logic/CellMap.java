@@ -1,54 +1,71 @@
 package logic;
 
 import logic.cells.Cell;
+import java.util.HashMap;
+
 
 public class CellMap {
-    private Cell[][] map = null;
-    private int xSize, ySize;
+    private final HashMap<Integer, HashMap<Integer, Cell>> hashMap;
+    private final int xsize;
+    private final int ysize;
 
-    public CellMap(int xSize, int ySize) throws NegativeArraySizeException {
-        try {
-            this.xSize = xSize;
-            this.ySize = ySize;
-            map = new Cell[xSize][ySize];
-            emptyCellMap();
-        }catch (ArrayIndexOutOfBoundsException e){
-            e.printStackTrace();
-        }catch(NegativeArraySizeException e){
-            throw new NegativeArraySizeException();
-        }
+    public CellMap(int xsize, int ysize){
+        this.xsize = xsize;
+        this.ysize = ysize;
+        hashMap = new HashMap<>();
     }
 
     public Cell getCell(int x, int y) {
         Cell cell;
-        try{
-            cell = map[x][y];
-        }catch(ArrayIndexOutOfBoundsException e){
-            return null;
+        if (!hashMap.containsKey(x)) {
+            cell = new Cell(4);
+        } else if (!hashMap.get(x).containsKey(y)) {
+            cell = new Cell(4);
+        } else {
+            cell = hashMap.get(x).get(y);
         }
+
         return cell;
     }
 
-    public void setCell(int x, int y, Cell cell)
-    {
-        map[x][y] = cell;
-    }
-
-    public int getXSize(){
-        return xSize;
-    }
-
-    public int getYSize(){
-        return ySize;
-    }
-
-    private void emptyCellMap() {
-        for (int i = 0; i < xSize; i++) {
-            for (int j = 0; j < ySize; j++) {
-                map[i][j] = new Cell(4);
-                map[i][j].setXMap(i);
-                map[i][j].setYMap(j);
-            }
+    public void setCell(int x, int y, Cell cell) {
+        if (!hashMap.containsKey(x)) {
+            hashMap.put(x, new HashMap<>());
+            hashMap.get(x).put(y, cell);
+        } else if (!hashMap.get(x).containsKey(y)) {
+            hashMap.get(x).put(y, cell);
+        } else {
+            hashMap.get(x).remove(y);
+            hashMap.get(x).put(y, cell);
         }
     }
+
+    public void removeCell(int x, int y) {
+        if (!hashMap.containsKey(x)) {
+        } else if (!hashMap.get(x).containsKey(y)) {
+        } else {
+            hashMap.get(x).remove(y);
+        }
+    }
+
+    public void setCellState(int type, int x, int y) {
+        if (!hashMap.containsKey(x)) {
+            hashMap.put(x, new HashMap<>());
+            hashMap.get(x).put(y, new Cell(type));
+        } else if (!hashMap.get(x).containsKey(y)) {
+            hashMap.get(x).put(y, new Cell(type));
+        } else {
+            hashMap.get(x).get(y).changeState(type);
+        }
+    }
+
+    public int getXSize() {
+        return xsize;
+    }
+
+    public int getYSize() {
+        return ysize;
+    }
 }
+
+
