@@ -25,6 +25,7 @@ import java.net.URL;
 import java.util.ResourceBundle;
 
 import javafx.stage.Stage;
+import utils.exceptions.ExceptionsDialogs;
 import utils.exceptions.IllegalStructurePlacement;
 
 import java.util.Vector;
@@ -286,21 +287,21 @@ public class MainPaneController implements Initializable {
             File selected = fc.showOpenDialog(null);
 
             if (selected != null) {
-                map = DBops.getMapFromFile(selected);
-                try {
+                    map = DBops.getMapFromFile(selected);
                     cellMap = DBops.getMapStructFormat(map);
-                    displayMap(cellMap);
-                    firstAdded = true;
-                    clickedStructure = null;
-                    editable = false;
-                    saveFile = null;
-                    simulation = null;
-                }catch(Exception e){
+                    if(cellMap != null) {
+                        displayMap(cellMap);
+                        firstAdded = true;
+                        clickedStructure = null;
+                        editable = false;
+                        saveFile = null;
+                        simulation = null;
+                    }
 
                 }
             }
         }
-    }
+
 
     @FXML
     void play() {

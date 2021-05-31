@@ -256,44 +256,46 @@ public class DBops {
         int xsize = structMap1.getXSize();
         int ysize = structMap1.getYSize();
         boolean specifiedSize = true;
-        CellMap cellMap;
-        if (xsize == -1 && ysize == -1){
-            specifiedSize = false;
-            cellMap = new CellMap(2, 2);
-        }
-        else if (xsize <= 0 || ysize <= 0) {
-            throw new NegativeArraySizeException();
-        }
-        else {
-            cellMap = new CellMap(xsize, ysize);
-        }
-
-        if (structMap == null)
-            structMap = structMap1;
-
-        for (int i = 0; i < structMap1.size(); i++) {
-            Structure struct = structMap1.getStructure(i);
-            if(!specifiedSize) {
-                cellMap = changeX(cellMap, struct);
-                cellMap = changeY(cellMap, struct);
-            }
-            if (checkIfStructureFit(cellMap, struct) && checkIfSpaceForStructureIsClear(cellMap, struct)) {
-                putStructToCellMap(cellMap, struct);
+        CellMap cellMap = null;
+        try {
+            if (xsize == -1 && ysize == -1) {
+                specifiedSize = false;
+                cellMap = new CellMap(2, 2);
+            } else if (xsize <= 0 || ysize <= 0) {
+                throw new NegativeArraySizeException();
             } else {
-                throw new IllegalStructurePlacement();
+                cellMap = new CellMap(xsize, ysize);
             }
-        }
 
-        for (Cell cell : electronHead) {
-            cellMap.getCell(cell.getXMap(), cell.getYMap()).changeState(ELEH);
-        }
-        electronHead = null;
+            if (structMap == null)
+                structMap = structMap1;
 
-        for (Cell cell : electronTail) {
-            cellMap.getCell(cell.getXMap(), cell.getYMap()).changeState(ELET);
-        }
-        electronTail = null;
+            for (int i = 0; i < structMap1.size(); i++) {
+                Structure struct = structMap1.getStructure(i);
+                if (!specifiedSize) {
+                    cellMap = changeX(cellMap, struct);
+                    cellMap = changeY(cellMap, struct);
+                }
+                if (checkIfStructureFit(cellMap, struct) && checkIfSpaceForStructureIsClear(cellMap, struct)) {
+                    putStructToCellMap(cellMap, struct);
+                } else {
+                    throw new IllegalStructurePlacement();
+                }
+            }
 
+            for (Cell cell : electronHead) {
+                cellMap.getCell(cell.getXMap(), cell.getYMap()).changeState(ELEH);
+            }
+            electronHead = null;
+
+            for (Cell cell : electronTail) {
+                cellMap.getCell(cell.getXMap(), cell.getYMap()).changeState(ELET);
+            }
+            electronTail = null;
+        } catch(NegativeArraySizeException e){
+            ExceptionsDialogs.warningDialog("Warning", "Typed illegal size. Only positive or [-1 -1] values are allowed");
+            return cellMap;
+        }
         return cellMap;
     }
 
