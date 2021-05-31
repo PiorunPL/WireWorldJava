@@ -72,7 +72,7 @@ public class MainPaneController implements Initializable {
     public static final Color COLOR_OF_WIRE = Color.SILVER;
     public static final Color COLOR_OF_EMPA = Color.BLACK;
     public static final Color COLOR_OF_HEAD = Color.RED;
-    public static final Color COLOR_OF_TAIL = Color.ORANGE;
+    public static final Color COLOR_OF_TAIL = Color.DEEPSKYBLUE;
     public static final Color COLOR_OF_EMPN = Color.rgb(100, 100, 100);
 
     // fields related to simulation
@@ -247,6 +247,7 @@ public class MainPaneController implements Initializable {
                 cellMap = new CellMap(xSize, ySize);
                 map = new StructMap(xSize, ySize);
                 drawGrid();
+                simulation = null;
             }
         }
     }
@@ -292,6 +293,7 @@ public class MainPaneController implements Initializable {
                 clickedStructure = null;
                 editable = false;
                 saveFile = null;
+                simulation = null;
             }
         }
     }
@@ -603,7 +605,8 @@ public class MainPaneController implements Initializable {
 
         for (int i = 0; i < x; i++) {
             for (int j = 0; j < y; j++) {
-                cellMap.setCell(struct.getXAfterRotation() + i, struct.getYAfterRotation() + j, new Cell(4));
+                //cellMap.setCell(struct.getXAfterRotation() + i, struct.getYAfterRotation() + j, new Cell(4));
+                cellMap.removeCell(struct.getXAfterRotation() + i, struct.getYAfterRotation() + j);
             }
         }
 
