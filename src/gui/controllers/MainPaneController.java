@@ -25,6 +25,7 @@ import java.net.URL;
 import java.util.ResourceBundle;
 
 import javafx.stage.Stage;
+import utils.exceptions.ExceptionsDialogs;
 import utils.exceptions.IllegalStructurePlacement;
 
 import java.util.Vector;
@@ -202,6 +203,7 @@ public class MainPaneController implements Initializable {
     void delete() {
         clickedStructure = null;
         deleteStructureSwitch = true;
+        if (backup != null) backup.display(grid, ySize);
 
     }
 
@@ -288,21 +290,21 @@ public class MainPaneController implements Initializable {
             File selected = fc.showOpenDialog(null);
 
             if (selected != null) {
-                map = DBops.getMapFromFile(selected);
-                cellMap = DBops.getMapStructFormat(map);
+                    map = DBops.getMapFromFile(selected);
+                    cellMap = DBops.getMapStructFormat(map);
+                    if(cellMap != null) {
+                        displayMap(cellMap);
+                        firstAdded = true;
+                        clickedStructure = null;
+                        editable = false;
+                        saveFile = null;
+                        simulation = null;
+                    }
 
-                displayMap(cellMap);
-                firstAdded = true;
-                clickedStructure = null;
-                editable = false;
-                saveFile = null;
-                simulation = null;
-                iterations = 100;
-                timeStep = 1000;
-
+                }
             }
         }
-    }
+
 
     @FXML
     void play() {

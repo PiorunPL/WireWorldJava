@@ -76,6 +76,7 @@ public class DBops {
      * Metoda wykorzystywana do zapisywania pliku w formacie strukturalnym; zapisuje struktury zdefiniowane przez użytkownika
      *
      * @param fw  FileWriter zapisujący
+     * @throws IOException
      * @author Michał Ziober
      */
     private static void putUsersStructures(FileWriter fw, UsersStructuresContainer container) throws IOException {
@@ -140,8 +141,7 @@ public class DBops {
 
                 // map format of file
                 if (option.equals(mapK)) {
-                    cellMap = getMapMapFormat(in, x, y);
-                    System.out.println(cellMap.getXSize() + " " + cellMap.getYSize());
+                    structMap = getMapMapFormat(in, x, y);
                     // structural format of file
                 } else if (option.equals(structK)) {
                     // getting user defined structures
@@ -180,13 +180,19 @@ public class DBops {
      * @param x  Ilość wierszy mapy
      * @param y  Ilośc kolumn mapy
      * @return Przekonwertowany plik na CellMap
+     * @throws IOException
+     * @throws TooManyCellsException
+     * @throws TooLessCellsException
+     * @throws NoSuchElementException
      * @author Michał Ziober
      */
-    private static CellMap getMapMapFormat(File in, int x, int y) throws IOException, TooManyCellsException, TooLessCellsException, NoSuchElementException, NegativeArraySizeException {
+    private static StructMap getMapMapFormat(File in, int x, int y) throws IOException, TooManyCellsException, TooLessCellsException, NoSuchElementException, NegativeArraySizeException{
+        electronHead = new Vector<Cell>();
+        electronTail = new Vector<Cell>();
         if (x == -1 && y == -1) {
-            System.out.println("samoobliczajacy się rozmiar");
             int numberOfRows = 0;
             Scanner counter = new Scanner(in);
+            String tmp = counter.nextLine();
             String[] countElem;
             if (counter.hasNextLine()) {
                 countElem = (counter.nextLine()).split("\\s+");
@@ -194,6 +200,7 @@ public class DBops {
                 numberOfRows++;
             }
             while (counter.hasNextLine()) {
+                tmp = counter.nextLine();
                 numberOfRows++;
             }
             x = numberOfRows;
@@ -201,9 +208,12 @@ public class DBops {
             throw new NegativeArraySizeException();
         }
 
-        CellMap map = new CellMap(x, y);
+        StructMap strMap = new StructMap(x,y);
+
+        String line;
         String[] lineInTab;
         Scanner scan = new Scanner(in);
+        line = scan.nextLine();
         for (int i = 0; i < x; i++) {
             lineInTab = (scan.nextLine()).split("\\s+");
             if (lineInTab.length > y)
@@ -211,45 +221,112 @@ public class DBops {
             else if (lineInTab.length < y)
                 throw new TooLessCellsException();
             for (int j = 0; j < y; j++) {
-                map.getCell(i, j).changeState(Integer.parseInt(lineInTab[j]));
+                int actual = Integer.parseInt(lineInTab[j]);
+                String nameOfActual;
+                if(actual == 1 || actual == 2 || actual == 3)
+                    strMap.addStruct("wire", i, j, Direction.setDirection("r"), 1);
+                else if(actual != 4)
+                    throw new IllegalArgumentException();
+                if(actual == 3)
+                {
+                    Cell cell = new Cell(4);
+                    cell.setXMap(i);
+                    cell.setYMap(j);
+                    electronHead.add(cell);
+                }
+                else if(actual == 2) {
+                    Cell cell = new Cell(4);
+                    cell.setXMap(i);
+                    cell.setYMap(j);
+                    electronTail.add(cell);
+                }
             }
 
         }
-        return map;
+        return strMap;
     }
 
     /**
      * @param structMap1 Mapa do przekształcenia
      * @return Zwraca Mapę komórek (CellMap), stworzoną z przekształcenia Mapy struktur (StructMap)
+     * @throws IllegalStructurePlacement
      * @author Jakub Maciejewski
      */
     public static CellMap getMapStructFormat(StructMap structMap1) throws IllegalStructurePlacement {
         int xsize = structMap1.getXSize();
         int ysize = structMap1.getYSize();
-        CellMap cellMap = new CellMap(xsize, ysize);
-
-        if (structMap == null)
-            structMap = structMap1;
-
-        for (int i = 0; i < structMap1.size(); i++) {
-            Structure struct = structMap1.getStructure(i);
-            if (checkIfStructureFit(cellMap, struct) && checkIfSpaceForStructureIsClear(cellMap, struct)) {
-                putStructToCellMap(cellMap, struct);
+        boolean specifiedSize = true;
+        CellMap cellMap = null;
+        try {
+            if (xsize == -1 && ysize == -1) {
+                specifiedSize = false;
+                cellMap = new CellMap(2, 2);
+            } else if (xsize <= 0 || ysize <= 0) {
+                throw new NegativeArraySizeException();
             } else {
-                throw new IllegalStructurePlacement();
+                cellMap = new CellMap(xsize, ysize);
             }
-        }
 
-        for (Cell cell : electronHead) {
-            cellMap.getCell(cell.getXMap(), cell.getYMap()).changeState(ELEH);
-        }
-        electronHead = null;
+            if (structMap == null)
+                structMap = structMap1;
 
-        for (Cell cell : electronTail) {
-            cellMap.getCell(cell.getXMap(), cell.getYMap()).changeState(ELET);
-        }
-        electronTail = null;
+            for (int i = 0; i < structMap1.size(); i++) {
+                Structure struct = structMap1.getStructure(i);
+                if (!specifiedSize) {
+                    cellMap = changeX(cellMap, struct);
+                    cellMap = changeY(cellMap, struct);
+                }
+                if (checkIfStructureFit(cellMap, struct) && checkIfSpaceForStructureIsClear(cellMap, struct)) {
+                    putStructToCellMap(cellMap, struct);
+                } else {
+                    throw new IllegalStructurePlacement();
+                }
+            }
 
+            for (Cell cell : electronHead) {
+                cellMap.getCell(cell.getXMap(), cell.getYMap()).changeState(ELEH);
+            }
+            electronHead = null;
+
+            for (Cell cell : electronTail) {
+                cellMap.getCell(cell.getXMap(), cell.getYMap()).changeState(ELET);
+            }
+            electronTail = null;
+        } catch(NegativeArraySizeException e){
+            ExceptionsDialogs.warningDialog("Warning", "Typed illegal size. Only positive or [-1 -1] values are allowed");
+            return cellMap;
+        }
+        return cellMap;
+    }
+
+    private static CellMap changeX(CellMap cellMap, Structure structure){
+        Direction direction = structure.getDirection();
+        if (direction.equals(Direction.UP) && structure.getX()+1 + structure.getXSize()> cellMap.getXSize()) {
+            cellMap = cellMap.changeSize(cellMap, structure.getX()+1 + structure.getXSize(), cellMap.getYSize());
+        } else if (direction.equals(Direction.RIGHT) && (structure.getX() + 1 + structure.getYSize()) > cellMap.getXSize()) {
+            cellMap = cellMap.changeSize(cellMap,structure.getX()+1 + structure.getYSize(), cellMap.getYSize());
+        } else if (direction.equals(Direction.DOWN) && (structure.getX()+1) > cellMap.getXSize()) {
+            cellMap = cellMap.changeSize(cellMap,structure.getX()+1, cellMap.getYSize());
+        } else if (direction.equals(Direction.LEFT) && structure.getX()+1 > cellMap.getXSize()) {
+            cellMap = cellMap.changeSize(cellMap, structure.getX()+1, cellMap.getYSize());
+        }
+        return cellMap;
+    }
+
+    private static CellMap changeY(CellMap cellMap, Structure structure){
+        Direction direction = structure.getDirection();
+        if (direction.equals(Direction.UP) && structure.getY()+1 + structure.getYSize() > cellMap.getYSize()){
+            cellMap = cellMap.changeSize(cellMap, cellMap.getXSize(), structure.getY()+1 + structure.getYSize());
+        }
+        else if (direction.equals(Direction.RIGHT) && structure.getY()+1 > cellMap.getYSize()){
+            cellMap = cellMap.changeSize(cellMap, cellMap.getXSize(), structure.getY()+1);
+        }
+        else if (direction.equals(Direction.DOWN) && structure.getY()+1 > cellMap.getYSize()){
+            cellMap = cellMap.changeSize(cellMap, cellMap.getXSize(), structure.getY()+1);
+        }
+        else if (direction.equals(Direction.LEFT) && structure.getY()+1 + structure.getXSize() > cellMap.getYSize()){
+            cellMap = cellMap.changeSize(cellMap, cellMap.getXSize(), structure.getY()+1 + structure.getXSize());
+        }
         return cellMap;
     }
 
@@ -467,6 +544,7 @@ public class DBops {
     /**
      * @param in plik wejściowy, z którego ma być odczytana pierwsza linia
      * @return Pierwsza linia przekształcona do tablicy (rozdzielnikami są białe znaki)
+     * @throws FileNotFoundException
      * @author Michał Ziober
      */
     private static String[] firstLineToArray(File in) throws FileNotFoundException {
