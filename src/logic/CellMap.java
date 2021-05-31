@@ -3,73 +3,70 @@ package logic;
 import logic.cells.Cell;
 import logic.cells.CellState;
 
-import static logic.cells.CellState.*;
+import java.util.HashMap;
+
 
 public class CellMap {
-    private Cell map[][] = null;
+    private HashMap<Integer, HashMap<Integer, Cell>> hashMap;
     private int xsize, ysize;
 
     public CellMap(int xsize, int ysize) throws NegativeArraySizeException {
-        try {
-            this.xsize = xsize;
-            this.ysize = ysize;
-            map = new Cell[xsize][ysize];
-            emptyCellMap();
-        }catch (ArrayIndexOutOfBoundsException e){
-            e.printStackTrace();
-        }catch(NegativeArraySizeException e){
-            throw new NegativeArraySizeException();
-        }
+        this.xsize = xsize;
+        this.ysize = ysize;
+        hashMap = new HashMap<>();
     }
 
     public Cell getCell(int x, int y) {
-        Cell cell = null;
-        try{
-            cell = map[x][y];
-        }catch(ArrayIndexOutOfBoundsException e){
-            return null;
+        Cell cell;
+        if (!hashMap.containsKey(x)) {
+            cell = new Cell(4);
+        } else if (!hashMap.get(x).containsKey(y)) {
+            cell = new Cell(4);
+        } else {
+            cell = hashMap.get(x).get(y);
         }
+
         return cell;
     }
 
-    public void setCell(int x, int y, Cell cell)
-    {
-        map[x][y] = cell;
+    public void setCell(int x, int y, Cell cell) {
+        if (!hashMap.containsKey(x)) {
+            hashMap.put(x, new HashMap<>());
+            hashMap.get(x).put(y, cell);
+        } else if (!hashMap.get(x).containsKey(y)) {
+            hashMap.get(x).put(y, cell);
+        } else {
+            hashMap.get(x).remove(y);
+            hashMap.get(x).put(y, cell);
+        }
+    }
+
+    public void removeCell(int x, int y) {
+        if (!hashMap.containsKey(x)) {
+        } else if (!hashMap.get(x).containsKey(y)) {
+        } else {
+            hashMap.get(x).remove(y);
+        }
     }
 
     public void setCellState(int type, int x, int y) {
-        try {
-            map[x][y].changeState(type);
-        }catch(ArrayIndexOutOfBoundsException e){
-            e.printStackTrace();
+        if (!hashMap.containsKey(x)) {
+            hashMap.put(x, new HashMap<>());
+            hashMap.get(x).put(y, new Cell(type));
+        } else if (!hashMap.get(x).containsKey(y)) {
+            hashMap.get(x).put(y, new Cell(type));
+        } else {
+            hashMap.get(x).get(y).changeState(type);
         }
     }
 
-    public int getXSize(){
+    public int getXSize() {
         return xsize;
     }
 
-    public int getYSize(){
+    public int getYSize() {
         return ysize;
     }
-
-    /**
-     * Zmienai rozmiar mapy o podane wartości
-     * @param x ilość wierszy do dodania
-     * @param y ilość kolumn do dodania
-     */
-    public void changeSize(int x, int y){
-
-    }
-
-    //TUTAJ ZMIENIĆ TYP CELLA JAK ZMIENI SIĘ W CELL STATE!!!
-    private void emptyCellMap() {
-        for (int i = 0; i < xsize; i++) {
-            for (int j = 0; j < ysize; j++) {
-                map[i][j] = new Cell(4);
-                map[i][j].setxMap(i);
-                map[i][j].setyMap(j);
-            }
-        }
-    }
 }
+
+
