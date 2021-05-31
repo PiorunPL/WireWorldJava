@@ -603,7 +603,8 @@ public class MainPaneController implements Initializable {
 
         for (int i = 0; i < x; i++) {
             for (int j = 0; j < y; j++) {
-                cellMap.setCell(struct.getXAfterRotation() + i, struct.getYAfterRotation() + j, new Cell(4));
+                //cellMap.setCell(struct.getXAfterRotation() + i, struct.getYAfterRotation() + j, new Cell(4));
+                cellMap.removeCell(struct.getXAfterRotation() + i, struct.getYAfterRotation() + j);
             }
         }
 
