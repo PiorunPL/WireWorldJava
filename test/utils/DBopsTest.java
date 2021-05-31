@@ -3,18 +3,14 @@ package utils;
 import logic.CellMap;
 import logic.Direction;
 import logic.StructMap;
-import logic.cells.Cell;
 import logic.cells.CellState;
 import logic.structures.Or;
 import logic.structures.Structure;
-import logic.structures.UsersStructure;
-import logic.structures.UsersStructuresContainer;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
 import utils.exceptions.IllegalStructurePlacement;
 
 import java.io.File;
-import java.io.FileNotFoundException;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 
@@ -27,32 +23,6 @@ class DBopsTest {
     @BeforeAll
     public static void init() {
         testStructFormatFile = new File("test/testStructFormatFile");
-    }
-
-    @Test
-    public void getUsersStructuresTest() throws FileNotFoundException {
-        UsersStructuresContainer cont = new UsersStructuresContainer();
-        Cell[][] cell1 = {
-                {new Cell(0), new Cell(1), new Cell(0), new Cell(1), new Cell(1)},
-                {new Cell(0), new Cell(1), new Cell(0), new Cell(1), new Cell(0)}
-        };
-        UsersStructure struct = new UsersStructure(
-                "structName1", 2, 5, cell1);
-        cont.add(struct);
-
-        Cell[][] cell2 = {
-                {new Cell(1), new Cell(0), new Cell(1), new Cell(0), new Cell(1)},
-                {new Cell(1), new Cell(1), new Cell(1), new Cell(0), new Cell(1)}
-        };
-        struct = new UsersStructure(
-                "structName2", 2, 5, cell2);
-        cont.add(struct);
-
-        //DBops.getUsersStructures(testStructFormatFile).get(0).print();
-        //DBops.getUsersStructures(testStructFormatFile).get(1).print();
-        //cont.get(0).print();
-        //cont.get(1).print();
-        assertTrue(cont.equals(DBops.getUsersStructures(testStructFormatFile)));
     }
 
     @Test
@@ -644,8 +614,8 @@ class DBopsTest {
     public void printStructMap(StructMap map) {
         System.out.printf("StructMap\n\tlength: %d\n", map.size());
         System.out.printf("\tsize: [%d, %d], %s\n",
-                map.getXsize(),
-                map.getYsize(),
+                map.getXSize(),
+                map.getYSize(),
                 map.getKnownDimensions() ? "known" : "not known"
         );
         for (int i = 0; i < map.size(); i++) {
