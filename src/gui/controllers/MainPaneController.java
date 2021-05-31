@@ -248,6 +248,9 @@ public class MainPaneController implements Initializable {
                 map = new StructMap(xSize, ySize);
                 drawGrid();
                 simulation = null;
+                iterations = 100;
+                timeStep = 1000;
+
             }
         }
     }
@@ -294,6 +297,9 @@ public class MainPaneController implements Initializable {
                 editable = false;
                 saveFile = null;
                 simulation = null;
+                iterations = 100;
+                timeStep = 1000;
+
             }
         }
     }
@@ -417,9 +423,6 @@ public class MainPaneController implements Initializable {
         if (grid.getChildren() != null) {
             grid.getChildren().clear();
         }
-
-        iterations = 100;
-        timeStep = 1000;
 
         grid.setHgap(BREAK);
         grid.setVgap(BREAK);
