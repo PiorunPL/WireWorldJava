@@ -141,7 +141,7 @@ public class DBops {
 
                 // map format of file
                 if (option.equals(mapK)) {
-                    cellMap = getMapMapFormat(in, x, y);
+                    structMap = getMapMapFormat(in, x, y);
                     // structural format of file
                 } else if (option.equals(structK)) {
                     // getting user defined structures
@@ -226,14 +226,14 @@ public class DBops {
                 if(actual == 3)
                 {
                     Cell cell = new Cell(4);
-                    cell.setxMap(i);
-                    cell.setyMap(j);
+                    cell.setXMap(i);
+                    cell.setYMap(j);
                     electronHead.add(cell);
                 }
                 else if(actual == 2) {
                     Cell cell = new Cell(4);
-                    cell.setxMap(i);
-                    cell.setyMap(j);
+                    cell.setXMap(i);
+                    cell.setYMap(j);
                     electronTail.add(cell);
                 }
                 else if ( actual == 1){
@@ -258,8 +258,8 @@ public class DBops {
      * @author Jakub Maciejewski
      */
     public static CellMap getMapStructFormat(StructMap structMap1) throws IllegalStructurePlacement {
-        int xsize = structMap1.getXsize();
-        int ysize = structMap1.getYsize();
+        int xsize = structMap1.getXSize();
+        int ysize = structMap1.getYSize();
         boolean specifiedSize = true;
         CellMap cellMap;
         if (xsize == -1 && ysize == -1){
