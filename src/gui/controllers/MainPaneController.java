@@ -641,8 +641,8 @@ class Backup {
         this.tab = new CellMap(xSize, ySize);
     }
 
-    int x, y;
-    CellMap tab;
+    private final int x, y;
+    private final CellMap tab;
 
     public void display(GridPane grid, int ySize) {
         for (int i = 0; i < (tab != null ? tab.getXSize() : 0); i++) {
