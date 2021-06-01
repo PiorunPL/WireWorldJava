@@ -291,28 +291,33 @@ public class MainPaneController implements Initializable {
 
             if (selected != null) {
                 StructMap backupMap = null;
-                    if(map != null) {
-                        backupMap = StructMap.backupMap(map);
-                    }
-                    map = DBops.getMapFromFile(selected);
-
-                    try{
-                        cellMap = DBops.getMapStructFormat(map);
-                        displayMap(cellMap);
-                        firstAdded = true;
-                        clickedStructure = null;
-                        editable = false;
-                        saveFile = null;
-                        simulation = null;
-                    }
-                    catch(IllegalStructurePlacement e) {
-                        map = backupMap;
-                        e.getMessage();
-                    }
-
+                if(map != null) {
+                    backupMap = StructMap.backupMap(map);
                 }
+                map = DBops.getMapFromFile(selected, map);
+
+                try{
+                    cellMap = DBops.getMapStructFormat(map, cellMap);
+                    displayMap(cellMap);
+                    firstAdded = true;
+                    clickedStructure = null;
+                    editable = false;
+                    saveFile = null;
+                    simulation = null;
+                }
+                catch(IllegalStructurePlacement e) {
+                    map = backupMap;
+                    e.getMessage();
+                }  catch(NegativeArraySizeException e){
+                    map = backupMap;
+                    ExceptionsDialogs.warningDialog("Warning", "Typed illegal size. Only positive or [-1 -1] values are allowed");
+                } catch(NullPointerException e){
+                    map = backupMap;
+                }
+
             }
         }
+    }
 
 
     @FXML
