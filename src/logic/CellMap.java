@@ -9,7 +9,7 @@ public class CellMap {
     private final int xsize;
     private final int ysize;
 
-    public CellMap(int xsize, int ysize){
+    public CellMap(int xsize, int ysize) {
         this.xsize = xsize;
         this.ysize = ysize;
         hashMap = new HashMap<>();
@@ -66,6 +66,42 @@ public class CellMap {
     public int getYSize() {
         return ysize;
     }
-}
 
+    /**
+     * Zmienia rozmiar mapy o podane wartości
+     *
+     * @param newX ilość wierszy nowej planszy
+     * @param newY ilość kolumn nowej planszy
+     */
+    public static CellMap changeSize(CellMap map, int newX, int newY) {
+        CellMap newMap = new CellMap(newX, newY);
+        /*for(int i = 0; i < map.getXSize(); i++){
+            Cell[] aMap = map[i];
+            int aLength = aMap.length;
+
+            System.arraycopy(map[i], 0, newMap[i], 0, map.getYSize());
+            for(int j = 0; j < newMap[i].length; j++){
+                if( newMap[i][j] == null)
+                    newMap[i][j] = new Cell(4);
+            }*/
+        for (int i = 0; i < map.getXSize(); i++) {
+            for (int j = 0; j < map.getYSize(); j++) {
+                newMap.setCell(i, j, map.getCell(i, j));
+            }
+        }
+
+        for (int i = 0; i < newMap.getXSize(); i++) {
+            for (int j = 0; j < newMap.getYSize(); j++) {
+                if (newMap.getCell(i, j) == null) {
+                    newMap.setCell(i, j, new Cell(4));
+                }
+            }
+
+            /*for(int j = 0; j < map[i].length; j++){
+                newMap[i][j] = map[i][j];
+            }*/
+        }
+        return newMap;
+    }
+}
 
