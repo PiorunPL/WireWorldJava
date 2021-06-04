@@ -377,6 +377,44 @@ public class DBops {
                 if(cellMap.getCell(struct.getXAfterRotation() + i, struct.getYAfterRotation() + j).getState() == ELEH || cellMap.getCell(struct.getXAfterRotation() + i, struct.getYAfterRotation() + j).getState() == ELET){
                     cellMap.getCell(struct.getXAfterRotation() + i, struct.getYAfterRotation() + j).changeState(WIRE);
                 }
+
+            }
+        }
+    }
+
+    public static void getMapStructFormat2(Structure struct, CellMap cellMap) throws IllegalStructurePlacement {
+
+        boolean bool1 = checkIfStructureFit(cellMap, struct);
+        if (!bool1)
+            System.err.println("FIT");
+
+        boolean bool2 = checkIfSpaceForStructureIsClear(cellMap, struct);
+        if (!bool2)
+            System.err.println("SPACE");
+
+        if (bool1 && bool2) {
+            putStructToCellMap2(cellMap, struct);
+        } else {
+            throw new IllegalStructurePlacement();
+        }
+    }
+
+    private static void putStructToCellMap2(CellMap cellMap, Structure struct) {
+
+        CellMap cellMap1 = struct.structureAfterDirection();
+
+        int x, y;
+
+        x = struct.getXSizeAfterRotation();
+        y = struct.getYSizeAfterRotation();
+
+        for (int i = 0; i < x; i++) {
+            for (int j = 0; j < y; j++) {
+                cellMap.setCell(struct.getXAfterRotation() + i, struct.getYAfterRotation() + j, cellMap1.getCell(i, j));
+                cellMap.getCell(struct.getXAfterRotation() + i, struct.getYAfterRotation() + j).setXMap(struct.getXAfterRotation() + i);
+                cellMap.getCell(struct.getXAfterRotation() + i, struct.getYAfterRotation() + j).setYMap(struct.getYAfterRotation() + j);
+                cellMap.getCell(struct.getXAfterRotation() + i, struct.getYAfterRotation() + j).setStruct(struct);
+
             }
         }
     }

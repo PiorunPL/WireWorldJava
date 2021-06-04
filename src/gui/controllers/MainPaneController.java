@@ -304,6 +304,8 @@ public class MainPaneController implements Initializable {
                     editable = false;
                     saveFile = null;
                     simulation = null;
+                    iterations = 100;
+                    timeStep = 1000;
                 }
                 catch(IllegalStructurePlacement e) {
                     map = backupMap;
@@ -553,7 +555,7 @@ public class MainPaneController implements Initializable {
             try {
                 clickedStructure.setX(xMouse);
                 clickedStructure.setY(yMouse);
-                DBops.getMapStructFormat(clickedStructure, cellMap);
+                DBops.getMapStructFormat2(clickedStructure, cellMap);
             } catch (IllegalStructurePlacement illegalStructurePlacement) {
                 illegalStructurePlacement.printStackTrace();
                 error = true;
