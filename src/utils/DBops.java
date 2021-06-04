@@ -125,8 +125,8 @@ public class DBops {
         }
     }
 
-    public static StructMap getMapFromFile(File in) throws NullPointerException {
-        CellMap cellMap;
+    public static StructMap getMapFromFile(File in, StructMap previous) throws NullPointerException {
+        StructMap backup = StructMap.backupMap(previous);
         String option;
         String[] firstLine;
         int x;
@@ -154,21 +154,36 @@ public class DBops {
             } else
                 throw new IncorrectNumberOfArgumentsException();
         } catch (IOException e) {
+            structMap = backup;
             e.printStackTrace();
         } catch (IllegalFormatOptionException e) {
+            structMap = backup;
             e.getMessage();
         } catch (TooManyCellsException e) {
+            structMap = backup;
             e.getMessage();
         } catch (TooLessCellsException e) {
+            structMap = backup;
             e.getMessage();
-        } catch (IncorrectNumberOfArgumentsException e) {
+        } catch (IllegalCellException e){
+            structMap = backup;
+            e.getMessage();
+        }
+        catch (IncorrectNumberOfArgumentsException e) {
+            structMap = backup;
             e.getMessage();
         } catch (NoSuchElementException e) {
+            structMap = backup;
             ExceptionsDialogs.warningDialog("Warning", "Typed to less lines than declared");
         } catch (IllegalArgumentException e) {
+            structMap = backup;
             ExceptionsDialogs.warningDialog("Warning", "Incorrect value in input file");
         } catch (NegativeArraySizeException e) {
+            structMap = backup;
             ExceptionsDialogs.warningDialog("Warning", "Typed illegal size. Only positive or [-1 -1] values are allowed");
+        } catch (ProblemInUsersStructureException e){
+            structMap = backup;
+            e.getMessage();
         }
         return structMap;
     }
@@ -249,15 +264,15 @@ public class DBops {
     /**
      * @param structMap1 Mapa do przekształcenia
      * @return Zwraca Mapę komórek (CellMap), stworzoną z przekształcenia Mapy struktur (StructMap)
-     * @throws IllegalStructurePlacement
+     * @throws IllegalStructurePlacement, NegativeArraySizeException
      * @author Jakub Maciejewski
      */
-    public static CellMap getMapStructFormat(StructMap structMap1) throws IllegalStructurePlacement {
+    public static CellMap getMapStructFormat(StructMap structMap1, CellMap previous) throws IllegalStructurePlacement, NegativeArraySizeException {
         int xsize = structMap1.getXSize();
         int ysize = structMap1.getYSize();
         boolean specifiedSize = true;
         CellMap cellMap = null;
-        try {
+
             if (xsize == -1 && ysize == -1) {
                 specifiedSize = false;
                 cellMap = new CellMap(2, 2);
@@ -292,10 +307,6 @@ public class DBops {
                 cellMap.getCell(cell.getXMap(), cell.getYMap()).changeState(ELET);
             }
             electronTail = null;
-        } catch(NegativeArraySizeException e){
-            ExceptionsDialogs.warningDialog("Warning", "Typed illegal size. Only positive or [-1 -1] values are allowed");
-            return cellMap;
-        }
         return cellMap;
     }
 
@@ -471,7 +482,7 @@ public class DBops {
         return true;
     }
 
-    private static UsersStructuresContainer getUsersStructures(File in) throws FileNotFoundException {
+    private static UsersStructuresContainer getUsersStructures(File in) throws FileNotFoundException, IllegalCellException, ProblemInUsersStructureException {
         Scanner scanner = new Scanner(in);
 
         UsersStructuresContainer usersStructures = new UsersStructuresContainer();
@@ -522,6 +533,11 @@ public class DBops {
             while (!matcher.find() && !line.equals(">")) {
                 state = line.split(" ");
                 for (int j = 0; j < y; j++) {
+                    if( j >= state.length )
+                        throw new ProblemInUsersStructureException();
+                    int current = Integer.parseInt(state[j]);
+                    if (current < 1 || current > 5)
+                        throw new IllegalCellException();
                     struct[i][j] = new Cell(Integer.parseInt(state[j]));
                 }
                 matcher = nameRegex.matcher((line = scanner.nextLine()));

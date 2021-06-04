@@ -284,24 +284,39 @@ public class MainPaneController implements Initializable {
     }
 
     @FXML
-    void open() throws IllegalStructurePlacement {
+    void open(){
         if (simThread == null || !simThread.isAlive()) {
             FileChooser fc = new FileChooser();
             File selected = fc.showOpenDialog(null);
 
             if (selected != null) {
-                    map = DBops.getMapFromFile(selected);
-                    cellMap = DBops.getMapStructFormat(map);
-                    if(cellMap != null) {
-                        displayMap(cellMap);
-                        firstAdded = true;
-                        clickedStructure = null;
-                        editable = false;
-                        saveFile = null;
-                        simulation = null;
-                        iterations = 100;
-                        timeStep = 1000;
-                    }
+                StructMap backupMap = null;
+                if(map != null) {
+                    backupMap = StructMap.backupMap(map);
+                }
+                map = DBops.getMapFromFile(selected, map);
+
+                try{
+                    cellMap = DBops.getMapStructFormat(map, cellMap);
+                    displayMap(cellMap);
+                    firstAdded = true;
+                    clickedStructure = null;
+                    editable = false;
+                    saveFile = null;
+                    simulation = null;
+                    iterations = 100;
+                    timeStep = 1000;
+                }
+                catch(IllegalStructurePlacement e) {
+                    map = backupMap;
+                    e.getMessage();
+                }  catch(NegativeArraySizeException e){
+                    map = backupMap;
+                    ExceptionsDialogs.warningDialog("Warning", "Typed illegal size. Only positive or [-1 -1] values are allowed");
+                } catch(NullPointerException e){
+                    map = backupMap;
+                }
+
             }
         }
     }
