@@ -16,9 +16,10 @@ public class StructMap {
     }
 
     // container for all structures used in this map
-    private List<Structure> vector;
+    private Vector<Structure> vector;
 
     public void removeStructure(Structure structure){
+
         vector.remove(structure);
     }
 
@@ -48,6 +49,8 @@ public class StructMap {
         }
         else System.out.printf("Structure '%s' doesn't exist in this context.\n", name);
     }
+    public void add(Structure structure)    {        this.vector.add(structure);    }
+
     public static StructMap backupMap(StructMap toBackup){
         StructMap backupMap;
         backupMap = new StructMap(toBackup.getXSize(), toBackup.getYSize());

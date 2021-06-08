@@ -565,7 +565,7 @@ public class MainPaneController implements Initializable {
                 if (backup != null) backup.display(grid, this.ySize);
 
             if (map != null && !error) {
-                map.addStruct(clickedStructure.getName(), xMouse, yMouse, clickedStructure.getDirection(), clickedStructure.getXSize());
+                map.add(clickedStructure);
                 backup = null;
                 createNewStructure(clickedStructure.getName());
             }
